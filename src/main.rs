@@ -1,5 +1,7 @@
+use cli::{Arguments, Parser};
 use utils::clamp;
 
+mod cli;
 mod utils;
 
 const IMAGE_W: u32 = 256;
@@ -18,11 +20,13 @@ fn coords_to_image(x: u32, y: u32) -> image::Rgb<u8> {
 }
 
 fn main() {
-    let img_buf: image::RgbImage = image::ImageBuffer::from_fn(IMAGE_W, IMAGE_H, coords_to_image);
+    // Parsing cli args
+    let cli_args = Arguments::parse();
+    let output_file = cli_args.output;
 
-    if let Err(why) = img_buf.save("image.png") {
+    // write image to file
+    let img_buf: image::RgbImage = image::ImageBuffer::from_fn(IMAGE_W, IMAGE_H, coords_to_image);
+    if let Err(why) = img_buf.save(output_file) {
         eprintln!("Failed to write: {}", why);
     }
-
-    println!("Hello, world!");
 }
