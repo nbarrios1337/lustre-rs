@@ -316,4 +316,106 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn add_assign_scalar() {
+        let mut a = Vec3f32::new();
+        a += 1.0;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            }
+        );
+    }
+
+    #[test]
+    fn add_assign_vec() {
+        let mut a = Vec3f32::new();
+        let b = Vec3f32 {
+            x: 5.0,
+            y: 5.0,
+            z: 5.0,
+        };
+        a += b;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: 5.0,
+                y: 5.0,
+                z: 5.0,
+            }
+        );
+    }
+
+    #[test]
+    fn sub_assign_scalar() {
+        let mut a = Vec3f32::new();
+        a -= 1.0;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: -1.0,
+                y: -1.0,
+                z: -1.0,
+            }
+        );
+    }
+
+    #[test]
+    fn sub_assign_vec() {
+        let mut a = Vec3f32::new();
+        let b = Vec3f32 {
+            x: 5.0,
+            y: 5.0,
+            z: 5.0,
+        };
+        a -= b;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: -5.0,
+                y: -5.0,
+                z: -5.0,
+            }
+        );
+    }
+
+    #[test]
+    fn mul_assign_scalar() {
+        let mut a = Vec3f32 {
+            x: 5.0,
+            y: 5.0,
+            z: 5.0,
+        };
+        a *= 2.0;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: 10.0,
+                y: 10.0,
+                z: 10.0,
+            }
+        );
+    }
+
+    #[test]
+    fn div_assign_scalar() {
+        let mut a = Vec3f32 {
+            x: 5.0,
+            y: 5.0,
+            z: 5.0,
+        };
+        a /= 2.0;
+        assert_eq!(
+            a,
+            Vec3f32 {
+                x: 2.5,
+                y: 2.5,
+                z: 2.5,
+            }
+        );
+    }
 }
