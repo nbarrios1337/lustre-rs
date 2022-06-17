@@ -30,7 +30,7 @@ impl Neg for Vec3f32 {
     }
 }
 
-// binary math ops
+// binary math ops with vec
 
 // +
 impl Add for Vec3f32 {
@@ -54,6 +54,34 @@ impl Sub for Vec3f32 {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
             z: self.z - rhs.z,
+        }
+    }
+}
+
+// binary math ops with scalar
+
+// +
+impl Add<f32> for Vec3f32 {
+    type Output = Self;
+
+    fn add(self, rhs: f32) -> Self::Output {
+        Self {
+            x: self.x + rhs,
+            y: self.y + rhs,
+            z: self.z + rhs,
+        }
+    }
+}
+
+// -
+impl Sub<f32> for Vec3f32 {
+    type Output = Self;
+
+    fn sub(self, rhs: f32) -> Self::Output {
+        Self {
+            x: self.x - rhs,
+            y: self.y - rhs,
+            z: self.z - rhs,
         }
     }
 }
@@ -99,6 +127,24 @@ impl SubAssign for Vec3f32 {
         self.x -= rhs.x;
         self.y -= rhs.y;
         self.z -= rhs.z;
+    }
+}
+
+// *=
+impl AddAssign<f32> for Vec3f32 {
+    fn add_assign(&mut self, rhs: f32) {
+        self.x += rhs;
+        self.y += rhs;
+        self.z += rhs;
+    }
+}
+
+// *=
+impl SubAssign<f32> for Vec3f32 {
+    fn sub_assign(&mut self, rhs: f32) {
+        self.x -= rhs;
+        self.y -= rhs;
+        self.z -= rhs;
     }
 }
 
@@ -200,13 +246,48 @@ mod tests {
     }
 
     #[test]
-    fn mul_scalar() {
+    fn add_scalar() {
         let a = Vec3f32 {
             x: 2.0,
             y: 3.0,
             z: 4.0,
         };
 
+        assert_eq!(
+            a + 2.0,
+            Vec3f32 {
+                x: 4.0,
+                y: 5.0,
+                z: 6.0,
+            }
+        );
+    }
+
+    #[test]
+    fn sub_scalar() {
+        let a = Vec3f32 {
+            x: 2.0,
+            y: 3.0,
+            z: 4.0,
+        };
+
+        assert_eq!(
+            a - 2.0,
+            Vec3f32 {
+                x: 0.0,
+                y: 1.0,
+                z: 2.0,
+            }
+        );
+    }
+
+    #[test]
+    fn mul_scalar() {
+        let a = Vec3f32 {
+            x: 2.0,
+            y: 3.0,
+            z: 4.0,
+        };
 
         assert_eq!(
             a * 2.0,
