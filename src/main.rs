@@ -1,8 +1,10 @@
 use cli::{Arguments, Parser};
 use utils::clamp;
+use vec3::Vec3f32;
 
 mod cli;
 mod utils;
+mod vec3;
 
 const IMAGE_W: u32 = 256;
 const IMAGE_H: u32 = 256;
@@ -29,4 +31,7 @@ fn main() {
     if let Err(why) = img_buf.save(output_file) {
         eprintln!("Failed to write: {}", why);
     }
+
+    let v = Vec3f32::new();
+    println!("{:?}", v)
 }
