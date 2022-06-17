@@ -59,14 +59,14 @@ impl Sub for Vec3f32 {
 }
 
 // *
-impl Mul for Vec3f32 {
+impl Mul<f32> for Vec3f32 {
     type Output = Self;
 
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z,
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
         }
     }
 }
@@ -103,11 +103,11 @@ impl SubAssign for Vec3f32 {
 }
 
 // *=
-impl MulAssign for Vec3f32 {
-    fn mul_assign(&mut self, rhs: Self) {
-        self.x *= rhs.x;
-        self.y *= rhs.y;
-        self.z *= rhs.z;
+impl MulAssign<f32> for Vec3f32 {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
     }
 }
 
@@ -200,31 +200,26 @@ mod tests {
     }
 
     #[test]
-    fn mul_vec() {
+    fn mul_scalar() {
         let a = Vec3f32 {
             x: 2.0,
             y: 3.0,
             z: 4.0,
         };
 
-        let b = Vec3f32 {
-            x: 2.0,
-            y: 3.0,
-            z: 4.0,
-        };
 
         assert_eq!(
-            a * b,
+            a * 2.0,
             Vec3f32 {
                 x: 4.0,
-                y: 9.0,
-                z: 16.0,
+                y: 6.0,
+                z: 8.0,
             }
         );
     }
 
     #[test]
-    fn div_vec() {
+    fn div_scalar() {
         let a = Vec3f32 {
             x: 4.0,
             y: 6.0,
