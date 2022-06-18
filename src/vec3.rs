@@ -166,6 +166,24 @@ impl DivAssign<f32> for Vec3f32 {
     }
 }
 
+mod math {
+    use super::Vec3f32;
+
+    impl Vec3f32 {
+        fn cross(self, rhs: Self) -> Self {
+            Self {
+                x: self.y * rhs.z - self.z * rhs.y,
+                y: self.z * rhs.x - self.x * rhs.z,
+                z: self.x * rhs.y - self.y * rhs.x,
+            }
+        }
+
+        fn dot(self, rhs: Self) -> f32 {
+            self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Vec3f32;
