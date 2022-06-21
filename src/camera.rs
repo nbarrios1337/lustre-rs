@@ -4,14 +4,14 @@ use crate::ray::Ray;
 
 #[derive(Debug)]
 pub struct Camera {
-    origin: Vec3,
-    ll_corner: Vec3,
-    horizontal: Vec3,
-    vertical: Vec3,
+    pub origin: Vec3,
+    pub ll_corner: Vec3,
+    pub horizontal: Vec3,
+    pub vertical: Vec3,
 }
 
 impl Camera {
-    const ASPECT_RATIO: f32 = 16.0 / 9.0;
+    pub const ASPECT_RATIO: f32 = 16.0 / 9.0;
     const VIEWPORT_HEIGHT: f32 = 2.0;
     const VIEWPORT_WIDTH: f32 = Self::ASPECT_RATIO * Self::VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f32 = 1.0;
@@ -30,7 +30,7 @@ impl Camera {
         }
     }
 
-    pub fn get_ray(self, u: f32, v: f32) -> Ray {
+    pub fn get_ray(&self, u: f32, v: f32) -> Ray {
         Ray {
             origin: self.origin,
             direction: self.ll_corner + u * self.horizontal + v * self.vertical - self.origin,
