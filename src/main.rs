@@ -2,6 +2,7 @@ use cli::{Arguments, Parser};
 use glam::Vec3;
 use utils::clamp;
 
+mod camera;
 mod cli;
 mod utils;
 mod ray;
