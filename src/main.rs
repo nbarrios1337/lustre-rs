@@ -4,6 +4,7 @@ use utils::clamp;
 
 mod cli;
 mod utils;
+mod ray;
 
 const IMAGE_W: u32 = 256;
 const IMAGE_H: u32 = 256;
