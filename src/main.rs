@@ -4,7 +4,9 @@ use glam::Vec3;
 
 mod camera;
 mod cli;
+mod color;
 mod ray;
+mod sphere;
 mod utils;
 
 fn main() {

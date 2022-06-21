@@ -1,6 +1,9 @@
-use std::{ops::Mul};
+use std::ops::Mul;
 
 use glam::Vec3;
+
+use crate::color;
+use crate::sphere::Sphere;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Ray {
@@ -23,8 +26,14 @@ impl From<Ray> for image::Rgb<u8> {
         let dir_n = r.direction.normalize_or_zero();
         let t = 0.5 * (dir_n.y + 1.0);
 
-        // linearly interpolate from white to blue-ish
-        let color_vec = Vec3::ONE.lerp(Vec3::new(0.5, 0.7, 1.0), t);
+        let circle: Sphere = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5);
+        let color_vec: Vec3= if circle.hit(&r) {
+            color::RED
+        } else {
+            // linearly interpolate from white to blue-ish
+            Vec3::ONE.lerp(Vec3::new(0.5, 0.7, 1.0), t)
+        };
+
         Self(
             color_vec
                 .clamp(Vec3::ZERO, Vec3::ONE)
