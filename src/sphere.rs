@@ -17,11 +17,11 @@ impl Sphere {
         let oc = r.origin - self.center;
         // dot product of a vector with itself is the length squared
         let a = r.direction.length_squared();
-        let b = 2.0 * oc.dot(r.direction);
+        let half_b = oc.dot(r.direction);
         let c = oc.length_squared() - self.radius * self.radius;
-        let discrim = b * b - 4.0 * a * c;
+        let discrim = half_b * half_b - a * c;
         if discrim > 0.0 {
-            (-b - discrim.sqrt()) / (2.0 * a)
+            (-half_b - discrim.sqrt()) / a
         } else {
             -1.0
         }
