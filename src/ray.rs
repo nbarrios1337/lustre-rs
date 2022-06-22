@@ -1,8 +1,5 @@
-use std::ops::Mul;
-
 use glam::Vec3;
 
-use crate::color;
 use crate::sphere::Sphere;
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -23,8 +20,12 @@ impl Ray {
 
 impl From<Ray> for image::Rgb<u8> {
     fn from(r: Ray) -> Self {
-        let color_vec: Vec3 = if Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5).hit(&r) {
-            color::RED
+        let center = Vec3::new(0.0, 0.0, -1.0);
+        let t = Sphere::new(center, 0.5).hit(&r);
+        let color_vec: Vec3 = if t > 0.0 {
+            // shade with surface normal
+            let normed = (r.at(t) - center).normalize_or_zero();
+            (normed + 1.0) * 0.5
         } else {
             // linearly interpolate from white to blue-ish
             let dir_n = r.direction.normalize_or_zero();
@@ -33,9 +34,7 @@ impl From<Ray> for image::Rgb<u8> {
         };
 
         Self(
-            color_vec
-                .clamp(Vec3::ZERO, Vec3::ONE)
-                .mul(256.0)
+            (color_vec.clamp(Vec3::ZERO, Vec3::ONE) * 256.0)
                 .to_array()
                 .iter()
                 .map(|&x| x as u8)
