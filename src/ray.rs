@@ -23,14 +23,12 @@ impl Ray {
 
 impl From<Ray> for image::Rgb<u8> {
     fn from(r: Ray) -> Self {
-        let dir_n = r.direction.normalize_or_zero();
-        let t = 0.5 * (dir_n.y + 1.0);
-
-        let circle: Sphere = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5);
-        let color_vec: Vec3= if circle.hit(&r) {
+        let color_vec: Vec3 = if Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5).hit(&r) {
             color::RED
         } else {
             // linearly interpolate from white to blue-ish
+            let dir_n = r.direction.normalize_or_zero();
+            let t = 0.5 * (dir_n.y + 1.0);
             Vec3::ONE.lerp(Vec3::new(0.5, 0.7, 1.0), t)
         };
 
@@ -43,7 +41,7 @@ impl From<Ray> for image::Rgb<u8> {
                 .map(|&x| x as u8)
                 .collect::<Vec<u8>>()
                 .try_into()
-                .unwrap(),
+                .unwrap_or([0, 0, 0]),
         )
     }
 }
