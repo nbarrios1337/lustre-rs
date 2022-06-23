@@ -1,7 +1,4 @@
-use std::{
-    ops::{Deref, DerefMut},
-    rc::Rc,
-};
+use std::ops::{Deref, DerefMut};
 
 use glam::Vec3;
 
@@ -31,10 +28,10 @@ pub trait Hittable {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
 
-pub struct HittableList(pub Vec<Rc<dyn Hittable>>);
+pub struct HittableList(pub Vec<Box<dyn Hittable>>);
 
 impl Deref for HittableList {
-    type Target = Vec<Rc<dyn Hittable>>;
+    type Target = Vec<Box<dyn Hittable>>;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -57,7 +54,6 @@ impl Hittable for HittableList {
                 t_closest = t;
             }
         }
-
         rec
     }
 }
