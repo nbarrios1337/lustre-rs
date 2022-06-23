@@ -5,6 +5,12 @@ use glam::Vec3;
 #[derive(Debug)]
 pub struct Color(pub Vec3);
 
+impl From<Vec3> for Color {
+    fn from(v: Vec3) -> Self {
+        Self(v)
+    }
+}
+
 impl Deref for Color {
     type Target = Vec3;
     fn deref(&self) -> &Self::Target {
