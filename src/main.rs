@@ -23,14 +23,6 @@ fn main() {
 
     let world: HittableList = HittableList(vec![
         Box::new(Sphere {
-            center: Vec3::new(0.0, -100.5, -1.0),
-            radius: 100.0,
-        }),
-        Box::new(Sphere {
-            center: Vec3::new(0.0, 0.0, -1.0),
-            radius: 0.5,
-        }),
-        Box::new(Sphere {
             center: Vec3::new(0.0, 0.0, -1.0),
             radius: 0.5,
         }),
