@@ -49,9 +49,10 @@ impl Hittable for HittableList {
         let mut t_closest = t_max;
 
         for hittable in self.iter() {
-            rec = hittable.hit(ray, t_min, t_closest);
-            if let Some(HitRecord { t, .. }) = rec {
+            let hit_result = hittable.hit(ray, t_min, t_closest);
+            if let Some(HitRecord { t, .. }) = hit_result {
                 t_closest = t;
+                rec = hit_result;
             }
         }
         rec
