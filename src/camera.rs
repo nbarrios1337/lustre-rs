@@ -8,6 +8,8 @@ pub struct Camera {
     pub ll_corner: Vec3,
     pub horizontal: Vec3,
     pub vertical: Vec3,
+
+    pub spp: u16,
 }
 
 impl Camera {
@@ -16,7 +18,7 @@ impl Camera {
     const VIEWPORT_WIDTH: f32 = Self::ASPECT_RATIO * Self::VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f32 = 1.0;
 
-    pub fn new() -> Self {
+    pub fn new(spp: u16) -> Self {
         let origin = Vec3::ZERO;
         let horizontal = Vec3::new(Self::VIEWPORT_WIDTH, 0.0, 0.0);
         let vertical = Vec3::new(0.0, Self::VIEWPORT_HEIGHT, 0.0);
@@ -27,6 +29,7 @@ impl Camera {
             ll_corner,
             horizontal,
             vertical,
+            spp,
         }
     }
 
@@ -40,6 +43,6 @@ impl Camera {
 
 impl Default for Camera {
     fn default() -> Self {
-        Self::new()
+        Self::new(1)
     }
 }

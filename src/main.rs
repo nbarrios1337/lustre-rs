@@ -17,7 +17,8 @@ fn main() {
     let output_file = cli_args.output;
 
     // Setup camera properties
-    let cam = Camera::new();
+    let samples_per_pixel = 100;
+    let cam = Camera::new(samples_per_pixel);
     let img_w = 400;
     let img_h = (img_w as f32 / Camera::ASPECT_RATIO) as u32;
 
