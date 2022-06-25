@@ -9,3 +9,4 @@ edition = "2021"
 glam = {version = "0.20.2", features = ["debug-glam-assert"]}
 clap = { version = "3.1.18", features = ["derive"] }
 image = "0.24.1"
+rand = "0.8.5"
