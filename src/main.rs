@@ -1,5 +1,6 @@
 use camera::Camera;
 use cli::{Arguments, Parser};
+use color::Color;
 use glam::Vec3;
 use hittable::HittableList;
 use sphere::Sphere;
@@ -39,8 +40,13 @@ fn main() {
         image::ImageBuffer::from_fn(img_w, img_h, |x: u32, y: u32| -> image::Rgb<u8> {
             let u: f64 = x as f64 / (img_w - 1) as f64;
             let v: f64 = (img_h - y) as f64 / (img_h - 1) as f64;
-
-            cam.get_ray(u as f32, v as f32).shade(&world).into()
+            let mut color_v = Vec3::ZERO;
+            for _ in 0..cam.spp {
+                let contrib = cam.get_ray(u as f32, v as f32).shade(&world);
+                color_v += Vec3::from(contrib);
+            }
+            color_v /= cam.spp as f32;
+            Color(color_v).into()
         });
 
     // write image to file

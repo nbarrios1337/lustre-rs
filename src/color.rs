@@ -11,6 +11,12 @@ impl From<Vec3> for Color {
     }
 }
 
+impl From<Color> for Vec3 {
+    fn from(c: Color) -> Self {
+        Self::new(c.x, c.y, c.z)
+    }
+}
+
 impl Deref for Color {
     type Target = Vec3;
     fn deref(&self) -> &Self::Target {
