@@ -1,4 +1,4 @@
-use std::f32::INFINITY;
+use std::f32::{EPSILON, INFINITY};
 
 use glam::Vec3;
 
@@ -25,7 +25,7 @@ impl Ray {
             return Color::from(Vec3::ZERO);
         }
 
-        let v = match hittable.hit(self, 0.0, INFINITY) {
+        let v = match hittable.hit(self, EPSILON, INFINITY) {
             Some(rec) => {
                 let new_target = rec.point + rec.normal + rand_vec3_in_unit_sphere();
                 let bounce = Ray::new(rec.point, new_target - rec.point);
