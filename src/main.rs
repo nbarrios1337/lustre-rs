@@ -25,6 +25,8 @@ fn main() {
     let img_w = 400;
     let img_h = (img_w as f32 / Camera::ASPECT_RATIO) as u32;
 
+    let depth = 50;
+
     // Generate world objects
     let world: HittableList = HittableList(vec![
         Box::new(Sphere {
@@ -44,7 +46,7 @@ fn main() {
             for _ in 0..cam.spp {
                 let u: f64 = (x as f32 + rand_f32()) as f64 / (img_w - 1) as f64;
                 let v: f64 = ((img_h - y) as f32 + rand_f32()) as f64 / (img_h - 1) as f64;
-                let contrib = cam.get_ray(u as f32, v as f32).shade(&world);
+                let contrib = cam.get_ray(u as f32, v as f32).shade(&world, depth);
                 color_v += Vec3::from(contrib);
             }
             color_v /= cam.spp as f32;

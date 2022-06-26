@@ -2,7 +2,7 @@ use std::f32::INFINITY;
 
 use glam::Vec3;
 
-use crate::{color::Color, hittable::Hittable};
+use crate::{color::Color, hittable::Hittable, rand_util::rand_vec3_in_unit_sphere};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Ray {
@@ -19,11 +19,17 @@ impl Ray {
         self.origin + t * self.direction
     }
 
-    pub fn shade(&self, hittable: &impl Hittable) -> Color {
+    pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16) -> Color {
+        // Limit recursion depth
+        if bounce_depth == 0 {
+            return Color::from(Vec3::ZERO);
+        }
+
         let v = match hittable.hit(self, 0.0, INFINITY) {
             Some(rec) => {
-                // shade with surface normal
-                (rec.normal + 1.0) * 0.5
+                let new_target = rec.point + rec.normal + rand_vec3_in_unit_sphere();
+                let bounce = Ray::new(rec.point, new_target - rec.point);
+                Vec3::from(bounce.shade(hittable, bounce_depth - 1)) * 0.5
             }
             None => {
                 // linearly interpolate from white to blue-ish
@@ -33,6 +39,6 @@ impl Ray {
             }
         };
 
-        v.into()
+        Color::from(v)
     }
 }
