@@ -3,7 +3,7 @@ use cli::{Arguments, Parser};
 use color::Color;
 use glam::Vec3;
 use hittable::HittableList;
-use indicatif::ProgressBar;
+use indicatif::{ProgressBar, ProgressStyle};
 use rand_util::rand_f32;
 use sphere::Sphere;
 
@@ -40,7 +40,12 @@ fn main() {
         }),
     ]);
 
-    let progbar = ProgressBar::new((img_h * img_w) as u64).with_message("Generating pixels");
+    let progbar = ProgressBar::new((img_h * img_w) as u64)
+        .with_style(
+            ProgressStyle::default_bar()
+                .template("[{elapsed_precise}] {prefix} {wide_bar} {pos:>7}/{len:7} ({percent}%)"),
+        )
+        .with_prefix("Generating pixels");
 
     // Generate image
     let img_buf: image::RgbImage =
