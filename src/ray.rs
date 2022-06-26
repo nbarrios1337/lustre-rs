@@ -2,7 +2,7 @@ use std::f32::{EPSILON, INFINITY};
 
 use glam::Vec3;
 
-use crate::{color::Color, hittable::Hittable, rand_util::rand_vec3_in_unit_sphere};
+use crate::{color::Color, hittable::Hittable, rand_util::rand_unit_vec3};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Ray {
@@ -27,7 +27,7 @@ impl Ray {
 
         let v = match hittable.hit(self, EPSILON, INFINITY) {
             Some(rec) => {
-                let new_target = rec.point + rec.normal + rand_vec3_in_unit_sphere();
+                let new_target = rec.point + rec.normal + rand_unit_vec3();
                 let bounce = Ray::new(rec.point, new_target - rec.point);
                 Vec3::from(bounce.shade(hittable, bounce_depth - 1)) * 0.5
             }
