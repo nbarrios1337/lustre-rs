@@ -3,12 +3,14 @@ use cli::{Arguments, Parser};
 use color::Color;
 use glam::Vec3;
 use hittable::HittableList;
+use rand_util::rand_f32;
 use sphere::Sphere;
 
 mod camera;
 mod cli;
 mod color;
 mod hittable;
+mod rand_util;
 mod ray;
 mod sphere;
 
@@ -38,10 +40,10 @@ fn main() {
     // Generate image
     let img_buf: image::RgbImage =
         image::ImageBuffer::from_fn(img_w, img_h, |x: u32, y: u32| -> image::Rgb<u8> {
-            let u: f64 = x as f64 / (img_w - 1) as f64;
-            let v: f64 = (img_h - y) as f64 / (img_h - 1) as f64;
             let mut color_v = Vec3::ZERO;
             for _ in 0..cam.spp {
+                let u: f64 = (x as f32 + rand_f32()) as f64 / (img_w - 1) as f64;
+                let v: f64 = ((img_h - y) as f32 + rand_f32()) as f64 / (img_h - 1) as f64;
                 let contrib = cam.get_ray(u as f32, v as f32).shade(&world);
                 color_v += Vec3::from(contrib);
             }
