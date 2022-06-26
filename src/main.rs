@@ -3,6 +3,7 @@ use cli::{Arguments, Parser};
 use color::Color;
 use glam::Vec3;
 use hittable::HittableList;
+use indicatif::ProgressBar;
 use rand_util::rand_f32;
 use sphere::Sphere;
 
@@ -39,6 +40,8 @@ fn main() {
         }),
     ]);
 
+    let progbar = ProgressBar::new((img_h * img_w) as u64).with_message("Generating pixels");
+
     // Generate image
     let img_buf: image::RgbImage =
         image::ImageBuffer::from_fn(img_w, img_h, |x: u32, y: u32| -> image::Rgb<u8> {
@@ -50,8 +53,11 @@ fn main() {
                 color_v += Vec3::from(contrib);
             }
             color_v /= cam.spp as f32;
+            progbar.inc(1);
             Color(color_v).into()
         });
+
+    progbar.finish_with_message("Done generating pixels");
 
     // write image to file
     match img_buf.save(output_file.clone()) {
