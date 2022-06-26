@@ -27,9 +27,12 @@ impl Ray {
 
         let v = match hittable.hit(self, 0.0001, INFINITY) {
             Some(rec) => {
-                let new_target = rec.point + rec.normal + rand_unit_vec3();
-                let bounce = Ray::new(rec.point, new_target - rec.point);
-                Vec3::from(bounce.shade(hittable, bounce_depth - 1)) * 0.5
+                match rec.material.scatter(self, &rec) {
+                    Some((scattered, attenuation)) => {
+                        attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
+                    }
+                    None => Vec3::ZERO,
+                }
             }
             None => {
                 // linearly interpolate from white to blue-ish

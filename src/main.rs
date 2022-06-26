@@ -11,6 +11,7 @@ mod camera;
 mod cli;
 mod color;
 mod hittable;
+mod linalg;
 mod material;
 mod rand_util;
 mod ray;
@@ -29,15 +30,24 @@ fn main() {
 
     let depth = 50;
 
+    // set up materials
+    let material_ground = material::Material::Lambertian {
+        albedo: Vec3::new(0.7, 0.3, 0.3),
+    };
+    let material_center = material::Material::Lambertian {
+        albedo: Vec3::new(0.8, 0.8, 0.0),
+    };
     // Generate world objects
     let world: HittableList = HittableList(vec![
         Box::new(Sphere {
             center: Vec3::new(0.0, 0.0, -1.0),
             radius: 0.5,
+            material: &material_ground,
         }),
         Box::new(Sphere {
             center: Vec3::new(0.0, -100.5, -1.0),
             radius: 100.0,
+            material: &material_center,
         }),
     ]);
 

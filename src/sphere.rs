@@ -2,22 +2,28 @@ use glam::Vec3;
 
 use crate::{
     hittable::{HitRecord, Hittable},
+    material::Material,
     ray::Ray,
 };
 
 #[derive(Debug)]
-pub struct Sphere {
+pub struct Sphere<'a> {
     pub center: Vec3,
     pub radius: f32,
+    pub material: &'a Material,
 }
 
-impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Self {
-        Self { center, radius }
+impl<'a> Sphere<'a> {
+    pub fn new(center: Vec3, radius: f32, material: &'a Material) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
-impl Hittable for Sphere {
+impl Hittable for Sphere<'_> {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         // dot product of a vector with itself is the length squared
@@ -49,11 +55,14 @@ impl Hittable for Sphere {
             (false, -outward_n)
         };
 
+        let material = self.material;
+
         Some(HitRecord {
             t,
             point,
             normal,
             front_face,
+            material,
         })
     }
 }
