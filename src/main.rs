@@ -58,6 +58,7 @@ fn main() {
                 color_v += Vec3::from(contrib);
             }
             color_v /= cam.spp as f32;
+            color_v = color_v.powf(0.5); // sqrt
             progbar.inc(1);
             Color(color_v).into()
         });
