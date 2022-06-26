@@ -2,17 +2,18 @@ use std::ops::{Deref, DerefMut};
 
 use glam::Vec3;
 
-use crate::ray::Ray;
+use crate::{ray::Ray, material::Material};
 
 #[derive(Debug)]
-pub struct HitRecord {
+pub struct HitRecord<'a> {
     pub point: Vec3,
     pub normal: Vec3,
+    pub material: &'a Material,
     pub t: f32,
     pub front_face: bool,
 }
 
-impl HitRecord {
+impl HitRecord<'_> {
     pub fn set_face_normal(&mut self, ray: &Ray, outward_n: Vec3) {
         if ray.direction.dot(outward_n) < 0.0 {
             self.front_face = true;

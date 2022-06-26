@@ -11,6 +11,7 @@ mod camera;
 mod cli;
 mod color;
 mod hittable;
+mod material;
 mod rand_util;
 mod ray;
 mod sphere;
