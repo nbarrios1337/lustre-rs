@@ -39,13 +39,10 @@ fn main() {
     let material_center = Rc::new(material::Material::Lambertian {
         albedo: Vec3::new(0.7, 0.3, 0.3),
     });
-    let material_left = Rc::new(material::Material::Metal {
-        albedo: Vec3::new(0.8, 0.8, 0.8),
-        fuzz: 0.3,
-    });
+    let material_left = Rc::new(material::Material::Dielectric { refract_index: 1.5 });
     let material_right = Rc::new(material::Material::Metal {
         albedo: Vec3::new(0.8, 0.6, 0.2),
-        fuzz: 1.0,
+        fuzz: 0.0,
     });
 
     // Generate world objects
