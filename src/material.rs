@@ -8,7 +8,7 @@ use crate::{hittable::HitRecord, linalg::reflect, rand_util::rand_unit_vec3, ray
 #[derive(Debug)]
 pub enum Material {
     Lambertian { albedo: Vec3 },
-    Metal { albedo: Vec3 },
+    Metal { albedo: Vec3, fuzz: f32 },
     Dielectric { refract_index: f32 },
 }
 
@@ -28,9 +28,14 @@ impl Material {
 
                 Some((Ray::new(rec.point, scatter_dir), *albedo))
             }
-            Material::Metal { albedo } => {
+            Material::Metal { albedo, fuzz } => {
                 let reflected = reflect(&ray.direction.normalize(), &rec.normal);
-                let scattered = Ray::new(rec.point, reflected);
+
+                let scattered = Ray::new(
+                    rec.point,
+                    reflected + fuzz.clamp(0.0, 1.0) * rand_unit_vec3(),
+                );
+
                 if scattered.direction.dot(rec.normal) > 0.0 {
                     Some((scattered, *albedo))
                 } else {
