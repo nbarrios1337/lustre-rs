@@ -2,7 +2,12 @@ use std::f32::EPSILON;
 
 use glam::Vec3;
 
-use crate::{hittable::HitRecord, linalg::reflect, rand_util::rand_unit_vec3, ray::Ray};
+use crate::{
+    hittable::HitRecord,
+    linalg::{reflect, refract},
+    rand_util::rand_unit_vec3,
+    ray::Ray,
+};
 
 /// Enumeration of material types
 #[derive(Debug)]
@@ -42,7 +47,26 @@ impl Material {
                     None
                 }
             }
-            Material::Dielectric { refract_index } => todo!(),
+            Material::Dielectric { refract_index } => {
+                let attenuation = Vec3::ONE;
+                let refract_ratio = if rec.front_face {
+                    1.0 / refract_index
+                } else {
+                    *refract_index
+                };
+
+                let unit_dir = ray.direction.normalize();
+                let cos_theta = (-unit_dir).dot(rec.normal).min(1.0);
+                let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+                let direction = if refract_ratio * sin_theta > 1.0 {
+                    reflect(&unit_dir, &rec.normal)
+                } else {
+                    refract(&unit_dir, &rec.normal, refract_ratio)
+                };
+
+                Some((Ray::new(rec.point, direction), attenuation))
+            }
         }
     }
 }
