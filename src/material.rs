@@ -20,14 +20,13 @@ impl Material {
         match self {
             Material::Lambertian { albedo } => {
                 let mut scatter_dir = rec.normal + rand_unit_vec3();
-                let scattered = Ray::new(rec.point, scatter_dir);
 
                 // If the scatter direction is close to zero in all dimensions
                 if scatter_dir.cmplt(Vec3::splat(EPSILON)).all() {
                     scatter_dir = rec.normal;
                 }
 
-                Some((scattered, *albedo))
+                Some((Ray::new(rec.point, scatter_dir), *albedo))
             }
             Material::Metal { albedo } => {
                 let reflected = reflect(&ray.direction.normalize(), &rec.normal);
