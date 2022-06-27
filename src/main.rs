@@ -34,22 +34,39 @@ fn main() {
 
     // set up materials
     let material_ground = Rc::new(material::Material::Lambertian {
-        albedo: Vec3::new(0.7, 0.3, 0.3),
-    });
-    let material_center = Rc::new(material::Material::Lambertian {
         albedo: Vec3::new(0.8, 0.8, 0.0),
     });
+    let material_center = Rc::new(material::Material::Lambertian {
+        albedo: Vec3::new(0.7, 0.3, 0.3),
+    });
+    let material_left = Rc::new(material::Material::Metal {
+        albedo: Vec3::new(0.8, 0.8, 0.8),
+    });
+    let material_right = Rc::new(material::Material::Metal {
+        albedo: Vec3::new(0.8, 0.6, 0.2),
+    });
+
     // Generate world objects
     let world: HittableList = HittableList(vec![
         Box::new(Sphere {
-            center: Vec3::new(0.0, 0.0, -1.0),
-            radius: 0.5,
+            center: Vec3::new(0.0, -100.5, -1.0),
+            radius: 100.0,
             material: material_ground,
         }),
         Box::new(Sphere {
-            center: Vec3::new(0.0, -100.5, -1.0),
-            radius: 100.0,
+            center: Vec3::new(0.0, 0.0, -1.0),
+            radius: 0.5,
             material: material_center,
+        }),
+        Box::new(Sphere {
+            center: Vec3::new(-1.0, 0.0, -1.0),
+            radius: 0.5,
+            material: material_left,
+        }),
+        Box::new(Sphere {
+            center: Vec3::new(1.0, 0.0, -1.0),
+            radius: 0.5,
+            material: material_right,
         }),
     ]);
 
