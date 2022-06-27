@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use glam::Vec3;
 
 use crate::{
@@ -7,14 +9,14 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct Sphere<'a> {
+pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
-    pub material: &'a Material,
+    pub material: Rc<Material>,
 }
 
-impl<'a> Sphere<'a> {
-    pub fn new(center: Vec3, radius: f32, material: &'a Material) -> Self {
+impl Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Rc<Material>) -> Self {
         Self {
             center,
             radius,
@@ -23,7 +25,7 @@ impl<'a> Sphere<'a> {
     }
 }
 
-impl Hittable for Sphere<'_> {
+impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         // dot product of a vector with itself is the length squared
@@ -55,7 +57,7 @@ impl Hittable for Sphere<'_> {
             (false, -outward_n)
         };
 
-        let material = self.material;
+        let material = self.material.clone();
 
         Some(HitRecord {
             t,
