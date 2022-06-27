@@ -2,7 +2,7 @@ use std::f32::INFINITY;
 
 use glam::Vec3;
 
-use crate::{color::Color, hittable::Hittable, rand_util::rand_unit_vec3};
+use crate::{color::Color, hittable::Hittable};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Ray {
@@ -26,14 +26,12 @@ impl Ray {
         }
 
         let v = match hittable.hit(self, 0.0001, INFINITY) {
-            Some(rec) => {
-                match rec.material.scatter(self, &rec) {
-                    Some((scattered, attenuation)) => {
-                        attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
-                    }
-                    None => Vec3::ZERO,
+            Some(rec) => match rec.material.scatter(self, &rec) {
+                Some((scattered, attenuation)) => {
+                    attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
                 }
-            }
+                None => Vec3::ZERO,
+            },
             None => {
                 // linearly interpolate from white to blue-ish
                 let dir_n = self.direction.normalize_or_zero();
