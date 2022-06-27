@@ -1,8 +1,11 @@
-use std::{ops::{Deref, DerefMut}, rc::Rc};
+use std::{
+    ops::{Deref, DerefMut},
+    rc::Rc,
+};
 
 use glam::Vec3;
 
-use crate::{ray::Ray, material::Material};
+use crate::{material::Material, ray::Ray};
 
 #[derive(Debug)]
 pub struct HitRecord {
