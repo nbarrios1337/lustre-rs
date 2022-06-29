@@ -16,11 +16,11 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32, material: Rc<Material>) -> Self {
+    pub fn new(c: Vec3, r: f32, m: &Rc<Material>) -> Self {
         Self {
-            center,
-            radius,
-            material,
+            center: c,
+            radius: r,
+            material: Rc::clone(m),
         }
     }
 }

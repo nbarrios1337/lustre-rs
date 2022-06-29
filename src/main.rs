@@ -47,26 +47,18 @@ fn main() {
 
     // Generate world objects
     let world: HittableList = HittableList(vec![
-        Box::new(Sphere {
-            center: Vec3::new(0.0, -100.5, -1.0),
-            radius: 100.0,
-            material: material_ground,
-        }),
-        Box::new(Sphere {
-            center: Vec3::new(0.0, 0.0, -1.0),
-            radius: 0.5,
-            material: material_center,
-        }),
-        Box::new(Sphere {
-            center: Vec3::new(-1.0, 0.0, -1.0),
-            radius: 0.5,
-            material: material_left,
-        }),
-        Box::new(Sphere {
-            center: Vec3::new(1.0, 0.0, -1.0),
-            radius: 0.5,
-            material: material_right,
-        }),
+        Box::new(Sphere::new(
+            Vec3::new(0.0, -100.5, -1.0),
+            100.0,
+            &material_ground,
+        )),
+        Box::new(Sphere::new(
+            Vec3::new(0.0, 0.0, -1.0),
+            0.5,
+            &material_center,
+        )),
+        Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &material_left)),
+        Box::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &material_right)),
     ]);
 
     let progbar = ProgressBar::new((img_h * img_w) as u64)
