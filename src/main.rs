@@ -90,7 +90,7 @@ fn main() {
     // Set up image properties
     let samples_per_pixel = 100;
     let aspect_ratio = 3.0 / 2.0;
-    let img_w = 400;
+    let img_w = 1200;
     let img_h = (img_w as f32 / aspect_ratio) as u32;
 
     // Setup camera properties
