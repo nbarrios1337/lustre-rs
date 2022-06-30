@@ -26,7 +26,7 @@ fn main() {
 
     // Setup camera properties
     let samples_per_pixel = 100;
-    let cam = Camera::new(samples_per_pixel);
+    let cam = Camera::new(90.0, Camera::ASPECT_RATIO, samples_per_pixel);
     let img_w = 400;
     let img_h = (img_w as f32 / Camera::ASPECT_RATIO) as u32;
 
