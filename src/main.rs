@@ -79,13 +79,13 @@ fn main() {
     let img_buf: image::RgbImage =
         image::ImageBuffer::from_fn(img_w, img_h, |x: u32, y: u32| -> image::Rgb<u8> {
             let mut color_v = Vec3::ZERO;
-            for _ in 0..cam.spp {
+            for _ in 0..samples_per_pixel {
                 let u: f64 = (x as f32 + rand_f32()) as f64 / (img_w - 1) as f64;
                 let v: f64 = ((img_h - y) as f32 + rand_f32()) as f64 / (img_h - 1) as f64;
                 let contrib = cam.get_ray(u as f32, v as f32).shade(&world, depth);
                 color_v += Vec3::from(contrib);
             }
-            color_v /= cam.spp as f32;
+            color_v /= samples_per_pixel as f32;
             color_v = color_v.powf(0.5); // sqrt
             progbar.inc(1);
             Color(color_v).into()

@@ -12,7 +12,6 @@ pub struct Camera {
     pub v: Vec3,
     pub w: Vec3,
     pub lens_radius: f32,
-    pub spp: u16,
 }
 
 impl Camera {
@@ -26,7 +25,6 @@ impl Camera {
         aspect_ratio: f32,
         apeture: f32,
         focus_dist: f32,
-        spp: u16,
     ) -> Self {
         // Set up viewport
         let theta = vert_fov.to_radians();
@@ -53,7 +51,6 @@ impl Camera {
             v,
             w,
             lens_radius,
-            spp,
         }
     }
 
@@ -79,7 +76,6 @@ impl Default for Camera {
             16.0 / 9.0,
             0.1,
             10.0,
-            16,
         )
     }
 }
