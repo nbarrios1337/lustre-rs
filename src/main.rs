@@ -3,10 +3,11 @@ use std::rc::Rc;
 use camera::Camera;
 use cli::{Arguments, Parser};
 use color::Color;
-use glam::Vec3;
+use glam::{const_vec3, Vec3};
 use hittable::HittableList;
 use indicatif::{ProgressBar, ProgressStyle};
-use rand_util::rand_f32;
+use material::Material;
+use rand_util::{rand_f32, rand_vec3};
 use sphere::Sphere;
 
 mod camera;
@@ -19,54 +20,97 @@ mod rand_util;
 mod ray;
 mod sphere;
 
+fn gen_random_scene() -> HittableList {
+    let ground_material = Rc::new(Material::Lambertian {
+        albedo: Vec3::ONE / 2.0,
+    });
+    let mut world = HittableList(vec![Box::new(Sphere::new(
+        Vec3::new(0.0, -1000.0, 0.0),
+        1000.0,
+        &ground_material,
+    ))]);
+
+    const DELIMITER: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
+    for a in -11..11 {
+        for b in -11..11 {
+            let center = Vec3::new(
+                a as f32 + 0.9 * rand_f32(),
+                0.2,
+                b as f32 + 0.9 * rand_f32(),
+            );
+
+            if (center - DELIMITER).length() > 0.9 {
+                let decide_mat = rand_f32();
+                let mat = if (0.0..0.8).contains(&decide_mat) {
+                    // diffuse
+                    let albedo = rand_vec3() * rand_vec3();
+                    Rc::new(Material::Lambertian { albedo })
+                } else if (0.0..0.95).contains(&decide_mat) {
+                    // metal
+                    let albedo = rand_vec3();
+                    let fuzz = rand_f32();
+                    Rc::new(Material::Metal { albedo, fuzz })
+                } else {
+                    // glass
+                    Rc::new(Material::Dielectric { refract_index: 1.5 })
+                };
+
+                let sph = Sphere::new(center, 0.2, &mat);
+                world.push(Box::new(sph));
+            }
+        }
+    }
+
+    let mat_1 = Material::Dielectric { refract_index: 1.5 };
+    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
+
+    let mat_2 = Material::Lambertian {
+        albedo: Vec3::new(0.4, 0.2, 0.1),
+    };
+    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
+
+    let mat_3 = Material::Metal {
+        albedo: Vec3::new(0.7, 0.6, 0.5),
+        fuzz: 0.0,
+    };
+    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
+
+    world.push(Box::new(sphere_1));
+    world.push(Box::new(sphere_2));
+    world.push(Box::new(sphere_3));
+
+    world
+}
+
 fn main() {
     // Parsing cli args
     let cli_args = Arguments::parse();
     let output_file = cli_args.output;
 
-    // Setup camera properties
+    // Set up image properties
     let samples_per_pixel = 100;
-    let cam = Camera::new(
-        Vec3::new(0.0, 0.0, 0.0),
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
-        90.0,
-        Camera::ASPECT_RATIO,
-        samples_per_pixel,
-    );
+    let aspect_ratio = 3.0 / 2.0;
     let img_w = 400;
-    let img_h = (img_w as f32 / Camera::ASPECT_RATIO) as u32;
+    let img_h = (img_w as f32 / aspect_ratio) as u32;
 
-    let depth = 50;
+    // Setup camera properties
+    let look_form = Vec3::new(13.0, 2.0, 3.0);
+    let look_at = Vec3::ZERO;
+    let view_up = Vec3::Y;
+    let dist_to_focus = 10.0;
+    let apeture = 0.1;
 
-    // set up materials
-    let material_ground = Rc::new(material::Material::Lambertian {
-        albedo: Vec3::new(0.8, 0.8, 0.0),
-    });
-    let material_center = Rc::new(material::Material::Lambertian {
-        albedo: Vec3::new(0.7, 0.3, 0.3),
-    });
-    let material_left = Rc::new(material::Material::Dielectric { refract_index: 1.5 });
-    let material_right = Rc::new(material::Material::Metal {
-        albedo: Vec3::new(0.8, 0.6, 0.2),
-        fuzz: 0.0,
-    });
+    let cam = Camera::new(
+        look_form,
+        look_at,
+        view_up,
+        20.0,
+        aspect_ratio,
+        apeture,
+        dist_to_focus,
+    );
 
-    // Generate world objects
-    let world: HittableList = HittableList(vec![
-        Box::new(Sphere::new(
-            Vec3::new(0.0, -100.5, -1.0),
-            100.0,
-            &material_ground,
-        )),
-        Box::new(Sphere::new(
-            Vec3::new(0.0, 0.0, -1.0),
-            0.5,
-            &material_center,
-        )),
-        Box::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &material_left)),
-        Box::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &material_right)),
-    ]);
+    let world = gen_random_scene();
 
     let progbar = ProgressBar::new((img_h * img_w) as u64)
         .with_style(
@@ -76,6 +120,7 @@ fn main() {
         .with_prefix("Generating pixels");
 
     // Generate image
+    let depth = 50;
     let img_buf: image::RgbImage =
         image::ImageBuffer::from_fn(img_w, img_h, |x: u32, y: u32| -> image::Rgb<u8> {
             let mut color_v = Vec3::ZERO;
