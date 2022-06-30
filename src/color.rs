@@ -43,7 +43,3 @@ impl From<Color> for image::Rgb<u8> {
         )
     }
 }
-
-pub const RED: Color = Color(glam::const_vec3!([1.0, 0.0, 0.0]));
-pub const GREEN: Color = Color(glam::const_vec3!([0.0, 1.0, 0.0]));
-pub const BLUE: Color = Color(glam::const_vec3!([0.0, 0.0, 1.0]));
