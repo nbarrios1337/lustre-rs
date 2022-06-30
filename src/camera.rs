@@ -4,19 +4,17 @@ use crate::{rand_util::rand_vec3_in_unit_disk, ray::Ray};
 
 #[derive(Debug)]
 pub struct Camera {
-    pub origin: Vec3,
-    pub ll_corner: Vec3,
-    pub horizontal: Vec3,
-    pub vertical: Vec3,
-    pub u: Vec3,
-    pub v: Vec3,
-    pub w: Vec3,
-    pub lens_radius: f32,
+    origin: Vec3,
+    ll_corner: Vec3,
+    horizontal: Vec3,
+    vertical: Vec3,
+    u: Vec3,
+    v: Vec3,
+    w: Vec3,
+    lens_radius: f32,
 }
 
 impl Camera {
-    pub const ASPECT_RATIO: f32 = 16.0 / 9.0;
-
     pub fn new(
         look_from: Vec3,
         look_at: Vec3,
