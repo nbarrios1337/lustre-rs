@@ -30,6 +30,15 @@ pub fn rand_vec3_in_unit_sphere() -> Vec3 {
     }
 }
 
+pub fn rand_vec3_in_unit_disk() -> Vec3 {
+    loop {
+        let v = Vec3::new(rand_range_f32(-1.0, 1.0), rand_range_f32(-1.0, 1.0), 0.0);
+        if v.length_squared() < 1.0 {
+            return v;
+        }
+    }
+}
+
 pub fn rand_unit_vec3() -> Vec3 {
     rand_vec3_in_unit_sphere().normalize()
 }

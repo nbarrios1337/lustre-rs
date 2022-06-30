@@ -1,6 +1,6 @@
 use glam::Vec3;
 
-use crate::ray::Ray;
+use crate::{rand_util::rand_vec3_in_unit_disk, ray::Ray};
 
 #[derive(Debug)]
 pub struct Camera {
@@ -8,7 +8,10 @@ pub struct Camera {
     pub ll_corner: Vec3,
     pub horizontal: Vec3,
     pub vertical: Vec3,
-
+    pub u: Vec3,
+    pub v: Vec3,
+    pub w: Vec3,
+    pub lens_radius: f32,
     pub spp: u16,
 }
 
@@ -21,6 +24,8 @@ impl Camera {
         view_up: Vec3,
         vert_fov: f32,
         aspect_ratio: f32,
+        apeture: f32,
+        focus_dist: f32,
         spp: u16,
     ) -> Self {
         // Set up viewport
@@ -34,22 +39,32 @@ impl Camera {
         let v = w.cross(u);
 
         let origin = look_from;
-        let horizontal = viewport_w * u;
-        let vertical = viewport_h * v;
-        let ll_corner = origin - horizontal / 2.0 - vertical / 2.0 - w;
+        let horizontal = viewport_w * focus_dist * u;
+        let vertical = viewport_h * focus_dist * v;
+        let ll_corner = origin - horizontal / 2.0 - vertical / 2.0 - focus_dist * w;
+
+        let lens_radius = apeture / 2.0;
         Self {
             origin,
             ll_corner,
             horizontal,
             vertical,
+            u,
+            v,
+            w,
+            lens_radius,
             spp,
         }
     }
 
     pub fn get_ray(&self, u: f32, v: f32) -> Ray {
+        let rd = self.lens_radius * rand_vec3_in_unit_disk();
+        let offest = self.u * rd.x + self.v * rd.y;
         Ray {
-            origin: self.origin,
-            direction: self.ll_corner + u * self.horizontal + v * self.vertical - self.origin,
+            origin: self.origin + offest,
+            direction: self.ll_corner + u * self.horizontal + v * self.vertical
+                - self.origin
+                - offest,
         }
     }
 }
@@ -62,6 +77,8 @@ impl Default for Camera {
             Vec3::new(0.0, 1.0, 0.0),
             90.0,
             16.0 / 9.0,
+            0.1,
+            10.0,
             16,
         )
     }
