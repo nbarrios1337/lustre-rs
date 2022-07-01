@@ -6,20 +6,20 @@ use glam::Vec3;
 
 use crate::{
     hittable::HitRecord,
-    scatter::{reflect, refract},
     rand_util::{rand_f32, rand_unit_vec3},
     ray::Ray,
+    scatter::{reflect, refract},
 };
 
 /// Enumeration of possible material types.
 #[derive(Debug)]
 pub enum Material {
     /// An approximation of a diffuse, or matte, material.
-    /// 
+    ///
     /// See the [Wikipedia page on Lambertian reflectance](https://en.wikipedia.org/wiki/Lambertian_reflectance) for more information.
     Lambertian { albedo: Vec3 },
     /// A metallic material that reflects rays based on the given roughness.
-    Metal { albedo: Vec3, fuzz: f32 },
+    Metal { albedo: Vec3, roughness: f32 },
     /// A glass material that scatters rays based on the given refractive index.
     Dielectric { refract_index: f32 },
 }
@@ -47,12 +47,12 @@ impl Material {
 
                 Some((Ray::new(rec.point, scatter_dir), *albedo))
             }
-            Material::Metal { albedo, fuzz } => {
+            Material::Metal { albedo, roughness } => {
                 let reflected = reflect(&ray.direction.normalize(), &rec.normal);
 
                 let scattered = Ray::new(
                     rec.point,
-                    reflected + fuzz.clamp(0.0, 1.0) * rand_unit_vec3(),
+                    reflected + roughness.clamp(0.0, 1.0) * rand_unit_vec3(),
                 );
 
                 if scattered.direction.dot(rec.normal) > 0.0 {

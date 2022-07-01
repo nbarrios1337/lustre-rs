@@ -14,10 +14,10 @@ mod camera;
 mod cli;
 mod color;
 mod hittable;
-mod scatter;
 mod material;
 mod rand_util;
 mod ray;
+mod scatter;
 mod sphere;
 
 fn gen_random_scene() -> HittableList {
@@ -48,8 +48,8 @@ fn gen_random_scene() -> HittableList {
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
                     let albedo = rand_vec3();
-                    let fuzz = rand_f32();
-                    Rc::new(Material::Metal { albedo, fuzz })
+                    let roughness = rand_f32();
+                    Rc::new(Material::Metal { albedo, roughness })
                 } else {
                     // glass
                     Rc::new(Material::Dielectric { refract_index: 1.5 })
@@ -71,7 +71,7 @@ fn gen_random_scene() -> HittableList {
 
     let mat_3 = Material::Metal {
         albedo: Vec3::new(0.7, 0.6, 0.5),
-        fuzz: 0.0,
+        roughness: 0.0,
     };
     let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
 
