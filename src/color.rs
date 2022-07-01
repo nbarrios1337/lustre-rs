@@ -1,7 +1,12 @@
+//! Convenience newtype for color pixel output
+
 use std::ops::{Deref, DerefMut};
 
 use glam::Vec3;
 
+/// Wrapper around [Vec3] to enable [Vec3] -> [image::Rgb] conversion
+/// 
+/// See "[The Newtype Pattern In Rust](https://www.worthe-it.co.za/blog/2020-10-31-newtype-pattern-in-rust.html)" article for more info
 #[derive(Debug)]
 pub struct Color(pub Vec3);
 
@@ -30,6 +35,7 @@ impl DerefMut for Color {
     }
 }
 
+// The important stuff
 impl From<Color> for image::Rgb<u8> {
     fn from(color: Color) -> Self {
         Self(
