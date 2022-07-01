@@ -1,5 +1,9 @@
+//! Definition of command line arguments
+
+// pub is neeeded for the program to called Arguments::parse()
 pub use clap::Parser;
 
+/// Ray Tracer for Experimentation and Edification
 #[derive(Parser)]
 pub struct Arguments {
     /// The path to the file to write an image into
