@@ -3,7 +3,7 @@
 //! # Features
 //! * positionable and orientable - Using the `look_from`, `look_at`, and `view_up` triplet of vectors
 //! * resizable film - Using `aspect_ratio`
-//! * depth of field (aka defocus blur) - Using the `apeture` and `focus_dist` data
+//! * depth of field (aka defocus blur) - Using the `aperture` and `focus_dist` data
 
 use glam::Vec3;
 
@@ -39,7 +39,7 @@ impl Camera {
     /// * view_up - A [Vec3] holding the "up" direction of the camera
     /// * vert_fov - The vertical field of view
     /// * aspect_ratio - The aspect ratio of the viewport
-    /// * apeture - How "big" the approximated lens is 
+    /// * aperture - How "big" the approximated lens is 
     /// * focus_dist - The distance to the plane in space where objects are "in focus"
     pub fn new(
         look_from: Vec3,
@@ -47,7 +47,7 @@ impl Camera {
         view_up: Vec3,
         vert_fov: f32,
         aspect_ratio: f32,
-        apeture: f32,
+        aperture: f32,
         focus_dist: f32,
     ) -> Self {
         // Set up viewport
@@ -65,7 +65,7 @@ impl Camera {
         let vertical = viewport_h * focus_dist * v;
         let ll_corner = origin - horizontal / 2.0 - vertical / 2.0 - focus_dist * w;
 
-        let lens_radius = apeture / 2.0;
+        let lens_radius = aperture / 2.0;
         Self {
             origin,
             ll_corner,

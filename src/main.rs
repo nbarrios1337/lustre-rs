@@ -98,7 +98,7 @@ fn main() {
     let look_at = Vec3::ZERO;
     let view_up = Vec3::Y;
     let dist_to_focus = 10.0;
-    let apeture = 0.1;
+    let aperture = 0.1;
 
     let cam = Camera::new(
         look_form,
@@ -106,7 +106,7 @@ fn main() {
         view_up,
         20.0,
         aspect_ratio,
-        apeture,
+        aperture,
         dist_to_focus,
     );
 
