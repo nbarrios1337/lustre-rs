@@ -1,5 +1,5 @@
 //! Implementation of a camera
-//! 
+//!
 //! # Features
 //! * positionable and orientable - Using the `look_from`, `look_at`, and `view_up` triplet of vectors
 //! * resizable film - Using `aspect_ratio`
@@ -12,17 +12,35 @@ use crate::{rand_util::rand_vec3_in_unit_disk, ray::Ray};
 /// A Camera that generates rays
 #[derive(Debug)]
 pub struct Camera {
+    /// Camera position in space
     origin: Vec3,
+    /// Position of the viewport's lower left corner
     ll_corner: Vec3,
+    /// Horizontal 'size' of the viewport
     horizontal: Vec3,
+    /// Vertical 'size' of the viewport
     vertical: Vec3,
+    /// Orthonormal base 1
     u: Vec3,
+    /// Orthonormal base 2
     v: Vec3,
+    /// Orthonormal base 3, works like focal length
     w: Vec3,
+    /// Radius of the approximated camera lens
     lens_radius: f32,
 }
 
 impl Camera {
+    /// Creates a new Camera
+    ///
+    /// # Arguments
+    /// * look_from - A [Vec3] holding the position of the camera
+    /// * look_at - A [Vec3] holding the eye direction of the camera
+    /// * view_up - A [Vec3] holding the "up" direction of the camera
+    /// * vert_fov - The vertical field of view
+    /// * aspect_ratio - The aspect ratio of the viewport
+    /// * apeture - How "big" the approximated lens is 
+    /// * focus_dist - The distance to the plane in space where objects are "in focus"
     pub fn new(
         look_from: Vec3,
         look_at: Vec3,
@@ -60,6 +78,7 @@ impl Camera {
         }
     }
 
+    /// Returns a ray from the camera for the normalized pixel (u,v)
     pub fn get_ray(&self, u: f32, v: f32) -> Ray {
         let rd = self.lens_radius * rand_vec3_in_unit_disk();
         let offest = self.u * rd.x + self.v * rd.y;
