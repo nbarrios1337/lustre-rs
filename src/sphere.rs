@@ -5,7 +5,7 @@ use std::rc::Rc;
 use glam::Vec3;
 
 use crate::{
-    hittable::{HitRecord, Hittable},
+    hittable::{HitRecord, Hittable, Intersection},
     material::Material,
     ray::Ray,
 };
@@ -30,7 +30,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
         let oc = ray.origin - self.center;
         // dot product of a vector with itself is the length squared
         let a = ray.direction.length_squared();
@@ -39,14 +39,14 @@ impl Hittable for Sphere {
 
         let discrim = half_b * half_b - a * c;
         if discrim < 0.0 {
-            return None;
+            return Intersection::Miss;
         }
 
         let mut root = (-half_b - discrim.sqrt()) / a;
         if t_min > root || root > t_max {
             root = (-half_b + discrim.sqrt()) / a;
             if t_min > root || root > t_max {
-                return None;
+                return Intersection::Miss;
             }
         }
 
@@ -63,7 +63,7 @@ impl Hittable for Sphere {
 
         let material = self.material.clone();
 
-        Some(HitRecord {
+        Intersection::Hit(HitRecord {
             t,
             point,
             normal,

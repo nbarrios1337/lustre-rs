@@ -37,12 +37,21 @@ impl HitRecord {
     }
 }
 
+/// Possible outcomes of an intersection check
+#[derive(Debug)]
+pub enum Intersection {
+    /// Successful intersection, containing [HitRecord]
+    Hit(HitRecord),
+    /// Failure to intersect
+    Miss,
+}
+
 /// Describes the behavior of objects that support intersection
 pub trait Hittable {
     /// Intersects the given ray with the object
-    /// 
+    ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection;
 }
 
 /// Wrapper newtype holding a [Vec] of types implementing the [Hittable] trait
@@ -62,13 +71,13 @@ impl DerefMut for HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-        let mut rec: Option<HitRecord> = None;
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
+        let mut rec = Intersection::Miss;
         let mut t_closest = t_max;
 
         for hittable in self.iter() {
             let hit_result = hittable.hit(ray, t_min, t_closest);
-            if let Some(HitRecord { t, .. }) = hit_result {
+            if let Intersection::Hit(HitRecord { t, .. }) = hit_result {
                 t_closest = t;
                 rec = hit_result;
             }

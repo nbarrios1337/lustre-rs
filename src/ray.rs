@@ -4,7 +4,10 @@ use std::f32::INFINITY;
 
 use glam::Vec3;
 
-use crate::{color::Color, hittable::Hittable};
+use crate::{
+    color::Color,
+    hittable::{Hittable, Intersection},
+};
 
 /// A 3-dimensional Ray
 ///
@@ -23,14 +26,14 @@ impl Ray {
     }
 
     /// Returns a position in 3D space along the ray.
-    /// 
+    ///
     /// Performs the following calculation: `position = origin + t * direction`
     pub fn at(&self, t: f32) -> Vec3 {
         self.origin + t * self.direction
     }
 
     /// Returns a [`Color`] value based on the accumulated light and color at the initial intersection point.
-    /// 
+    ///
     /// Uses `bounce_depth` to limit the amount of recursion when gathering contributions.
     pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16) -> Color {
         // Limit recursion depth
@@ -41,7 +44,7 @@ impl Ray {
         // Check for a hit against the `hittable` parameter
         let v = match hittable.hit(self, 0.0001, INFINITY) {
             // immediately match against the HitRecord's material member
-            Some(rec) => match rec.material.scatter(self, &rec) {
+            Intersection::Hit(rec) => match rec.material.scatter(self, &rec) {
                 // A successful ray scatter leads to more contributions.
                 Some((scattered, attenuation)) => {
                     attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
@@ -49,7 +52,7 @@ impl Ray {
                 None => Vec3::ZERO,
             },
             // without a hit, functions like a miss shader
-            None => {
+            Intersection::Miss => {
                 // linearly interpolate from white to blue-ish
                 let dir_n = self.direction.normalize_or_zero();
                 let t = 0.5 * (dir_n.y + 1.0);
