@@ -14,7 +14,7 @@ mod camera;
 mod cli;
 mod color;
 mod hittable;
-mod linalg;
+mod scatter;
 mod material;
 mod rand_util;
 mod ray;

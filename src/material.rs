@@ -4,7 +4,7 @@ use glam::Vec3;
 
 use crate::{
     hittable::HitRecord,
-    linalg::{reflect, refract},
+    scatter::{reflect, refract},
     rand_util::{rand_f32, rand_unit_vec3},
     ray::Ray,
 };
