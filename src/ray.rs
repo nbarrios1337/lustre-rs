@@ -1,4 +1,4 @@
-//! The Ray module provies an implementation of a 3-dimensional Ray.
+//! Implementation of a 3-dimensional Ray.
 
 use std::f32::INFINITY;
 
