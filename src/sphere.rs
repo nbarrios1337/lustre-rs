@@ -1,3 +1,5 @@
+//! Implementation of a Sphere object
+
 use std::rc::Rc;
 
 use glam::Vec3;
@@ -8,6 +10,7 @@ use crate::{
     ray::Ray,
 };
 
+/// A Sphere object
 #[derive(Debug)]
 pub struct Sphere {
     pub center: Vec3,
@@ -16,6 +19,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
+    // Creates a new Sphere.
     pub fn new(c: Vec3, r: f32, m: &Rc<Material>) -> Self {
         Self {
             center: c,
