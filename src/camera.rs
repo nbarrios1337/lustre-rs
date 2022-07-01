@@ -1,7 +1,15 @@
+//! Implementation of a camera
+//! 
+//! # Features
+//! * positionable and orientable - Using the `look_from`, `look_at`, and `view_up` triplet of vectors
+//! * resizable film - Using `aspect_ratio`
+//! * depth of field (aka defocus blur) - Using the `apeture` and `focus_dist` data
+
 use glam::Vec3;
 
 use crate::{rand_util::rand_vec3_in_unit_disk, ray::Ray};
 
+/// A Camera that generates rays
 #[derive(Debug)]
 pub struct Camera {
     origin: Vec3,
