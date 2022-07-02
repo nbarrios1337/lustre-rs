@@ -45,7 +45,7 @@ impl Material {
                     scatter_dir = rec.normal;
                 }
 
-                Some((Ray::new(rec.point, scatter_dir), *albedo))
+                Some((Ray::new(rec.point, scatter_dir, ray.time), *albedo))
             }
             Material::Metal { albedo, roughness } => {
                 let reflected = reflect(&ray.direction.normalize(), &rec.normal);
@@ -53,6 +53,7 @@ impl Material {
                 let scattered = Ray::new(
                     rec.point,
                     reflected + roughness.clamp(0.0, 1.0) * rand_unit_vec3(),
+                    ray.time,
                 );
 
                 if scattered.direction.dot(rec.normal) > 0.0 {
@@ -83,7 +84,7 @@ impl Material {
                     refract(&unit_dir, &rec.normal, refract_ratio)
                 };
 
-                Some((Ray::new(rec.point, direction), attenuation))
+                Some((Ray::new(rec.point, direction, ray.time), attenuation))
             }
         }
     }

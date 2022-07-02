@@ -17,12 +17,17 @@ use crate::{
 pub struct Ray {
     pub origin: Vec3,
     pub direction: Vec3,
+    pub time: f32,
 }
 
 impl Ray {
     /// Creates a new Ray.
-    pub fn new(origin: Vec3, direction: Vec3) -> Self {
-        Self { origin, direction }
+    pub fn new(origin: Vec3, direction: Vec3, time: f32) -> Self {
+        Self {
+            origin,
+            direction,
+            time,
+        }
     }
 
     /// Returns a position in 3D space along the ray.

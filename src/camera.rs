@@ -7,7 +7,10 @@
 
 use glam::Vec3;
 
-use crate::{rand_util::rand_vec3_in_unit_disk, ray::Ray};
+use crate::{
+    rand_util::{rand_range_f32, rand_vec3_in_unit_disk},
+    ray::Ray,
+};
 
 /// A Camera that generates rays
 #[derive(Debug)]
@@ -28,6 +31,10 @@ pub struct Camera {
     w: Vec3,
     /// Radius of the approximated camera lens
     lens_radius: f32,
+    /// Shutter open time
+    shutter_open: f32,
+    /// Shutter close time
+    shutter_close: f32,
 }
 
 impl Camera {
@@ -39,7 +46,7 @@ impl Camera {
     /// * view_up - A [Vec3] holding the "up" direction of the camera
     /// * vert_fov - The vertical field of view
     /// * aspect_ratio - The aspect ratio of the viewport
-    /// * aperture - How "big" the approximated lens is 
+    /// * aperture - How "big" the approximated lens is
     /// * focus_dist - The distance to the plane in space where objects are "in focus"
     pub fn new(
         look_from: Vec3,
@@ -49,6 +56,8 @@ impl Camera {
         aspect_ratio: f32,
         aperture: f32,
         focus_dist: f32,
+        shutter_open: f32,
+        shutter_close: f32,
     ) -> Self {
         // Set up viewport
         let theta = vert_fov.to_radians();
@@ -75,6 +84,8 @@ impl Camera {
             v,
             w,
             lens_radius,
+            shutter_open,
+            shutter_close,
         }
     }
 
@@ -87,6 +98,7 @@ impl Camera {
             direction: self.ll_corner + u * self.horizontal + v * self.vertical
                 - self.origin
                 - offest,
+            time: rand_range_f32(self.shutter_open, self.shutter_close),
         }
     }
 }
@@ -101,6 +113,8 @@ impl Default for Camera {
             16.0 / 9.0,
             0.1,
             10.0,
+            0.0,
+            0.0,
         )
     }
 }
