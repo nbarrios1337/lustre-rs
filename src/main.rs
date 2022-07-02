@@ -1,16 +1,17 @@
 use std::rc::Rc;
 
-use camera::Camera;
-use cli::{Arguments, Parser};
-use color::Color;
 use glam::{const_vec3, Vec3};
-use hittable::HittableList;
 use indicatif::{ProgressBar, ProgressStyle};
-use material::Material;
-use rand_util::{rand_f32, rand_vec3};
-use sphere::Sphere;
 
-use crate::{rand_util::rand_range_f32, sphere::MovingSphere};
+use crate::{
+    camera::Camera,
+    cli::{Arguments, Parser},
+    color::Color,
+    hittable::HittableList,
+    material::Material,
+    rand_util::{rand_f32, rand_range_f32, rand_vec3},
+    sphere::{MovingSphere, Sphere},
+};
 
 mod camera;
 mod cli;
@@ -22,6 +23,7 @@ mod ray;
 mod scatter;
 mod sphere;
 
+// Returns a `HittableList` containing many randomly-generated spheres
 fn gen_random_scene() -> HittableList {
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Vec3::ONE / 2.0,
