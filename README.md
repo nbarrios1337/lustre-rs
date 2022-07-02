@@ -15,3 +15,7 @@ Learning Rust via [Peter Shirley's Ray Tracing in One Weekend](https://raytracin
   - Integration with graphics APIs
   - Rendering in realtime
   - ...
+
+## Additional Sources
+
+- [Peter Shirley's "In One Weekend" Blog](https://in1weekend.blogspot.com/), serving as addendums to his aforementioned book series.
