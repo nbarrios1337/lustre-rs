@@ -73,6 +73,7 @@ impl Hittable for Sphere {
     }
 }
 
+/// Like [Sphere], but it moves.
 pub struct MovingSphere {
     center0: Vec3,
     center1: Vec3,
@@ -83,6 +84,26 @@ pub struct MovingSphere {
 }
 
 impl MovingSphere {
+    /// Creates a new MovingSphere.
+    pub fn new(
+        center0: Vec3,
+        center1: Vec3,
+        time0: f32,
+        time1: f32,
+        radius: f32,
+        m: &Rc<Material>,
+    ) -> Self {
+        Self {
+            center0,
+            center1,
+            time0,
+            time1,
+            radius,
+            material: Rc::clone(m),
+        }
+    }
+
+    /// determines the point in space of the center of the sphere
     fn center(&self, time: f32) -> Vec3 {
         let base = (self.time1 - self.time0) * (self.center1 - self.center0);
         self.center0 + (time - self.time0) / base
@@ -90,6 +111,7 @@ impl MovingSphere {
 }
 
 impl Hittable for MovingSphere {
+    // a copy/paste of Sphere::hit, but uses the center() fn instead of a center field.
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
         let oc = ray.origin - self.center(ray.time);
         // dot product of a vector with itself is the length squared

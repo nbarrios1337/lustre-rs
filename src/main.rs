@@ -10,6 +10,8 @@ use material::Material;
 use rand_util::{rand_f32, rand_vec3};
 use sphere::Sphere;
 
+use crate::{rand_util::rand_range_f32, sphere::MovingSphere};
+
 mod camera;
 mod cli;
 mod color;
@@ -55,8 +57,18 @@ fn gen_random_scene() -> HittableList {
                     Rc::new(Material::Dielectric { refract_index: 1.5 })
                 };
 
-                let sph = Sphere::new(center, 0.2, &mat);
-                world.push(Box::new(sph));
+                // make the diffuse spheres moveable
+                match mat.as_ref() {
+                    Material::Lambertian { .. } => {
+                        let center2 = center + Vec3::Y * rand_range_f32(0.0, 0.5);
+                        let sph = MovingSphere::new(center, center2, 0.0, 1.0, 0.2, &mat);
+                        world.push(Box::new(sph));
+                    }
+                    _ => {
+                        let sph = Sphere::new(center, 0.2, &mat);
+                        world.push(Box::new(sph));
+                    }
+                }
             }
         }
     }
