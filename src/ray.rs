@@ -42,7 +42,7 @@ impl Ray {
         }
 
         // Check for a hit against the `hittable` parameter
-        let v = match hittable.hit(self, 0.0001, INFINITY) {
+        let v = match hittable.hit(self, 0.001, INFINITY) {
             // immediately match against the HitRecord's material member
             Intersection::Hit(rec) => match rec.material.scatter(self, &rec) {
                 // A successful ray scatter leads to more contributions.
