@@ -41,7 +41,7 @@ pub fn rand_vec3_in_unit_sphere() -> Vec3 {
 }
 
 /// Generates a random [Vec3] within the unit disk (radius 1).
-/// 
+///
 /// Functionally similar to [rand_vec3_in_unit_sphere].
 pub fn rand_vec3_in_unit_disk() -> Vec3 {
     loop {
