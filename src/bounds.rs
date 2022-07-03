@@ -1,12 +1,8 @@
 //! Implementation of bounding volumes
 
-
-
 use glam::Vec3;
 
-use crate::{
-    ray::Ray,
-};
+use crate::ray::Ray;
 
 /// An axis aligned bounding box
 #[derive(Debug, Clone, Copy)]
@@ -49,7 +45,7 @@ impl Aabb {
         true
     }
 
-    pub fn intersection(&self, other: &Aabb) -> Aabb {
+    pub fn intersection(&self, _other: &Aabb) -> Aabb {
         todo!()
     }
 
