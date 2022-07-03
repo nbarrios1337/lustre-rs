@@ -135,7 +135,7 @@ fn main() {
     );
 
     let world = gen_random_scene();
-    let bvh = BvhNode::new(world, 0.0, 1.0);
+    let world = BvhNode::new(world, 0.0, 1.0);
 
     let progbar = ProgressBar::new((img_h * img_w) as u64)
         .with_style(
@@ -152,7 +152,7 @@ fn main() {
             for _ in 0..samples_per_pixel {
                 let u: f64 = (x as f32 + rand_f32()) as f64 / (img_w - 1) as f64;
                 let v: f64 = ((img_h - y) as f32 + rand_f32()) as f64 / (img_h - 1) as f64;
-                let contrib = cam.get_ray(u as f32, v as f32).shade(&bvh, depth);
+                let contrib = cam.get_ray(u as f32, v as f32).shade(&world, depth);
                 color_v += Vec3::from(contrib);
             }
             color_v /= samples_per_pixel as f32;
