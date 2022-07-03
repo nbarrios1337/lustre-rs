@@ -110,21 +110,22 @@ impl Debug for BvhNode {
 impl Hittable for BvhNode {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         if self.bbox.hit(ray, t_min, t_max) {
-            None
-        } else {
             let left_hit = self.left.hit(ray, t_min, t_max);
-
-            let t_max = match &left_hit {
-                Some(rec) => rec.t,
-                None => t_max,
-            };
-
             let right_hit = self.right.hit(ray, t_min, t_max);
-            if left_hit < right_hit {
-                left_hit
-            } else {
-                right_hit
+            match (left_hit, right_hit) {
+                (None, None) => None,
+                (None, Some(r_rec)) => Some(r_rec),
+                (Some(l_rec), None) => Some(l_rec),
+                (Some(l_rec), Some(r_rec)) => {
+                    if l_rec.t < r_rec.t {
+                        Some(l_rec)
+                    } else {
+                        Some(r_rec)
+                    }
+                }
             }
+        } else {
+            None
         }
     }
 
