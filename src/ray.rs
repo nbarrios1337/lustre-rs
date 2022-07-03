@@ -49,7 +49,7 @@ impl Ray {
         // Check for a hit against the `hittable` parameter
         let v = match hittable.hit(self, 0.001, INFINITY) {
             // immediately match against the HitRecord's material member
-            Intersection::Hit(rec) => match rec.material.scatter(self, &rec) {
+            Some(rec) => match rec.material.scatter(self, &rec) {
                 // A successful ray scatter leads to more contributions.
                 Some((scattered, attenuation)) => {
                     attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
@@ -57,7 +57,7 @@ impl Ray {
                 None => Vec3::ZERO,
             },
             // without a hit, functions like a miss shader
-            Intersection::Miss => {
+            None => {
                 // linearly interpolate from white to blue-ish
                 let dir_n = self.direction.normalize_or_zero();
                 let t = 0.5 * (dir_n.y + 1.0);

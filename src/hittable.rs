@@ -51,7 +51,7 @@ pub trait Hittable {
     /// Intersects the given ray with the object
     ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection;
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 
     /// Returns the axis aligned bounding box for the object
     ///
@@ -76,13 +76,13 @@ impl DerefMut for HittableList {
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
-        let mut rec = Intersection::Miss;
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        let mut rec = None;
         let mut t_closest = t_max;
 
         for hittable in self.iter() {
             let hit_result = hittable.hit(ray, t_min, t_closest);
-            if let Intersection::Hit(HitRecord { t, .. }) = hit_result {
+            if let Some(HitRecord { t, .. }) = hit_result {
                 t_closest = t;
                 rec = hit_result;
             }

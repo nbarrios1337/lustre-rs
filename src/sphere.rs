@@ -31,7 +31,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         // dot product of a vector with itself is the length squared
         let a = ray.direction.length_squared();
@@ -40,14 +40,14 @@ impl Hittable for Sphere {
 
         let discrim = half_b * half_b - a * c;
         if discrim < 0.0 {
-            return Intersection::Miss;
+            return None;
         }
 
         let mut root = (-half_b - discrim.sqrt()) / a;
         if t_min > root || root > t_max {
             root = (-half_b + discrim.sqrt()) / a;
             if t_min > root || root > t_max {
-                return Intersection::Miss;
+                return None;
             }
         }
 
@@ -64,7 +64,7 @@ impl Hittable for Sphere {
 
         let material = self.material.clone();
 
-        Intersection::Hit(HitRecord {
+        Some(HitRecord {
             t,
             point,
             normal,
@@ -122,7 +122,7 @@ impl MovingSphere {
 
 impl Hittable for MovingSphere {
     // a copy/paste of Sphere::hit, but uses the center() fn instead of a center field.
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection {
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = ray.origin - self.center(ray.time);
         // dot product of a vector with itself is the length squared
         let a = ray.direction.length_squared();
@@ -131,14 +131,14 @@ impl Hittable for MovingSphere {
 
         let discrim = half_b * half_b - a * c;
         if discrim < 0.0 {
-            return Intersection::Miss;
+            return None;
         }
 
         let mut root = (-half_b - discrim.sqrt()) / a;
         if t_min > root || root > t_max {
             root = (-half_b + discrim.sqrt()) / a;
             if t_min > root || root > t_max {
-                return Intersection::Miss;
+                return None;
             }
         }
 
@@ -155,7 +155,7 @@ impl Hittable for MovingSphere {
 
         let material = self.material.clone();
 
-        Intersection::Hit(HitRecord {
+        Some(HitRecord {
             t,
             point,
             normal,
