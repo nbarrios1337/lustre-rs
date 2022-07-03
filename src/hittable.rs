@@ -61,7 +61,10 @@ pub trait Hittable {
     /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
 
-    fn wrap(self) -> Rc<Self> where Self: Sized {
+    fn wrap(self) -> Rc<Self>
+    where
+        Self: Sized,
+    {
         Rc::new(self)
     }
 }
