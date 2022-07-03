@@ -1,12 +1,10 @@
 //! Implementation of bounding volumes
 
-use std::rc::Rc;
+
 
 use glam::Vec3;
 
 use crate::{
-    hittable::{HitRecord, Hittable, Intersection},
-    material::Material,
     ray::Ray,
 };
 

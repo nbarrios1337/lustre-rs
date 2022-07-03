@@ -73,7 +73,7 @@ impl Hittable for Sphere {
         })
     }
 
-    fn bounding_box(&self, time0: f32, time1: f32) -> Option<crate::bounds::Aabb> {
+    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<crate::bounds::Aabb> {
         Some(Aabb::new(
             self.center - Vec3::splat(self.radius),
             self.center + Vec3::splat(self.radius),
