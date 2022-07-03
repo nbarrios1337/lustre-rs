@@ -1,4 +1,4 @@
-//! Implementation of a Sphere object
+//! Implementations of Sphere-like objects
 
 use std::rc::Rc;
 
