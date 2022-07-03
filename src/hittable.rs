@@ -60,13 +60,17 @@ pub trait Hittable {
     ///
     /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
+
+    fn wrap(self) -> Rc<Self> where Self: Sized {
+        Rc::new(self)
+    }
 }
 
 /// Wrapper newtype holding a [Vec] of types implementing the [Hittable] trait
-pub struct HittableList(pub Vec<Box<dyn Hittable>>);
+pub struct HittableList(pub Vec<Rc<dyn Hittable>>);
 
 impl Deref for HittableList {
-    type Target = Vec<Box<dyn Hittable>>;
+    type Target = Vec<Rc<dyn Hittable>>;
     fn deref(&self) -> &Self::Target {
         &self.0
     }

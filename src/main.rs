@@ -7,7 +7,7 @@ use crate::{
     camera::Camera,
     cli::{Arguments, Parser},
     color::Color,
-    hittable::HittableList,
+    hittable::{Hittable, HittableList},
     material::Material,
     rand_util::{rand_f32, rand_range_f32, rand_vec3},
     sphere::{MovingSphere, Sphere},
@@ -31,11 +31,12 @@ fn gen_random_scene() -> HittableList {
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Vec3::ONE / 2.0,
     });
-    let mut world = HittableList(vec![Box::new(Sphere::new(
+    let mut world = HittableList(vec![Sphere::new(
         Vec3::new(0.0, -1000.0, 0.0),
         1000.0,
         &ground_material,
-    ))]);
+    )
+    .wrap()]);
 
     // The random generation part
     const DELIMITER: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
@@ -69,11 +70,11 @@ fn gen_random_scene() -> HittableList {
                     Material::Lambertian { .. } => {
                         let center2 = center + Vec3::Y * rand_range_f32(0.0, 0.5);
                         let sph = MovingSphere::new(center, center2, 0.0, 1.0, 0.2, &mat);
-                        world.push(Box::new(sph));
+                        world.push(sph.wrap())
                     }
                     _ => {
                         let sph = Sphere::new(center, 0.2, &mat);
-                        world.push(Box::new(sph));
+                        world.push(sph.wrap())
                     }
                 }
             }
@@ -95,9 +96,9 @@ fn gen_random_scene() -> HittableList {
     };
     let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
 
-    world.push(Box::new(sphere_1));
-    world.push(Box::new(sphere_2));
-    world.push(Box::new(sphere_3));
+    world.push(sphere_1.wrap());
+    world.push(sphere_2.wrap());
+    world.push(sphere_3.wrap());
 
     world
 }
