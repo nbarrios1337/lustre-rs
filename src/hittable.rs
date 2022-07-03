@@ -49,15 +49,6 @@ impl PartialEq for HitRecord {
     }
 }
 
-/// Possible outcomes of an intersection check
-#[derive(Debug)]
-pub enum Intersection {
-    /// Successful intersection, containing [HitRecord]
-    Hit(HitRecord),
-    /// Failure to intersect
-    Miss,
-}
-
 /// Describes the behavior of objects that support intersection
 pub trait Hittable {
     /// Intersects the given ray with the object
