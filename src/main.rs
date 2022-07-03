@@ -40,7 +40,7 @@ fn gen_random_scene() -> HittableList {
     .wrap()]);
 
     // The random generation part
-    const DELIMITER: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
+    const ORIGIN: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
     for a in -11..11 {
         for b in -11..11 {
             let center = Vec3::new(
@@ -49,7 +49,7 @@ fn gen_random_scene() -> HittableList {
                 b as f32 + 0.9 * rand_f32(),
             );
 
-            if (center - DELIMITER).length() > 0.9 {
+            if (center - ORIGIN).length() > 0.9 {
                 let decide_mat = rand_f32();
                 // pick a material by "rarity"
                 let mat = if (0.0..0.8).contains(&decide_mat) {
