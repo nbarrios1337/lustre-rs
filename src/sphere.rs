@@ -5,6 +5,7 @@ use std::rc::Rc;
 use glam::Vec3;
 
 use crate::{
+    bounds::Aabb,
     hittable::{HitRecord, Hittable, Intersection},
     material::Material,
     ray::Ray,
@@ -70,6 +71,13 @@ impl Hittable for Sphere {
             front_face,
             material,
         })
+    }
+
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<crate::bounds::Aabb> {
+        Some(Aabb::new(
+            self.center - Vec3::splat(self.radius),
+            self.center + Vec3::splat(self.radius),
+        ))
     }
 }
 
@@ -154,5 +162,18 @@ impl Hittable for MovingSphere {
             front_face,
             material,
         })
+    }
+
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
+        let box0 = Aabb::new(
+            self.center(time0) - Vec3::splat(self.radius),
+            self.center(time0) + Vec3::splat(self.radius),
+        );
+        let box1 = Aabb::new(
+            self.center(time1) - Vec3::splat(self.radius),
+            self.center(time1) + Vec3::splat(self.radius),
+        );
+
+        Some(box0.union(&box1))
     }
 }

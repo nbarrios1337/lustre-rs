@@ -8,7 +8,7 @@ use std::{
 
 use glam::Vec3;
 
-use crate::{material::Material, ray::Ray};
+use crate::{bounds::Aabb, material::Material, ray::Ray};
 
 /// Defines a set of data returned upon a successful intersection
 #[derive(Debug)]
@@ -52,6 +52,11 @@ pub trait Hittable {
     ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Intersection;
+
+    /// Returns the axis aligned bounding box for the object
+    ///
+    /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
 }
 
 /// Wrapper newtype holding a [Vec] of types implementing the [Hittable] trait
@@ -83,5 +88,19 @@ impl Hittable for HittableList {
             }
         }
         rec
+    }
+
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
+        if self.is_empty() {
+            return None;
+        }
+
+        // applies the bounding_box fn to all hittables,
+        // filters out those returning `None`,
+        // and reduces to a single bounding box through
+        // repeated applications of the union fn.
+        self.iter()
+            .filter_map(|hittable| hittable.bounding_box(time0, time1))
+            .reduce(|acc, bbox| acc.union(&bbox))
     }
 }

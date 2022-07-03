@@ -13,6 +13,7 @@ use crate::{
     sphere::{MovingSphere, Sphere},
 };
 
+mod bounds;
 mod camera;
 mod cli;
 mod color;
