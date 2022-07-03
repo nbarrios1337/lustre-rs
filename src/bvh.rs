@@ -1,8 +1,6 @@
 //! Bounding Volume Hierarchy
 
-use std::{cmp::Ordering, fmt::{Debug, Pointer}, rc::Rc};
-
-use glam::Vec3;
+use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 
 use crate::{
     bounds::Aabb,
@@ -17,15 +15,16 @@ pub struct BvhNode {
     bbox: Aabb,
 }
 
-fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Option<Ordering> {
+fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Ordering {
     match (a, b) {
         (None, None) => {
-            eprintln!("box_cmp encountered two unbounded objects");
-            None
+            panic!("box_cmp encountered two unbounded objects");
         }
-        (None, Some(_)) => Some(Ordering::Less),
-        (Some(_), None) => Some(Ordering::Greater),
-        (Some(a_box), Some(b_box)) => a_box.min[axis_idx].partial_cmp(&b_box.min[axis_idx]),
+        (None, Some(_)) => Ordering::Less,
+        (Some(_), None) => Ordering::Greater,
+        (Some(a_box), Some(b_box)) => a_box.min[axis_idx]
+            .partial_cmp(&b_box.min[axis_idx])
+            .expect("boxes contained extreme FP values"),
     }
 }
 
@@ -34,11 +33,7 @@ impl BvhNode {
         BvhNode::new_node(&mut hitlist[..], time0, time1)
     }
 
-    fn new_node(
-        hitlist: &mut [Rc<dyn Hittable>],
-        time0: f32,
-        time1: f32,
-    ) -> Self {
+    fn new_node(hitlist: &mut [Rc<dyn Hittable>], time0: f32, time1: f32) -> Self {
         if hitlist.is_empty() {
             panic!("Given empty scene!");
         }
@@ -59,32 +54,26 @@ impl BvhNode {
                         &b.bounding_box(time0, time1),
                         axis_idx,
                     )
-                    .unwrap()
                 });
 
-                let mid = start + span / 2;
+                let (half0, half1) = hitlist.split_at_mut(span / 2);
 
-                let (half0, half1) = hitlist.split_at_mut(mid);
-
-                let left = BvhNode::new_node(half0, time0, time1);
-                let right = BvhNode::new_node(half1, time0, time1);
-                let wrapped_left: Rc<dyn Hittable> = left.wrap();
-                let wrapped_right: Rc<dyn Hittable> = right.wrap();
-                (wrapped_left, wrapped_right)
+                let left: Rc<dyn Hittable> = BvhNode::new_node(half0, time0, time1).wrap();
+                let right: Rc<dyn Hittable> = BvhNode::new_node(half1, time0, time1).wrap();
+                (left, right)
             }
         };
 
         let bbox = match (
-            &left.bounding_box(time0, time1),
-            &right.bounding_box(time0, time1),
+            left.bounding_box(time0, time1),
+            right.bounding_box(time0, time1),
         ) {
             (None, None) => {
-                eprintln!("new_node encountered two unbounded objects");
-                Aabb::new(Vec3::ZERO, Vec3::ZERO)
+                panic!("new_node encountered two unbounded objects");
             }
-            (None, Some(b)) => *b,
-            (Some(a), None) => *a,
-            (Some(a), Some(b)) => a.union(b),
+            (None, Some(b)) => b,
+            (Some(a), None) => a,
+            (Some(a), Some(b)) => a.union(&b),
         };
 
         Self { left, right, bbox }
