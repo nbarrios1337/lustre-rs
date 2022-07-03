@@ -37,6 +37,18 @@ impl HitRecord {
     }
 }
 
+impl PartialOrd for HitRecord {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.t.partial_cmp(&other.t)
+    }
+}
+
+impl PartialEq for HitRecord {
+    fn eq(&self, other: &Self) -> bool {
+        self.t == other.t
+    }
+}
+
 /// Possible outcomes of an intersection check
 #[derive(Debug)]
 pub enum Intersection {

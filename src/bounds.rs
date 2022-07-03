@@ -9,7 +9,7 @@ use crate::{
 };
 
 /// An axis aligned bounding box
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Aabb {
     min: Vec3,
     max: Vec3,
