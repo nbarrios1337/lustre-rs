@@ -32,7 +32,7 @@ impl Aabb {
 
             let t_near = t0.max(t_min);
             let t_far = t1.min(t_max);
-            if t_near <= t_far {
+            if t_far <= t_near {
                 return false;
             }
         }
