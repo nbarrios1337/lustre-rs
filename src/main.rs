@@ -23,8 +23,9 @@ mod ray;
 mod scatter;
 mod sphere;
 
-// Returns a `HittableList` containing many randomly-generated spheres
+/// Returns a `HittableList` containing many randomly-generated spheres
 fn gen_random_scene() -> HittableList {
+    //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Vec3::ONE / 2.0,
     });
@@ -34,6 +35,7 @@ fn gen_random_scene() -> HittableList {
         &ground_material,
     ))]);
 
+    // The random generation part
     const DELIMITER: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
     for a in -11..11 {
         for b in -11..11 {
@@ -45,6 +47,7 @@ fn gen_random_scene() -> HittableList {
 
             if (center - DELIMITER).length() > 0.9 {
                 let decide_mat = rand_f32();
+                // pick a material by "rarity"
                 let mat = if (0.0..0.8).contains(&decide_mat) {
                     // diffuse
                     let albedo = rand_vec3() * rand_vec3();
@@ -75,6 +78,7 @@ fn gen_random_scene() -> HittableList {
         }
     }
 
+    // The signature central spheres
     let mat_1 = Material::Dielectric { refract_index: 1.5 };
     let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
 
