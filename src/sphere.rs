@@ -74,6 +74,7 @@ impl Hittable for Sphere {
 }
 
 /// Like [Sphere], but it moves.
+#[derive(Debug)]
 pub struct MovingSphere {
     center0: Vec3,
     center1: Vec3,
@@ -105,8 +106,9 @@ impl MovingSphere {
 
     /// determines the point in space of the center of the sphere
     fn center(&self, time: f32) -> Vec3 {
-        let base = (self.time1 - self.time0) * (self.center1 - self.center0);
-        self.center0 + (time - self.time0) / base
+        let ratio = (time - self.time0) / (self.time1 - self.time0);
+        let offset = ratio * (self.center1 - self.center0);
+        self.center0 + offset
     }
 }
 
