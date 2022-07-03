@@ -7,8 +7,8 @@ use crate::ray::Ray;
 /// An axis aligned bounding box
 #[derive(Debug, Clone, Copy)]
 pub struct Aabb {
-    min: Vec3,
-    max: Vec3,
+    pub min: Vec3,
+    pub max: Vec3,
 }
 
 impl Aabb {
