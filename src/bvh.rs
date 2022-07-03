@@ -29,16 +29,6 @@ fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Option<Orderi
     }
 }
 
-// fn box_cmp_x(a: &Option<Aabb>, b: &Option<Aabb>) -> bool {
-//     box_cmp(a, b, 0)
-// }
-// fn box_cmp_y(a: &Option<Aabb>, b: &Option<Aabb>) -> bool {
-//     box_cmp(a, b, 1)
-// }
-// fn box_cmp_z(a: &Option<Aabb>, b: &Option<Aabb>) -> bool {
-//     box_cmp(a, b, 2)
-// }
-
 impl BvhNode {
     pub fn new(mut hitlist: HittableList, time0: f32, time1: f32) -> Self {
         BvhNode::new_node(&mut hitlist[..], time0, time1)
