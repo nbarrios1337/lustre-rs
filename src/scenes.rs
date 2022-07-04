@@ -65,12 +65,8 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
 /// Returns a `HittableList` containing many randomly-generated spheres
 fn gen_random_scene() -> HittableList {
     //  Create ground sphere
-    let checker_tex = Rc::new(Checkered {
-        even: Rc::new(Color(Vec3::new(0.2, 0.3, 0.1))),
-        odd: Rc::new(Color(Vec3::new(0.9, 0.9, 0.9))),
-    });
     let ground_material = Rc::new(Material::Lambertian {
-        albedo: checker_tex,
+        albedo: Rc::new(Color(Vec3::ONE / 2.0)),
     });
     let mut world = HittableList(vec![Sphere::new(
         Vec3::new(0.0, -1000.0, 0.0),
