@@ -21,7 +21,7 @@ pub struct HitRecord {
     pub material: Rc<Material>,
     /// distance from the origin to the point of intersection
     pub t: f32,
-    /// u coordinate of surface of point of intersection 
+    /// u coordinate of surface of point of intersection
     pub u: f32,
     /// v coordinate of surface of point of intersection
     pub v: f32,
