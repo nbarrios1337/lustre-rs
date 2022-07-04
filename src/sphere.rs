@@ -1,6 +1,9 @@
 //! Implementations of Sphere-like objects
 
-use std::rc::Rc;
+use std::{
+    f32::consts::{PI, TAU},
+    rc::Rc,
+};
 
 use glam::Vec3;
 
@@ -27,6 +30,15 @@ impl Sphere {
             radius: r,
             material: Rc::clone(m),
         }
+    }
+
+    /// Returns the uv surface coordinates for a point on the sphere
+    fn surface_coords(&self, point: Vec3) -> (f32, f32) {
+        let theta = (-point.y).acos();
+        let phi = (-point.z).atan2(point.x) + PI;
+        let u = phi / TAU;
+        let v = theta / PI;
+        (u, v)
     }
 }
 
@@ -63,13 +75,16 @@ impl Hittable for Sphere {
         };
 
         let material = self.material.clone();
+        let (u, v) = self.surface_coords(outward_n);
 
         Some(HitRecord {
-            t,
             point,
             normal,
-            front_face,
             material,
+            t,
+            u,
+            v,
+            front_face,
         })
     }
 
@@ -118,6 +133,15 @@ impl MovingSphere {
         let offset = ratio * (self.center1 - self.center0);
         self.center0 + offset
     }
+
+    /// Returns the uv surface coordinates for a point on the sphere
+    fn surface_coords(&self, point: Vec3) -> (f32, f32) {
+        let theta = (-point.y).acos();
+        let phi = (-point.z).atan2(point.x) + PI;
+        let u = phi / TAU;
+        let v = theta / PI;
+        (u, v)
+    }
 }
 
 impl Hittable for MovingSphere {
@@ -154,13 +178,16 @@ impl Hittable for MovingSphere {
         };
 
         let material = self.material.clone();
+        let (u, v) = self.surface_coords(outward_n);
 
         Some(HitRecord {
-            t,
             point,
             normal,
-            front_face,
             material,
+            t,
+            u,
+            v,
+            front_face,
         })
     }
 

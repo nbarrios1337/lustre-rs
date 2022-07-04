@@ -25,12 +25,13 @@ mod rand_util;
 mod ray;
 mod scatter;
 mod sphere;
+mod texture;
 
 /// Returns a `HittableList` containing many randomly-generated spheres
 fn gen_random_scene() -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
-        albedo: Vec3::ONE / 2.0,
+        albedo: Rc::new(Color(Vec3::ONE / 2.0)),
     });
     let mut world = HittableList(vec![Sphere::new(
         Vec3::new(0.0, -1000.0, 0.0),
@@ -54,7 +55,7 @@ fn gen_random_scene() -> HittableList {
                 // pick a material by "rarity"
                 let mat = if (0.0..0.8).contains(&decide_mat) {
                     // diffuse
-                    let albedo = rand_vec3() * rand_vec3();
+                    let albedo = Rc::new(Color(rand_vec3() * rand_vec3()));
                     Rc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
@@ -87,7 +88,7 @@ fn gen_random_scene() -> HittableList {
     let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
 
     let mat_2 = Material::Lambertian {
-        albedo: Vec3::new(0.4, 0.2, 0.1),
+        albedo: Rc::new(Color(Vec3::new(0.4, 0.2, 0.1))),
     };
     let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
 
@@ -112,7 +113,7 @@ fn main() {
     // Set up image properties
     let samples_per_pixel = 100;
     let aspect_ratio = 3.0 / 2.0;
-    let img_w = 1200;
+    let img_w = 1200 / 5;
     let img_h = (img_w as f32 / aspect_ratio) as u32;
 
     // Setup camera properties

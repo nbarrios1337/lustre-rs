@@ -1,6 +1,6 @@
 //! Implementation of material types
 
-use std::f32::EPSILON;
+use std::{f32::EPSILON, rc::Rc};
 
 use glam::Vec3;
 
@@ -9,6 +9,7 @@ use crate::{
     rand_util::{rand_f32, rand_unit_vec3},
     ray::Ray,
     scatter::{reflect, refract},
+    texture::Texture,
 };
 
 /// Enumeration of possible material types.
@@ -17,7 +18,7 @@ pub enum Material {
     /// An approximation of a diffuse, or matte, material.
     ///
     /// See the [Wikipedia page on Lambertian reflectance](https://en.wikipedia.org/wiki/Lambertian_reflectance) for more information.
-    Lambertian { albedo: Vec3 },
+    Lambertian { albedo: Rc<dyn Texture> },
     /// A metallic material that reflects rays based on the given roughness.
     Metal { albedo: Vec3, roughness: f32 },
     /// A glass material that scatters rays based on the given refractive index.
@@ -45,7 +46,10 @@ impl Material {
                     scatter_dir = rec.normal;
                 }
 
-                Some((Ray::new(rec.point, scatter_dir, ray.time), *albedo))
+                Some((
+                    Ray::new(rec.point, scatter_dir, ray.time),
+                    albedo.color(rec.u, rec.v, rec.point).into(),
+                ))
             }
             Material::Metal { albedo, roughness } => {
                 let reflected = reflect(&ray.direction.normalize(), &rec.normal);
