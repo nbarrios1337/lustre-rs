@@ -25,15 +25,15 @@ impl Texture for Color {
 }
 
 pub struct Checkered {
-    pub odd: Rc<dyn Texture>,
     pub even: Rc<dyn Texture>,
+    pub odd: Rc<dyn Texture>,
 }
 
 impl Checkered {
     pub fn new(o: &Rc<dyn Texture>, e: &Rc<dyn Texture>) -> Self {
         Self {
-            odd: o.clone(),
             even: e.clone(),
+            odd: o.clone(),
         }
     }
 }
