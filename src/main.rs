@@ -1,19 +1,12 @@
-use std::rc::Rc;
-
-use glam::{const_vec3, Vec3};
+use glam::Vec3;
 use indicatif::{ProgressBar, ProgressStyle};
 use scenes::{get_scene, SceneType};
 
 use crate::{
     bvh::BvhNode,
-    camera::Camera,
     cli::{Arguments, Parser},
     color::Color,
-    hittable::{Hittable, HittableList},
-    material::Material,
-    rand_util::{rand_f32, rand_range_f32, rand_vec3},
-    sphere::{MovingSphere, Sphere},
-    texture::Checkered,
+    rand_util::rand_f32,
 };
 
 mod bounds;
