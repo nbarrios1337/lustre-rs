@@ -12,6 +12,7 @@ use crate::{
     material::Material,
     rand_util::{rand_f32, rand_range_f32, rand_vec3},
     sphere::{MovingSphere, Sphere},
+    texture::Checkered,
 };
 
 mod bounds;
@@ -30,8 +31,12 @@ mod texture;
 /// Returns a `HittableList` containing many randomly-generated spheres
 fn gen_random_scene() -> HittableList {
     //  Create ground sphere
+    let checker_tex = Rc::new(Checkered {
+        even: Rc::new(Color(Vec3::new(0.2, 0.3, 0.1))),
+        odd: Rc::new(Color(Vec3::new(0.9, 0.9, 0.9))),
+    });
     let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color(Vec3::ONE / 2.0)),
+        albedo: checker_tex,
     });
     let mut world = HittableList(vec![Sphere::new(
         Vec3::new(0.0, -1000.0, 0.0),

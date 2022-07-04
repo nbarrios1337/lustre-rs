@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, rc::Rc};
 
 use glam::Vec3;
 
@@ -21,5 +21,33 @@ impl Debug for dyn Texture {
 impl Texture for Color {
     fn color(&self, _u: f32, _v: f32, _point: Vec3) -> Color {
         *self
+    }
+}
+
+pub struct Checkered {
+    pub odd: Rc<dyn Texture>,
+    pub even: Rc<dyn Texture>,
+}
+
+impl Checkered {
+    pub fn new(o: &Rc<dyn Texture>, e: &Rc<dyn Texture>) -> Self {
+        Self {
+            odd: o.clone(),
+            even: e.clone(),
+        }
+    }
+}
+
+impl Texture for Checkered {
+    fn color(&self, u: f32, v: f32, point: Vec3) -> Color {
+        let sin_x = (point * 10.0).x.sin();
+        let sin_y = (point * 10.0).y.sin();
+        let sin_z = (point * 10.0).z.sin();
+
+        if sin_x * sin_y * sin_z < 0.0 {
+            self.odd.color(u, v, point)
+        } else {
+            self.even.color(u, v, point)
+        }
     }
 }
