@@ -17,7 +17,9 @@ use crate::{
 /// Possible hard-coded scenes to choose from.
 #[allow(dead_code)]
 pub enum SceneType {
+    /// Scene like the cover of "Ray Tracing in One Weekend".
     CoverPhoto,
+    /// Two checkered spheres with the camera looking at their point of contact
     TwoSpheres,
 }
 
