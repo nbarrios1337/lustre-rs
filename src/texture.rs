@@ -79,9 +79,9 @@ impl PerlinNoise {
 
     pub fn noise(&self, point: Vec3) -> f32 {
         // let ijk = (4 * point.as_uvec3()) & UVec3::splat((Self::POINT_COUNT - 1) as u32);
-        let i = (4.0 * point.x) as usize & (Self::POINT_COUNT - 1);
-        let j = (4.0 * point.y) as usize & (Self::POINT_COUNT - 1);
-        let k = (4.0 * point.z) as usize & (Self::POINT_COUNT - 1);
+        let i = (4.0 * point.x) as isize & (Self::POINT_COUNT - 1) as isize;
+        let j = (4.0 * point.y) as isize & (Self::POINT_COUNT - 1) as isize;
+        let k = (4.0 * point.z) as isize & (Self::POINT_COUNT - 1) as isize;
 
         let perm_x_at_i = self.perm_x[i as usize];
         let perm_y_at_j = self.perm_y[j as usize];
