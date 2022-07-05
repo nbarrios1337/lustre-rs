@@ -21,11 +21,15 @@ impl Aabb {
     ///
     /// Checks for slab intersection in each of the 3 dimensions.
     pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> bool {
+        let inverse_dir = ray.direction.recip();
+        let diff0 = self.min - ray.origin;
+        let diff1 = self.max - ray.origin;
+
         // Check for slab intersection in each dimension
         for axis_idx in 0..3 {
-            let inverse_dir = ray.direction.recip()[axis_idx];
-            let t0 = (self.min[axis_idx] - ray.origin[axis_idx]) * inverse_dir;
-            let t1 = (self.max[axis_idx] - ray.origin[axis_idx]) * inverse_dir;
+            let inverse_dir = inverse_dir[axis_idx];
+            let t0 = diff0[axis_idx] * inverse_dir;
+            let t1 = diff1[axis_idx] * inverse_dir;
 
             // swap if inverted
             let (t0, t1) = if inverse_dir < 0.0 {
