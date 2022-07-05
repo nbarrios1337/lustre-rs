@@ -11,7 +11,7 @@ use crate::{
     material::Material,
     rand_util::*,
     sphere::{MovingSphere, Sphere},
-    texture::{Checkered, SolidColor},
+    texture::{Checkered, PerlinNoise, SolidColor},
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -21,6 +21,8 @@ pub enum SceneType {
     CoverPhoto,
     /// Two checkered spheres with the camera looking at their point of contact
     TwoSpheres,
+    /// Two Perlin noise spheres
+    TwoPerlinSpheres,
 }
 
 /// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
@@ -64,6 +66,20 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 shutter_close,
             );
             (cam, gen_two_spheres())
+        }
+        SceneType::TwoPerlinSpheres => {
+            let cam = Camera::new(
+                look_form,
+                look_at,
+                view_up,
+                vert_fov,
+                aspect_ratio,
+                aperture,
+                focus_dist,
+                shutter_open,
+                shutter_close,
+            );
+            (cam, gen_two_perlin_spheres())
         }
     }
 }
@@ -158,5 +174,17 @@ fn gen_two_spheres() -> HittableList {
     HittableList(vec![
         Sphere::new(Vec3::new(0.0, -10.0, 0.0), 10.0, &checkered).wrap(),
         Sphere::new(Vec3::new(0.0, 10.0, 0.0), 10.0, &checkered).wrap(),
+    ])
+}
+
+/// Returns a [HittableList] containing two Perlin noise spheres.
+fn gen_two_perlin_spheres() -> HittableList {
+    let perlin_tex = Rc::new(Material::Lambertian {
+        albedo: Rc::new(PerlinNoise::new()),
+    });
+
+    HittableList(vec![
+        Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &perlin_tex).wrap(),
+        Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, &perlin_tex).wrap(),
     ])
 }
