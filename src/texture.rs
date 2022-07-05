@@ -1,10 +1,16 @@
+//! Implementations of various textures
+//!
+//! Textures can be procedural color generation, image lookup, or a combination of both.
+
 use std::{fmt::Debug, rc::Rc};
 
 use glam::Vec3;
 
 use crate::color::Color;
 
+/// Behavior of a texture
 pub trait Texture {
+    /// Returns the color value at the uv coordinates or point for the texture
     fn color(&self, u: f32, v: f32, point: Vec3) -> Color;
 }
 
@@ -20,16 +26,19 @@ impl Debug for dyn Texture {
 
 impl Texture for Color {
     fn color(&self, _u: f32, _v: f32, _point: Vec3) -> Color {
+        // Solid Color is the same at all coordinates
         *self
     }
 }
 
+/// A checkered texture alternating between two enclosed textures.
 pub struct Checkered {
     pub even: Rc<dyn Texture>,
     pub odd: Rc<dyn Texture>,
 }
 
 impl Checkered {
+    /// Creates a new checkered texture
     pub fn new(o: &Rc<dyn Texture>, e: &Rc<dyn Texture>) -> Self {
         Self {
             even: e.clone(),
