@@ -1,3 +1,5 @@
+//! Scene generation functionality
+
 use std::rc::Rc;
 
 use glam::{const_vec3, Vec3};
@@ -12,12 +14,14 @@ use crate::{
     texture::Checkered,
 };
 
+/// Possible hard-coded scenes to choose from.
 #[allow(dead_code)]
 pub enum SceneType {
     CoverPhoto,
     TwoSpheres,
 }
 
+/// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
 pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
     // Setup camera properties
     let look_form = Vec3::new(13.0, 2.0, 3.0);
@@ -62,7 +66,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
     }
 }
 
-/// Returns a `HittableList` containing many randomly-generated spheres
+/// Returns a [HittableList] containing randomly-generated spheres
 fn gen_random_scene() -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
@@ -140,6 +144,7 @@ fn gen_random_scene() -> HittableList {
     world
 }
 
+// Returns a [HittableList] containing two checkered spheres.
 fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
         albedo: Rc::new(Checkered {
