@@ -144,7 +144,7 @@ fn gen_random_scene() -> HittableList {
     world
 }
 
-// Returns a [HittableList] containing two checkered spheres.
+/// Returns a [HittableList] containing two checkered spheres.
 fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
         albedo: Rc::new(Checkered {
