@@ -17,13 +17,17 @@ impl Aabb {
         Self { min, max }
     }
 
+    /// Returns whether or not the ray hits this bounding box.
+    ///
+    /// Checks for slab intersection in each of the 3 dimensions.
     pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> bool {
+        // Check for slab intersection in each dimension
         for axis_idx in 0..3 {
             let inverse_dir = ray.direction.recip()[axis_idx];
             let t0 = (self.min[axis_idx] - ray.origin[axis_idx]) * inverse_dir;
             let t1 = (self.max[axis_idx] - ray.origin[axis_idx]) * inverse_dir;
 
-            // swap
+            // swap if inverted
             let (t0, t1) = if inverse_dir < 0.0 {
                 (t1, t0)
             } else {
@@ -40,6 +44,11 @@ impl Aabb {
         true
     }
 
+    /// Returns a bounding box enclosing this and the other box.
+    ///
+    /// In other words, combines the two boxes by taking:
+    /// * the minimums of the two boxes' min members
+    /// * the maximums of the two boxes' max members
     pub fn union(&self, other: &Aabb) -> Aabb {
         let min = self.min.min(other.min);
         let max = self.max.max(other.max);
