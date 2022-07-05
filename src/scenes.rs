@@ -11,7 +11,7 @@ use crate::{
     material::Material,
     rand_util::*,
     sphere::{MovingSphere, Sphere},
-    texture::Checkered,
+    texture::{Checkered, SolidColor},
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -150,8 +150,8 @@ fn gen_random_scene() -> HittableList {
 fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
         albedo: Rc::new(Checkered {
-            even: Rc::new(Color(Vec3::new(0.2, 0.3, 0.1))),
-            odd: Rc::new(Color(Vec3::new(0.9, 0.9, 0.9))),
+            even: Rc::new(SolidColor(Vec3::new(0.2, 0.3, 0.1))),
+            odd: Rc::new(SolidColor(Vec3::new(0.9, 0.9, 0.9))),
         }),
     });
 

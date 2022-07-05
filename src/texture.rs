@@ -6,6 +6,7 @@ use std::{fmt::Debug, rc::Rc};
 
 use glam::Vec3;
 
+pub use crate::color::Color as SolidColor;
 use crate::color::Color;
 
 /// Behavior of a texture
@@ -24,7 +25,7 @@ impl Debug for dyn Texture {
     }
 }
 
-impl Texture for Color {
+impl Texture for SolidColor {
     fn color(&self, _u: f32, _v: f32, _point: Vec3) -> Color {
         // Solid Color is the same at all coordinates
         *self
