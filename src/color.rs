@@ -37,3 +37,11 @@ impl From<Color> for image::Rgb<u8> {
         )
     }
 }
+
+impl From<image::Rgb<u8>> for Color {
+    fn from(rgb: image::Rgb<u8>) -> Self {
+        Self {
+            value: Vec3::new(rgb[0] as f32, rgb[1] as f32, rgb[2] as f32),
+        }
+    }
+}

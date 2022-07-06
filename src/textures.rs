@@ -10,9 +10,11 @@ pub use crate::color::Color as SolidColor;
 use crate::color::Color;
 
 pub use checkered::*;
+pub use self::image::*;
 pub use perlin::*;
 
 pub mod checkered;
+pub mod image;
 pub mod perlin;
 
 /// Behavior of a texture
