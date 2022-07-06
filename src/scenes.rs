@@ -192,7 +192,7 @@ fn gen_two_spheres() -> HittableList {
 /// Returns a [HittableList] containing two Perlin noise spheres.
 fn gen_two_perlin_spheres() -> HittableList {
     let perlin_tex = Rc::new(Material::Lambertian {
-        albedo: Rc::new(PerlinNoise::new()),
+        albedo: Rc::new(PerlinNoise::new(4.0)),
     });
 
     vec![
