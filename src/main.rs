@@ -18,7 +18,7 @@ mod render;
 mod scatter;
 mod scenes;
 mod sphere;
-mod texture;
+mod textures;
 mod utils;
 
 fn main() {

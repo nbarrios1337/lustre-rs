@@ -10,7 +10,7 @@ use crate::{
     hittable::{Hittable, HittableList},
     material::Material,
     sphere::{MovingSphere, Sphere},
-    texture::{Checkered, PerlinNoise, SolidColor, Texture},
+    textures::{Checkered, PerlinNoise, SolidColor, Texture},
     utils::random::*,
 };
 

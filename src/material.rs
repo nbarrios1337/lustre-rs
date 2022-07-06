@@ -8,7 +8,7 @@ use crate::{
     hittable::HitRecord,
     ray::Ray,
     scatter::{reflect, refract},
-    texture::Texture,
+    textures::Texture,
     utils::random::{rand_f32, rand_unit_vec3},
 };
 
