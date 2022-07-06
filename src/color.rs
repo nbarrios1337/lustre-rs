@@ -1,7 +1,5 @@
 //! Convenience newtype for color pixel output
 
-use std::ops::{Deref, DerefMut};
-
 use glam::Vec3;
 
 /// Wrapper around [Vec3] to enable [Vec3] -> [image::Rgb] conversion

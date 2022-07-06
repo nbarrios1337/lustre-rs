@@ -1,13 +1,9 @@
-use glam::Vec3;
-use indicatif::{ProgressBar, ProgressStyle};
 use render::Renderer;
 use scenes::{get_scene, SceneType};
 
 use crate::{
     bvh::BvhNode,
     cli::{Arguments, Parser},
-    color::Color,
-    utils::random::rand_f32,
 };
 
 mod bounds;
