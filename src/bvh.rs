@@ -5,7 +5,7 @@ use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 use crate::{
     bounds::Aabb,
     hittable::{HitRecord, Hittable, HittableList},
-    rand_util::rand_range_usize,
+    utils::random::rand_range_usize,
     ray::Ray,
 };
 

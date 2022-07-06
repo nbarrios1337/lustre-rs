@@ -6,7 +6,7 @@ use glam::Vec3;
 
 use crate::{
     hittable::HitRecord,
-    rand_util::{rand_f32, rand_unit_vec3},
+    utils::random::{rand_f32, rand_unit_vec3},
     ray::Ray,
     scatter::{reflect, refract},
     texture::Texture,

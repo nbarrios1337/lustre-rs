@@ -6,7 +6,7 @@ use crate::{
     bvh::BvhNode,
     cli::{Arguments, Parser},
     color::Color,
-    rand_util::rand_f32,
+    utils::random::rand_f32,
 };
 
 mod bounds;
@@ -16,7 +16,7 @@ mod cli;
 mod color;
 mod hittable;
 mod material;
-mod rand_util;
+mod utils;
 mod ray;
 mod scatter;
 mod scenes;

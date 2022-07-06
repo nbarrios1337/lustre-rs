@@ -9,7 +9,7 @@ use crate::{
     color::Color,
     hittable::{Hittable, HittableList},
     material::Material,
-    rand_util::*,
+    utils::random::*,
     sphere::{MovingSphere, Sphere},
     texture::{Checkered, PerlinNoise, SolidColor, Texture},
 };
