@@ -35,23 +35,22 @@ impl ImageMap {
 
 impl Texture for ImageMap {
     fn color(&self, u: f32, v: f32, _point: glam::Vec3) -> Color {
-        if self.image.is_none() {
-            return Color::new(Vec3::new(0.0, 1.0, 1.0));
+        match &self.image {
+            None => Color::new(Vec3::new(0.0, 1.0, 1.0)),
+            Some(img) => {
+                let u = u.clamp(0.0, 1.0);
+                let v = 1.0 - v.clamp(0.0, 1.0);
+
+                let i = u * img.width() as f32;
+                let j = v * img.height() as f32;
+
+                let i = (i as u32).clamp(0, img.width());
+                let j = (j as u32).clamp(0, img.height());
+
+                // let color_scale = 1.0 / 255.0;
+                let pixel = img[(i, j)];
+                Color::from(pixel)
+            }
         }
-
-        let img = self.image.as_ref().unwrap();
-
-        let u = u.clamp(0.0, 1.0);
-        let v = 1.0 - v.clamp(0.0, 1.0);
-
-        let i = u as u32 * img.width();
-        let j = v as u32 * img.height();
-
-        let i = i.clamp(0, img.width() as u32);
-        let j = j.clamp(0, img.height() as u32);
-
-        // let color_scale = 1.0 / 255.0;
-        let pixel = img[(i, j)];
-        Color::from(pixel)
     }
 }
