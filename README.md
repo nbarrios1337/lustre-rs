@@ -1,4 +1,4 @@
-# Rusty Ray Tracing
+# lustre-rs: Toy RT Renderer
 
 Learning Rust via [Peter Shirley's Ray Tracing in One Weekend](https://raytracing.github.io/) Book series and possibly other sources.
 
