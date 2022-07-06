@@ -1,3 +1,4 @@
+use ::noise::{NoiseFn, Perlin};
 use glam::Vec3;
 use rand::Rng;
 
@@ -11,6 +12,7 @@ pub struct PerlinNoise {
     perm_x: [i32; Self::POINT_COUNT],
     perm_y: [i32; Self::POINT_COUNT],
     perm_z: [i32; Self::POINT_COUNT],
+    noise: Perlin,
 }
 
 impl PerlinNoise {
@@ -59,12 +61,17 @@ impl PerlinNoise {
             perm_x: Self::gen_perm(),
             perm_y: Self::gen_perm(),
             perm_z: Self::gen_perm(),
+            noise: Perlin::new(),
         }
     }
 }
 
 impl Texture for PerlinNoise {
     fn color(&self, _u: f32, _v: f32, point: Vec3) -> Color {
-        Color::new(Vec3::ONE * self.noise(point))
+        let noise = &self.noise as &dyn NoiseFn<[f64; 3]>;
+        noise.color(_u, _v, point)
+        // let val = noise.get(point.as_dvec3().to_array()) as f32;
+        // // let val = noise.get([_u as f64, _v as f64, point.z as f64]) as f32;
+        // Color::new(Vec3::ONE * val)
     }
 }
