@@ -2,8 +2,8 @@
 
 use glam::Vec3;
 
-/// A RGB color. 
-/// 
+/// A RGB color.
+///
 /// Holds its value as a [Vec3]
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
