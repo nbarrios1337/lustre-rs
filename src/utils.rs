@@ -2,5 +2,5 @@
 //!
 //! External create wrappers, small functions, etc.
 
-pub mod random;
 pub mod progress;
+pub mod random;

@@ -6,10 +6,10 @@ use glam::Vec3;
 
 use crate::{
     hittable::HitRecord,
-    utils::random::{rand_f32, rand_unit_vec3},
     ray::Ray,
     scatter::{reflect, refract},
     texture::Texture,
+    utils::random::{rand_f32, rand_unit_vec3},
 };
 
 /// Enumeration of possible material types.

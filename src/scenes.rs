@@ -9,9 +9,9 @@ use crate::{
     color::Color,
     hittable::{Hittable, HittableList},
     material::Material,
-    utils::random::*,
     sphere::{MovingSphere, Sphere},
     texture::{Checkered, PerlinNoise, SolidColor, Texture},
+    utils::random::*,
 };
 
 /// Possible hard-coded scenes to choose from.

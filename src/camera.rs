@@ -8,8 +8,8 @@
 use glam::Vec3;
 
 use crate::{
-    utils::random::{rand_range_f32, rand_vec3_in_unit_disk},
     ray::Ray,
+    utils::random::{rand_range_f32, rand_vec3_in_unit_disk},
 };
 
 /// A Camera that generates rays

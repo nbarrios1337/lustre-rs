@@ -5,8 +5,8 @@ use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 use crate::{
     bounds::Aabb,
     hittable::{HitRecord, Hittable, HittableList},
-    utils::random::rand_range_usize,
     ray::Ray,
+    utils::random::rand_range_usize,
 };
 
 pub struct BvhNode {

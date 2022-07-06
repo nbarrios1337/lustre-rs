@@ -28,7 +28,7 @@ impl Renderer {
     }
 
     /// Generates an image from the given scene.
-    /// 
+    ///
     /// A scene consists of a [Camera] and some [Hittable].
     /// This functions outputs its progress to the commandline.
     pub fn render_scene(&self, scene: (Camera, impl Hittable)) -> image::RgbImage {
