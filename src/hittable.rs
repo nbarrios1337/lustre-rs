@@ -1,10 +1,7 @@
 //! Contains description of what it means to intersect something,
 //! as well as what's returned on intersection
 
-use std::{
-    ops::{Deref, DerefMut},
-    rc::Rc,
-};
+use std::rc::Rc;
 
 use glam::Vec3;
 

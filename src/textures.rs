@@ -2,13 +2,12 @@
 //!
 //! Textures can be procedural color generation, image lookup, or a combination of both.
 
-use std::{fmt::Debug, rc::Rc};
+use std::fmt::Debug;
 
 use glam::Vec3;
-use rand::Rng;
 
 pub use crate::color::Color as SolidColor;
-use crate::{color::Color, utils::random::rand_f32};
+use crate::color::Color;
 
 pub use checkered::*;
 pub use perlin::*;

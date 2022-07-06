@@ -5,7 +5,6 @@ use crate::{color::Color, utils::random::rand_f32};
 
 use super::Texture;
 
-
 #[derive(Debug)]
 pub struct PerlinNoise {
     random_values: [f32; Self::POINT_COUNT],
