@@ -8,30 +8,19 @@ use glam::Vec3;
 ///
 /// See "[The Newtype Pattern In Rust](https://www.worthe-it.co.za/blog/2020-10-31-newtype-pattern-in-rust.html)" article for more info
 #[derive(Debug, Clone, Copy)]
-pub struct Color(pub Vec3);
+pub struct Color {
+    value: Vec3,
+}
 
-impl From<Vec3> for Color {
-    fn from(v: Vec3) -> Self {
-        Self(v)
+impl Color {
+    pub fn new(value: Vec3) -> Self {
+        Self { value }
     }
 }
 
 impl From<Color> for Vec3 {
     fn from(c: Color) -> Self {
-        Self::new(c.x, c.y, c.z)
-    }
-}
-
-impl Deref for Color {
-    type Target = Vec3;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for Color {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
+        c.value
     }
 }
 
@@ -39,7 +28,7 @@ impl DerefMut for Color {
 impl From<Color> for image::Rgb<u8> {
     fn from(color: Color) -> Self {
         Self(
-            (color.clamp(Vec3::ZERO, Vec3::ONE) * 256.0)
+            (color.value.clamp(Vec3::ZERO, Vec3::ONE) * 256.0)
                 .to_array()
                 .iter()
                 .map(|&x| x as u8)

@@ -54,7 +54,7 @@ impl Renderer {
                 color_v /= self.samples_per_pixel as f32;
                 color_v = color_v.powf(0.5); // sqrt
                 progress_bar.inc(1);
-                Color(color_v).into()
+                Color::new(color_v).into()
             },
         );
 

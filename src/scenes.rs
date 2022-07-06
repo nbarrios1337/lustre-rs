@@ -88,7 +88,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
 fn gen_random_scene() -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color(Vec3::ONE / 2.0)),
+        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
     });
     let mut world = HittableList(vec![Sphere::new(
         Vec3::new(0.0, -1000.0, 0.0),
@@ -112,7 +112,7 @@ fn gen_random_scene() -> HittableList {
                 // pick a material by "rarity"
                 let mat = if (0.0..0.8).contains(&decide_mat) {
                     // diffuse
-                    let albedo = Rc::new(Color(rand_vec3() * rand_vec3()));
+                    let albedo = Rc::new(Color::new(rand_vec3() * rand_vec3()));
                     Rc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
@@ -145,7 +145,7 @@ fn gen_random_scene() -> HittableList {
     let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
 
     let mat_2 = Material::Lambertian {
-        albedo: Rc::new(Color(Vec3::new(0.4, 0.2, 0.1))),
+        albedo: Rc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
     };
     let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
 
@@ -166,8 +166,8 @@ fn gen_random_scene() -> HittableList {
 fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
         albedo: Rc::new(Checkered::new(
-            &(Rc::new(SolidColor(Vec3::new(0.2, 0.3, 0.1))) as Rc<dyn Texture>),
-            &(Rc::new(SolidColor(Vec3::new(0.9, 0.9, 0.9))) as Rc<dyn Texture>),
+            &(Rc::new(SolidColor::new(Vec3::new(0.2, 0.3, 0.1))) as Rc<dyn Texture>),
+            &(Rc::new(SolidColor::new(Vec3::new(0.9, 0.9, 0.9))) as Rc<dyn Texture>),
         )),
     });
 

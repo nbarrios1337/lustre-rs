@@ -40,7 +40,7 @@ impl Ray {
     pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16) -> Color {
         // Limit recursion depth
         if bounce_depth == 0 {
-            return Color::from(Vec3::ZERO);
+            return Color::new(Vec3::ZERO);
         }
 
         // Check for a hit against the `hittable` parameter
@@ -62,6 +62,6 @@ impl Ray {
             }
         };
 
-        Color::from(v)
+        Color::new(v)
     }
 }

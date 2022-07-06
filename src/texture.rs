@@ -123,6 +123,6 @@ impl PerlinNoise {
 
 impl Texture for PerlinNoise {
     fn color(&self, _u: f32, _v: f32, point: Vec3) -> Color {
-        Color(Vec3::ONE * self.noise(point))
+        Color::new(Vec3::ONE * self.noise(point))
     }
 }
