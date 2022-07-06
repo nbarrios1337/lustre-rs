@@ -16,12 +16,12 @@ mod cli;
 mod color;
 mod hittable;
 mod material;
-mod utils;
 mod ray;
 mod scatter;
 mod scenes;
 mod sphere;
 mod texture;
+mod utils;
 
 fn main() {
     // Parsing cli args
