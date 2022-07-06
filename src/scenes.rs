@@ -11,7 +11,7 @@ use crate::{
     material::Material,
     rand_util::*,
     sphere::{MovingSphere, Sphere},
-    texture::{Checkered, PerlinNoise, SolidColor},
+    texture::{Checkered, PerlinNoise, SolidColor, Texture},
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -165,10 +165,10 @@ fn gen_random_scene() -> HittableList {
 /// Returns a [HittableList] containing two checkered spheres.
 fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Checkered {
-            even: Rc::new(SolidColor(Vec3::new(0.2, 0.3, 0.1))),
-            odd: Rc::new(SolidColor(Vec3::new(0.9, 0.9, 0.9))),
-        }),
+        albedo: Rc::new(Checkered::new(
+            &(Rc::new(SolidColor(Vec3::new(0.2, 0.3, 0.1))) as Rc<dyn Texture>),
+            &(Rc::new(SolidColor(Vec3::new(0.9, 0.9, 0.9))) as Rc<dyn Texture>),
+        )),
     });
 
     HittableList(vec![
