@@ -1,16 +1,17 @@
-//! Convenience newtype for color pixel output
+//! Color and pixel output
 
 use glam::Vec3;
 
-/// Wrapper around [Vec3] to enable [Vec3] -> [image::Rgb] conversion
-///
-/// See "[The Newtype Pattern In Rust](https://www.worthe-it.co.za/blog/2020-10-31-newtype-pattern-in-rust.html)" article for more info
+/// A RGB color. 
+/// 
+/// Holds its value as a [Vec3]
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
     value: Vec3,
 }
 
 impl Color {
+    /// Creates a new Color
     pub fn new(value: Vec3) -> Self {
         Self { value }
     }
