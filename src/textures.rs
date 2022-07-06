@@ -9,8 +9,8 @@ use glam::Vec3;
 pub use crate::color::Color as SolidColor;
 use crate::color::Color;
 
-pub use checkered::*;
 pub use self::image::*;
+pub use checkered::*;
 pub use perlin::*;
 
 pub mod checkered;
