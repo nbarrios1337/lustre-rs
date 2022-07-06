@@ -40,8 +40,14 @@ impl From<Color> for image::Rgb<u8> {
 
 impl From<image::Rgb<u8>> for Color {
     fn from(rgb: image::Rgb<u8>) -> Self {
+        let scale = 1.0 / 256.0;
+        let scaled = [
+            rgb[0] as f32 * scale,
+            rgb[1] as f32 * scale,
+            rgb[2] as f32 * scale,
+        ];
         Self {
-            value: Vec3::new(rgb[0] as f32, rgb[1] as f32, rgb[2] as f32),
+            value: Vec3::from(scaled),
         }
     }
 }
