@@ -73,21 +73,8 @@ pub trait Hittable {
     }
 }
 
-/// Wrapper newtype holding a [Vec] of types implementing the [Hittable] trait
-pub struct HittableList(pub Vec<Rc<dyn Hittable>>);
-
-impl Deref for HittableList {
-    type Target = Vec<Rc<dyn Hittable>>;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for HittableList {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
+/// Type alias for a vector of objects implementing [Hittable]
+pub type HittableList = Vec<Rc<dyn Hittable>>;
 
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {

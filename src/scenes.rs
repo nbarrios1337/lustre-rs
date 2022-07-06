@@ -90,12 +90,8 @@ fn gen_random_scene() -> HittableList {
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
     });
-    let mut world = HittableList(vec![Sphere::new(
-        Vec3::new(0.0, -1000.0, 0.0),
-        1000.0,
-        &ground_material,
-    )
-    .wrap()]);
+    let mut world: HittableList =
+        vec![Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &ground_material).wrap()];
 
     // The random generation part
     const ORIGIN: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
@@ -171,10 +167,10 @@ fn gen_two_spheres() -> HittableList {
         )),
     });
 
-    HittableList(vec![
+    vec![
         Sphere::new(Vec3::new(0.0, -10.0, 0.0), 10.0, &checkered).wrap(),
         Sphere::new(Vec3::new(0.0, 10.0, 0.0), 10.0, &checkered).wrap(),
-    ])
+    ]
 }
 
 /// Returns a [HittableList] containing two Perlin noise spheres.
@@ -183,8 +179,8 @@ fn gen_two_perlin_spheres() -> HittableList {
         albedo: Rc::new(PerlinNoise::new()),
     });
 
-    HittableList(vec![
+    vec![
         Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &perlin_tex).wrap(),
         Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, &perlin_tex).wrap(),
-    ])
+    ]
 }
