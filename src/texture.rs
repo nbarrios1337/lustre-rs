@@ -4,14 +4,11 @@
 
 use std::{fmt::Debug, rc::Rc};
 
-use glam::{UVec3, Vec3};
+use glam::Vec3;
 use rand::Rng;
 
 pub use crate::color::Color as SolidColor;
-use crate::{
-    color::Color,
-    rand_util::{rand_f32, rand_range_usize},
-};
+use crate::{color::Color, rand_util::rand_f32};
 
 /// Behavior of a texture
 pub trait Texture {
