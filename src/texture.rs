@@ -43,8 +43,8 @@ impl Checkered {
     /// Creates a new checkered texture
     pub fn new(o: &Rc<dyn Texture>, e: &Rc<dyn Texture>) -> Self {
         Self {
-            even: e.clone(),
-            odd: o.clone(),
+            even: Rc::clone(e),
+            odd: Rc::clone(o),
         }
     }
 }
