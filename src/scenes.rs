@@ -1,6 +1,6 @@
 //! Scene generation functionality
 
-use std::rc::Rc;
+use std::{path::PathBuf, rc::Rc, str::FromStr};
 
 use glam::{const_vec3, Vec3};
 
@@ -10,7 +10,7 @@ use crate::{
     hittable::{Hittable, HittableList},
     material::Material,
     sphere::{MovingSphere, Sphere},
-    textures::{Checkered, PerlinNoise, SolidColor, Texture},
+    textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
     utils::random::*,
 };
 
@@ -23,6 +23,8 @@ pub enum SceneType {
     TwoSpheres,
     /// Two Perlin noise spheres
     TwoPerlinSpheres,
+    /// A single sphere with an image of Earth mapped to it
+    Earth,
 }
 
 /// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
@@ -80,6 +82,20 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 shutter_close,
             );
             (cam, gen_two_perlin_spheres())
+        }
+        SceneType::Earth => {
+            let cam = Camera::new(
+                look_form,
+                look_at,
+                view_up,
+                vert_fov,
+                aspect_ratio,
+                aperture,
+                focus_dist,
+                shutter_open,
+                shutter_close,
+            );
+            (cam, gen_earth())
         }
     }
 }
@@ -183,4 +199,15 @@ fn gen_two_perlin_spheres() -> HittableList {
         Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &perlin_tex).wrap(),
         Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, &perlin_tex).wrap(),
     ]
+}
+
+fn gen_earth() -> HittableList {
+    let earth_tex = Rc::new(Material::Lambertian {
+        albedo: Rc::new(ImageMap::new(
+            PathBuf::from_str("resources/earthmap.jpg").unwrap(),
+        )),
+    });
+
+    let globe = Sphere::new(Vec3::ZERO, 2.0, &earth_tex);
+    vec![globe.wrap()]
 }
