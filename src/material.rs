@@ -6,7 +6,7 @@ use glam::Vec3;
 
 use crate::{
     color::Color,
-    hittable::HitRecord,
+    hittables::HitRecord,
     ray::Ray,
     scatter::{reflect, refract},
     textures::Texture,

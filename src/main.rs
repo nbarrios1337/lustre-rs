@@ -11,7 +11,7 @@ mod bvh;
 mod camera;
 mod cli;
 mod color;
-mod hittable;
+mod hittables;
 mod material;
 mod ray;
 mod render;

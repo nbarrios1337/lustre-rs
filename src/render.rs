@@ -5,7 +5,7 @@ use glam::Vec3;
 use crate::{
     camera::Camera,
     color::Color,
-    hittable::Hittable,
+    hittables::Hittable,
     utils::{progress::get_progressbar, random::rand_f32},
 };
 
