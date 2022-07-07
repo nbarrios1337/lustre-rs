@@ -8,6 +8,7 @@
 use glam::Vec3;
 
 use crate::{
+    color::Color,
     ray::Ray,
     utils::random::{rand_range_f32, rand_vec3_in_unit_disk},
 };
@@ -35,6 +36,8 @@ pub struct Camera {
     shutter_open: f32,
     /// Shutter close time
     shutter_close: f32,
+    /// Background color
+    pub bg_color: Color,
 }
 
 impl Camera {
@@ -58,6 +61,7 @@ impl Camera {
         focus_dist: f32,
         shutter_open: f32,
         shutter_close: f32,
+        bg_color: Color
     ) -> Self {
         // Set up viewport
         let theta = vert_fov.to_radians();
@@ -86,6 +90,7 @@ impl Camera {
             lens_radius,
             shutter_open,
             shutter_close,
+            bg_color
         }
     }
 
@@ -115,6 +120,7 @@ impl Default for Camera {
             10.0,
             0.0,
             0.0,
+            Color::new(Vec3::ZERO),
         )
     }
 }

@@ -37,31 +37,38 @@ impl Ray {
     /// Returns a [`Color`] value based on the accumulated light and color at the initial intersection point.
     ///
     /// Uses `bounce_depth` to limit the amount of recursion when gathering contributions.
-    pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16) -> Color {
+    pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16, bg_color: Color) -> Color {
         // Limit recursion depth
         if bounce_depth == 0 {
             return Color::new(Vec3::ZERO);
         }
 
         // Check for a hit against the `hittable` parameter
-        let v = match hittable.hit(self, 0.001, INFINITY) {
-            // immediately match against the HitRecord's material member
-            Some(rec) => match rec.material.scatter(self, &rec) {
-                // A successful ray scatter leads to more contributions.
-                Some((scattered, attenuation)) => {
-                    attenuation * Vec3::from(scattered.shade(hittable, bounce_depth - 1))
-                }
-                None => Vec3::ZERO,
-            },
-            // without a hit, functions like a miss shader
-            None => {
-                // linearly interpolate from white to blue-ish
-                let dir_n = self.direction.normalize_or_zero();
-                let t = 0.5 * (dir_n.y + 1.0);
-                Vec3::ONE.lerp(Vec3::new(0.5, 0.7, 1.0), t)
-            }
-        };
+        match hittable.hit(self, 0.001, INFINITY) {
+            // successful hit, let's do some light gathering
+            Some(rec) => {
+                // gather any emitted light contribution
+                let emitted = match rec.material.emit(rec.u, rec.v, rec.point) {
+                    Some(color) => Vec3::from(color),
+                    None => Vec3::ZERO,
+                };
 
-        Color::new(v)
+                // gather any scattered light contribution
+                let atten = match rec.material.scatter(self, &rec) {
+                    // A successful ray scatter leads to more contributions.
+                    Some((scattered, attenuation)) => {
+                        attenuation
+                            * Vec3::from(scattered.shade(hittable, bounce_depth - 1, bg_color))
+                    }
+                    // Otherwise, we're done
+                    None => Vec3::ZERO,
+                };
+
+                // both emissives and scattered light contribute, unless they're zeroed
+                Color::new(emitted + atten)
+            }
+            // without a hit, functions like a miss shader
+            None => bg_color,
+        }
     }
 }

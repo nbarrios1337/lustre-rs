@@ -38,6 +38,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
     let focus_dist = 10.0;
     let shutter_open = 0.0;
     let shutter_close = 1.0;
+    let bg_color = Color::new(Vec3::new(0.7,0.8,1.0));
 
     match scene_type {
         SceneType::CoverPhoto => {
@@ -51,6 +52,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 focus_dist,
                 shutter_open,
                 shutter_close,
+                bg_color,
             );
             (cam, gen_random_scene())
         }
@@ -66,6 +68,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 focus_dist,
                 shutter_open,
                 shutter_close,
+                bg_color,
             );
             (cam, gen_two_spheres())
         }
@@ -80,6 +83,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 focus_dist,
                 shutter_open,
                 shutter_close,
+                bg_color,
             );
             (cam, gen_two_perlin_spheres())
         }
@@ -94,6 +98,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
                 focus_dist,
                 shutter_open,
                 shutter_close,
+                bg_color,
             );
             (cam, gen_earth())
         }
