@@ -61,7 +61,7 @@ impl Camera {
         focus_dist: f32,
         shutter_open: f32,
         shutter_close: f32,
-        bg_color: Color
+        bg_color: Color,
     ) -> Self {
         // Set up viewport
         let theta = vert_fov.to_radians();
@@ -90,7 +90,7 @@ impl Camera {
             lens_radius,
             shutter_open,
             shutter_close,
-            bg_color
+            bg_color,
         }
     }
 
