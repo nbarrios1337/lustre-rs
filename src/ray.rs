@@ -4,7 +4,7 @@ use std::f32::INFINITY;
 
 use glam::Vec3;
 
-use crate::{color::Color, hittable::Hittable};
+use crate::{color::Color, hittables::Hittable};
 
 /// A 3-dimensional Ray
 ///

@@ -9,7 +9,7 @@ use glam::Vec3;
 
 use crate::{
     bounds::Aabb,
-    hittable::{HitRecord, Hittable},
+    hittables::{HitRecord, Hittable},
     material::Material,
     ray::Ray,
 };

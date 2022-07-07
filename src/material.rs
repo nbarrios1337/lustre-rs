@@ -5,7 +5,7 @@ use std::{f32::EPSILON, rc::Rc};
 use glam::Vec3;
 
 use crate::{
-    hittable::HitRecord,
+    hittables::HitRecord,
     ray::Ray,
     scatter::{reflect, refract},
     textures::Texture,

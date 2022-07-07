@@ -4,7 +4,7 @@ use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 
 use crate::{
     bounds::Aabb,
-    hittable::{HitRecord, Hittable, HittableList},
+    hittables::{HitRecord, Hittable, HittableList},
     ray::Ray,
     utils::random::rand_range_usize,
 };
