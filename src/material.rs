@@ -5,6 +5,7 @@ use std::{f32::EPSILON, rc::Rc};
 use glam::Vec3;
 
 use crate::{
+    color::Color,
     hittables::HitRecord,
     ray::Ray,
     scatter::{reflect, refract},
@@ -23,6 +24,8 @@ pub enum Material {
     Metal { albedo: Vec3, roughness: f32 },
     /// A glass material that scatters rays based on the given refractive index.
     Dielectric { refract_index: f32 },
+    /// A material emitting diffuse light
+    DiffuseLight { emit: Rc<dyn Texture> },
 }
 
 impl Material {
@@ -90,6 +93,15 @@ impl Material {
 
                 Some((Ray::new(rec.point, direction, ray.time), attenuation))
             }
+            Material::DiffuseLight { .. } => None,
+        }
+    }
+
+    /// Returns the emmited color of light from the material, if any.
+    pub fn emit(&self, u: f32, v: f32, point: Vec3) -> Option<Color> {
+        match self {
+            Material::DiffuseLight { emit } => Some(emit.color(u, v, point)),
+            _ => None,
         }
     }
 }
