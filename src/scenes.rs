@@ -2,7 +2,7 @@
 
 use std::{path::PathBuf, rc::Rc, str::FromStr};
 
-use glam::{const_vec3, Vec3};
+use glam::Vec3;
 
 use crate::{
     camera::Camera,
@@ -115,7 +115,7 @@ fn gen_random_scene() -> HittableList {
         vec![Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &ground_material).wrap()];
 
     // The random generation part
-    const ORIGIN: Vec3 = const_vec3!([4.0, 0.2, 0.0]);
+    const ORIGIN: Vec3 = Vec3::from_array([4.0, 0.2, 0.0]);
     for a in -11..11 {
         for b in -11..11 {
             let center = Vec3::new(
