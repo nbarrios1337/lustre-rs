@@ -87,8 +87,8 @@ impl Quad {
 impl Hittable for Quad {
     fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<Aabb> {
         // its an aabb :/
-        let min = self.p0.min(self.p1).min(self.p2).min(self.p3);
-        let max = self.p0.max(self.p1).max(self.p2).max(self.p3);
+        let min = self.p0.min(self.p1).min(self.p2).min(self.p3) - 0.0001;
+        let max = self.p0.max(self.p1).max(self.p2).max(self.p3) + 0.0001;
         Some(Aabb::new(min, max))
     }
 
