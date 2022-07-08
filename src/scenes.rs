@@ -61,7 +61,7 @@ pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, Hitta
         }
         SceneType::CornellBox => {
             aspect_ratio = 1.0;
-            bg_color = Color::new(Vec3::ONE / 100.0);
+            bg_color = Color::new(Vec3::ZERO);
             look_form = Vec3::new(278.0, 278.0, -800.0);
             look_at = Vec3::new(278.0, 278.0, 0.0);
             vert_fov = 40.0;
