@@ -28,80 +28,44 @@ pub enum SceneType {
 
 /// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
 pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
-    // Setup camera properties
-    let look_form = Vec3::new(13.0, 2.0, 3.0);
-    let look_at = Vec3::ZERO;
-    let view_up = Vec3::Y;
-    let vert_fov = 20.0;
-    let aperture = 0.1;
-    let focus_dist = 10.0;
-    let shutter_open = 0.0;
-    let shutter_close = 1.0;
-    let bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
+    // Setup default camera properties
+    // uncomment the `mut` once its needed
+    let /* mut */ look_form = Vec3::new(13.0, 2.0, 3.0);
+    let /* mut */ look_at = Vec3::ZERO;
+    let /* mut */ view_up = Vec3::Y;
+    let /* mut */ vert_fov = 20.0;
+    let mut aperture = 0.1;
+    let /* mut */ focus_dist = 10.0;
+    let /* mut */ shutter_open = 0.0;
+    let /* mut */ shutter_close = 1.0;
+    let /* mut */ bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
 
-    match scene_type {
-        SceneType::CoverPhoto => {
-            let cam = Camera::new(
-                look_form,
-                look_at,
-                view_up,
-                vert_fov,
-                aspect_ratio,
-                aperture,
-                focus_dist,
-                shutter_open,
-                shutter_close,
-                bg_color,
-            );
-            (cam, gen_random_scene())
-        }
+    // Grabs the scene and changes any cam params
+    let scene = match scene_type {
+        SceneType::CoverPhoto => gen_random_scene(),
         SceneType::TwoSpheres => {
-            let aperture = 0.0;
-            let cam = Camera::new(
-                look_form,
-                look_at,
-                view_up,
-                vert_fov,
-                aspect_ratio,
-                aperture,
-                focus_dist,
-                shutter_open,
-                shutter_close,
-                bg_color,
-            );
-            (cam, gen_two_spheres())
+            aperture = 0.0;
+            gen_two_spheres()
         }
-        SceneType::TwoPerlinSpheres => {
-            let cam = Camera::new(
-                look_form,
-                look_at,
-                view_up,
-                vert_fov,
-                aspect_ratio,
-                aperture,
-                focus_dist,
-                shutter_open,
-                shutter_close,
-                bg_color,
-            );
-            (cam, gen_two_perlin_spheres())
-        }
-        SceneType::Earth => {
-            let cam = Camera::new(
-                look_form,
-                look_at,
-                view_up,
-                vert_fov,
-                aspect_ratio,
-                aperture,
-                focus_dist,
-                shutter_open,
-                shutter_close,
-                bg_color,
-            );
-            (cam, gen_earth())
-        }
-    }
+        SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(),
+        SceneType::Earth => gen_earth(),
+    };
+
+    // set up camera with (possibly modified) properies
+    let cam = Camera::new(
+        look_form,
+        look_at,
+        view_up,
+        vert_fov,
+        aspect_ratio,
+        aperture,
+        focus_dist,
+        shutter_open,
+        shutter_close,
+        bg_color,
+    );
+
+    (cam, scene)
 }
 
 /// Returns a [HittableList] containing randomly-generated spheres
