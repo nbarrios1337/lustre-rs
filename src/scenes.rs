@@ -195,7 +195,7 @@ fn gen_simple_light() -> HittableList {
     });
 
     let diff_light = Rc::new(Material::DiffuseLight {
-        emit: Rc::new(SolidColor::new(Vec3::ONE)),
+        albedo: Rc::new(SolidColor::new(Vec3::ONE)),
         brightness: 4.0,
     });
 
