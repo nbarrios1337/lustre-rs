@@ -60,13 +60,14 @@ impl Quad {
             let p2 = Vec3::new(x_max, k, z_max);
             let p3 = Vec3::new(x_min, k, z_max);
             (p0, p1, p2, p3)
-        } else {
-            /* if z_min == z_max && z_min == 0.0 */
+        } else if z_min == z_max && z_min == 0.0 {
             let p0 = Vec3::new(x_min, y_min, k);
             let p1 = Vec3::new(x_max, y_min, k);
             let p2 = Vec3::new(x_max, y_max, k);
             let p3 = Vec3::new(x_min, y_max, k);
             (p0, p1, p2, p3)
+        } else {
+            panic!("Points are not zero in the same dimension! {} vs {}", p_min, p_max);
         };
 
         Self {
