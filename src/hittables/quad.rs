@@ -67,7 +67,10 @@ impl Quad {
             let p3 = Vec3::new(x_min, y_max, k);
             (p0, p1, p2, p3)
         } else {
-            panic!("Points are not zero in the same dimension! {} vs {}", p_min, p_max);
+            panic!(
+                "Points are not zero in the same dimension! {} vs {}",
+                p_min, p_max
+            );
         };
 
         Self {
@@ -169,14 +172,18 @@ impl Hittable for Quad {
             return None;
         }
 
-        Some(HitRecord {
-            point,
-            normal: plane_normal,
+        let normal = abs_normal.normalize();
+        let mut rec = HitRecord {
+            point: ray.at(t),
+            normal,
             material: Rc::clone(&self.material),
             t,
             u,
             v,
             front_face: true,
-        })
+        };
+        rec.set_face_normal(ray, normal);
+
+        Some(rec)
     }
 }
