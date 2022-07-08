@@ -26,16 +26,18 @@ pub enum SceneType {
     Earth,
     /// [SceneType::TwoPerlinSpheres] with a rectangular diffuse light
     SimpleLight,
+    /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box),
+    CornellBox,
 }
 
 /// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
-pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
+pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
     // Setup default camera properties
     // uncomment the `mut` once its needed
     let mut look_form = Vec3::new(13.0, 2.0, 3.0);
     let mut look_at = Vec3::ZERO;
     let /* mut */ view_up = Vec3::Y;
-    let /* mut */ vert_fov = 20.0;
+    let mut vert_fov = 20.0;
     let mut aperture = 0.0;
     let /* mut */ focus_dist = 10.0;
     let /* mut */ shutter_open = 0.0;
@@ -56,6 +58,14 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
             look_form = Vec3::new(26.0, 3.0, 6.0);
             look_at = Vec3::new(0.0, 2.0, 0.0);
             gen_simple_light()
+        }
+        SceneType::CornellBox => {
+            aspect_ratio = 1.0;
+            bg_color = Color::new(Vec3::ONE / 100.0);
+            look_form = Vec3::new(278.0, 278.0, -800.0);
+            look_at = Vec3::new(278.0, 278.0, 0.0);
+            vert_fov = 40.0;
+            gen_cornell_box()
         }
     };
 
@@ -208,4 +218,73 @@ fn gen_simple_light() -> HittableList {
     );
 
     world
+}
+
+fn gen_cornell_box() -> HittableList {
+    let red_diffuse = Rc::new(Material::Lambertian {
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.65, 0.05, 0.05))),
+    });
+    let white_diffuse = Rc::new(Material::Lambertian {
+        albedo: Rc::new(SolidColor::new(Vec3::splat(0.73))),
+    });
+    let green_diffuse = Rc::new(Material::Lambertian {
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.12, 0.45, 0.15))),
+    });
+    let light = Rc::new(Material::DiffuseLight {
+        albedo: Rc::new(SolidColor::new(Vec3::ONE)),
+        brightness: 15.0,
+    });
+
+    // yz rect - zero x
+    let left_side = Quad::from_two_points_z(
+        Vec3::ZERO,
+        Vec3::new(0.0, 555.0, 555.0),
+        555.0,
+        &green_diffuse,
+    );
+
+    // yz rect - zero x
+    let right_side =
+        Quad::from_two_points_z(Vec3::ZERO, Vec3::new(0.0, 555.0, 555.0), 0.0, &red_diffuse);
+
+    // xz rect - zero y
+    let light_rec = Quad::from_two_points_z(
+        Vec3::new(213.0, 0.0, 227.0),
+        Vec3::new(343.0, 0.0, 332.0),
+        554.0,
+        &light,
+    );
+
+    // xz rect - zero y
+    let bottom_side = Quad::from_two_points_z(
+        Vec3::ZERO,
+        Vec3::new(555.0, 0.0, 555.0),
+        0.0,
+        &white_diffuse,
+    );
+
+    // xz rect - zero y
+    let top_side = Quad::from_two_points_z(
+        Vec3::ZERO,
+        Vec3::new(555.0, 0.0, 555.0),
+        555.0,
+        &white_diffuse,
+    );
+
+    // xy rect - zero z
+    let back_side = Quad::from_two_points_z(
+        Vec3::ZERO,
+        Vec3::new(555.0, 555.0, 0.0),
+        555.0,
+        &white_diffuse,
+    );
+
+    vec![
+        left_side.wrap(),
+        right_side.wrap(),
+        bottom_side.wrap(),
+        top_side.wrap(),
+        back_side.wrap(),
+        light_rec.wrap(),
+    ]
 }
