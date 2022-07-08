@@ -25,7 +25,10 @@ pub enum Material {
     /// A glass material that scatters rays based on the given refractive index.
     Dielectric { refract_index: f32 },
     /// A material emitting diffuse light
-    DiffuseLight { emit: Rc<dyn Texture> },
+    DiffuseLight {
+        emit: Rc<dyn Texture>,
+        brightness: f32,
+    },
 }
 
 impl Material {
@@ -100,7 +103,11 @@ impl Material {
     /// Returns the emmited color of light from the material, if any.
     pub fn emit(&self, u: f32, v: f32, point: Vec3) -> Option<Color> {
         match self {
-            Material::DiffuseLight { emit } => Some(emit.color(u, v, point)),
+            Material::DiffuseLight { emit, brightness } => {
+                let color = emit.color(u, v, point);
+                let val = *brightness * Vec3::from(color);
+                Some(Color::new(val))
+            }
             _ => None,
         }
     }
