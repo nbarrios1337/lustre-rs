@@ -34,7 +34,7 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
     let /* mut */ look_at = Vec3::ZERO;
     let /* mut */ view_up = Vec3::Y;
     let /* mut */ vert_fov = 20.0;
-    let mut aperture = 0.1;
+    let mut aperture = 0.0;
     let /* mut */ focus_dist = 10.0;
     let /* mut */ shutter_open = 0.0;
     let /* mut */ shutter_close = 1.0;
@@ -42,11 +42,11 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
 
     // Grabs the scene and changes any cam params
     let scene = match scene_type {
-        SceneType::CoverPhoto => gen_random_scene(),
-        SceneType::TwoSpheres => {
-            aperture = 0.0;
-            gen_two_spheres()
+        SceneType::CoverPhoto => {
+            aperture = 0.1;
+            gen_random_scene()
         }
+        SceneType::TwoSpheres => gen_two_spheres(),
         SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(),
         SceneType::Earth => gen_earth(),
     };
