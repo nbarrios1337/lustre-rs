@@ -1,3 +1,5 @@
+//! Quadrilateral implementation
+
 use std::rc::Rc;
 
 use glam::{Vec2, Vec3};
@@ -6,6 +8,12 @@ use crate::{bounds::Aabb, material::Material};
 
 use super::{HitRecord, Hittable};
 
+
+/// A quadrilateral defined by four points in space
+/// 
+/// Based on Inigo Quilez's quad intersector:
+/// * [Intersection ShaderToy example](https://www.shadertoy.com/view/XtlBDs)
+/// * [Surface Ooords ShaderToy example](https://www.shadertoy.com/view/lsBSDm)
 #[derive(Debug)]
 pub struct Quad {
     p0: Vec3,
@@ -16,10 +24,13 @@ pub struct Quad {
 }
 
 impl Quad {
+    /// axes indices used during 2d projection.
+    const AXIS_IDXS: [usize; 4] = [1, 2, 0, 1];
     // 0----3
     // |    |
     // |    |
     // 1----2
+    /// Creates a new Quad.
     pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Rc<Material>) -> Self {
         Self {
             p0,
@@ -30,6 +41,9 @@ impl Quad {
         }
     }
 
+    /// Creates a new axis-aligned Quad based on 2 points on a plane + the plane's k value.
+    /// 
+    /// Requires one dimension in each point to be zero-ed out to work.
     pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Rc<Material>) -> Self {
         let (x_min, y_min, z_min) = p_min.into();
         let (x_max, y_max, z_max) = p_max.into();
@@ -102,7 +116,6 @@ impl Hittable for Quad {
         let point = p + ray.direction * t;
 
         // Projecting to 2D ("plane space")
-        const AXIS_IDXS: [usize; 4] = [1, 2, 0, 1];
         let abs_normal = plane_normal.abs();
         let axis_idx = if abs_normal.x > abs_normal.y && abs_normal.x > abs_normal.z {
             0
@@ -112,8 +125,8 @@ impl Hittable for Quad {
             2
         };
 
-        let id_u = AXIS_IDXS[axis_idx];
-        let id_v = AXIS_IDXS[axis_idx + 1];
+        let id_u = Self::AXIS_IDXS[axis_idx];
+        let id_v = Self::AXIS_IDXS[axis_idx + 1];
 
         // projection
         let kp = Vec2::new(point[id_u], point[id_v]);
