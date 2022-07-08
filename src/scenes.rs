@@ -177,6 +177,7 @@ fn gen_two_perlin_spheres() -> HittableList {
     ]
 }
 
+/// Returns a [HittableList] containing a single image-backed sphere.
 fn gen_earth() -> HittableList {
     let earth_tex = Rc::new(Material::Lambertian {
         albedo: Rc::new(ImageMap::new(

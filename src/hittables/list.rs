@@ -1,3 +1,5 @@
+//! A list of [Hittable]s
+
 use std::rc::Rc;
 
 use crate::{bounds::Aabb, ray::Ray};
