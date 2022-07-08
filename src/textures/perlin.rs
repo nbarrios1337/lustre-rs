@@ -1,3 +1,5 @@
+//! A texture mapping backed by procedural Perlin noise
+
 use ::noise::{NoiseFn, Perlin};
 use glam::Vec3;
 

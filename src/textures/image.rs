@@ -1,3 +1,5 @@
+//! An image-backed texture mapping
+
 use std::path::PathBuf;
 
 use glam::Vec3;
@@ -9,6 +11,7 @@ use super::Texture;
 /// An image-based texture
 #[derive(Debug)]
 pub struct ImageMap {
+    /// The image buffer used as the texture
     image: Option<image::RgbImage>,
 }
 

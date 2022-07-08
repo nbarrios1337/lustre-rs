@@ -1,3 +1,5 @@
+//! A texture mapping alternating between two other Textures in a checkerboard fashion.
+
 use std::rc::Rc;
 
 use glam::Vec3;
