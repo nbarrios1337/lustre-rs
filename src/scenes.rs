@@ -190,18 +190,13 @@ fn gen_earth() -> HittableList {
 
 /// Returns a [HittableList] resembling [gen_two_perlin_spheres], with a rectangular diffuse light
 fn gen_simple_light() -> HittableList {
-    let perlin_tex = Rc::new(Material::Lambertian {
-        albedo: Rc::new(PerlinNoise::new(4.0)),
-    });
-
     let diff_light = Rc::new(Material::DiffuseLight {
         albedo: Rc::new(SolidColor::new(Vec3::ONE)),
         brightness: 4.0,
     });
 
-    vec![
-        Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &perlin_tex).wrap(),
-        Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, &perlin_tex).wrap(),
+    let mut world = gen_two_perlin_spheres();
+    world.push(
         Quad::from_two_points_z(
             Vec3::new(3.0, 1.0, 0.0),
             Vec3::new(5.0, 3.0, 0.0),
@@ -209,5 +204,7 @@ fn gen_simple_light() -> HittableList {
             &diff_light,
         )
         .wrap(),
-    ]
+    );
+
+    world
 }
