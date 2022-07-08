@@ -7,7 +7,7 @@ use glam::Vec3;
 use crate::{
     camera::Camera,
     color::Color,
-    hittables::{Hittable, HittableList, MovingSphere, Sphere},
+    hittables::{Hittable, HittableList, MovingSphere, Quad, Sphere},
     material::Material,
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
     utils::random::*,
@@ -24,21 +24,23 @@ pub enum SceneType {
     TwoPerlinSpheres,
     /// A single sphere with an image of Earth mapped to it
     Earth,
+    /// [SceneType::TwoPerlinSpheres] with a rectangular diffuse light
+    SimpleLight,
 }
 
 /// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
 pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
     // Setup default camera properties
     // uncomment the `mut` once its needed
-    let /* mut */ look_form = Vec3::new(13.0, 2.0, 3.0);
-    let /* mut */ look_at = Vec3::ZERO;
+    let mut look_form = Vec3::new(13.0, 2.0, 3.0);
+    let mut look_at = Vec3::ZERO;
     let /* mut */ view_up = Vec3::Y;
     let /* mut */ vert_fov = 20.0;
     let mut aperture = 0.0;
     let /* mut */ focus_dist = 10.0;
     let /* mut */ shutter_open = 0.0;
     let /* mut */ shutter_close = 1.0;
-    let /* mut */ bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
+    let mut bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
 
     // Grabs the scene and changes any cam params
     let scene = match scene_type {
@@ -49,6 +51,12 @@ pub fn get_scene(aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableL
         SceneType::TwoSpheres => gen_two_spheres(),
         SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(),
         SceneType::Earth => gen_earth(),
+        SceneType::SimpleLight => {
+            bg_color = Color::new(Vec3::ZERO);
+            look_form = Vec3::new(26.0, 3.0, 6.0);
+            look_at = Vec3::new(0.0, 2.0, 0.0);
+            gen_simple_light()
+        }
     };
 
     // set up camera with (possibly modified) properies
@@ -178,4 +186,28 @@ fn gen_earth() -> HittableList {
 
     let globe = Sphere::new(Vec3::ZERO, 2.0, &earth_tex);
     vec![globe.wrap()]
+}
+
+/// Returns a [HittableList] resembling [gen_two_perlin_spheres], with a rectangular diffuse light
+fn gen_simple_light() -> HittableList {
+    let perlin_tex = Rc::new(Material::Lambertian {
+        albedo: Rc::new(PerlinNoise::new(4.0)),
+    });
+
+    let diff_light = Rc::new(Material::DiffuseLight {
+        emit: Rc::new(SolidColor::new(Vec3::ONE)),
+        brightness: 4.0,
+    });
+
+    vec![
+        Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &perlin_tex).wrap(),
+        Sphere::new(Vec3::new(0.0, 2.0, 0.0), 2.0, &perlin_tex).wrap(),
+        Quad::from_two_points_z(
+            Vec3::new(3.0, 1.0, 0.0),
+            Vec3::new(5.0, 3.0, 0.0),
+            -2.0,
+            &diff_light,
+        )
+        .wrap(),
+    ]
 }
