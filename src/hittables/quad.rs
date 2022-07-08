@@ -8,9 +8,8 @@ use crate::{bounds::Aabb, material::Material};
 
 use super::{HitRecord, Hittable};
 
-
 /// A quadrilateral defined by four points in space
-/// 
+///
 /// Based on Inigo Quilez's quad intersector:
 /// * [Intersection ShaderToy example](https://www.shadertoy.com/view/XtlBDs)
 /// * [Surface Ooords ShaderToy example](https://www.shadertoy.com/view/lsBSDm)
@@ -42,7 +41,7 @@ impl Quad {
     }
 
     /// Creates a new axis-aligned Quad based on 2 points on a plane + the plane's k value.
-    /// 
+    ///
     /// Requires one dimension in each point to be zero-ed out to work.
     pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Rc<Material>) -> Self {
         let (x_min, y_min, z_min) = p_min.into();
