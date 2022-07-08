@@ -16,7 +16,46 @@ pub struct Quad {
 }
 
 impl Quad {
+    // 0----3
+    // |    |
+    // |    |
+    // 1----2
     pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Rc<Material>) -> Self {
+        Self {
+            p0,
+            p1,
+            p2,
+            p3,
+            material: Rc::clone(m),
+        }
+    }
+
+    pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Rc<Material>) -> Self {
+        let (x_min, y_min, z_min) = p_min.into();
+        let (x_max, y_max, z_max) = p_max.into();
+
+        // Check which dimension to use z value in
+        let (p0, p1, p2, p3) = if x_min == x_max && x_min == 0.0 {
+            let p0 = Vec3::new(k, y_min, z_min);
+            let p1 = Vec3::new(k, y_max, z_min);
+            let p2 = Vec3::new(k, y_max, z_max);
+            let p3 = Vec3::new(k, y_min, z_max);
+            (p0, p1, p2, p3)
+        } else if y_min == y_max && y_min == 0.0 {
+            let p0 = Vec3::new(x_min, k, z_min);
+            let p1 = Vec3::new(x_max, k, z_min);
+            let p2 = Vec3::new(x_max, k, z_max);
+            let p3 = Vec3::new(x_min, k, z_max);
+            (p0, p1, p2, p3)
+        } else {
+            /* if z_min == z_max && z_min == 0.0 */
+            let p0 = Vec3::new(x_min, y_min, k);
+            let p1 = Vec3::new(x_max, y_min, k);
+            let p2 = Vec3::new(x_max, y_max, k);
+            let p3 = Vec3::new(x_min, y_max, k);
+            (p0, p1, p2, p3)
+        };
+
         Self {
             p0,
             p1,
