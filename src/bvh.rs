@@ -9,12 +9,16 @@ use crate::{
     utils::random::rand_range_usize,
 };
 
+/// A node in the BVH.
+///
+/// Holds the bounding box that contains the two [Hittable] children
 pub struct BvhNode {
     left: Rc<dyn Hittable>,
     right: Rc<dyn Hittable>,
     bbox: Aabb,
 }
 
+/// Compares two bounding boxes based on existence and then along the given axis
 fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Ordering {
     match (a, b) {
         (None, None) => {
@@ -29,10 +33,12 @@ fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Ordering {
 }
 
 impl BvhNode {
+    /// Creates a new BvhNode
     pub fn new(mut hitlist: HittableList, time0: f32, time1: f32) -> Self {
         BvhNode::new_node(&mut hitlist[..], time0, time1)
     }
 
+    /// Implementation of `new`
     fn new_node(hitlist: &mut [Rc<dyn Hittable>], time0: f32, time1: f32) -> Self {
         if hitlist.is_empty() {
             panic!("Given empty scene!");
