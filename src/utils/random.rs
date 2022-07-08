@@ -1,4 +1,6 @@
 //! Miscelleanous utilities related to random number generation and random sampling
+//!
+//! Relies on the [rand] crate
 
 use glam::Vec3;
 use rand::Rng;

@@ -1,3 +1,9 @@
+//! Procedural noise generation utilities.
+//!
+//! Relies on the [noise] crate.
+//!
+//! Currently holds a [Texture] implementation for [NoiseFn<T>] specialized with `[f64; 3]`
+
 use glam::Vec3;
 use noise::NoiseFn;
 
