@@ -7,9 +7,8 @@ use glam::Vec3;
 use crate::{
     camera::Camera,
     color::Color,
-    hittables::{Hittable, HittableList},
+    hittables::{Hittable, HittableList, MovingSphere, Sphere},
     material::Material,
-    sphere::{MovingSphere, Sphere},
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
     utils::random::*,
 };

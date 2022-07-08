@@ -17,7 +17,6 @@ mod ray;
 mod render;
 mod scatter;
 mod scenes;
-mod sphere;
 mod textures;
 mod utils;
 
