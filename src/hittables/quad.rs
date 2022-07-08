@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use glam::Vec3;
+use glam::{Vec2, Vec3};
 
 use crate::{bounds::Aabb, material::Material};
 
@@ -10,48 +10,120 @@ use super::{HitRecord, Hittable};
 pub struct Quad {
     p0: Vec3,
     p1: Vec3,
-    normal: Vec3,
+    p2: Vec3,
+    p3: Vec3,
     pub material: Rc<Material>,
 }
 
-impl Hittable for Quad {
-    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<crate::bounds::Aabb> {
-        Some(Aabb::new(self.p0, self.p1))
+impl Quad {
+    pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Rc<Material>) -> Self {
+        Self {
+            p0,
+            p1,
+            p2,
+            p3,
+            material: Rc::clone(m),
+        }
     }
 
-    fn hit(&self, ray: &crate::ray::Ray, t_min: f32, t_max: f32) -> Option<super::HitRecord> {
-        // check if we intersect the plane containing the quad
-        let center = (self.p0 + self.p1) / 2.0;
-        // t = (center - ray.o) dot n over ray.dir dot n
-        let dir_dot_normal = self.normal.dot(ray.direction);
-        if dir_dot_normal < 1e-6 {
+    fn cross(a: Vec2, b: Vec2) -> f32 {
+        a.x * b.y - a.y * b.x
+    }
+}
+
+impl Hittable for Quad {
+    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<Aabb> {
+        // its an aabb :/
+        let min = self.p0.min(self.p1).min(self.p2).min(self.p3);
+        let max = self.p0.max(self.p1).max(self.p2).max(self.p3);
+        Some(Aabb::new(min, max))
+    }
+
+    fn hit(&self, ray: &crate::ray::Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        // see https://www.shadertoy.com/view/XtlBDs
+        // 0--b--3
+        // |\
+        // a c
+        // |  \
+        // 1    2
+        let a = self.p1 - self.p0;
+        let b = self.p3 - self.p0;
+        let c = self.p2 - self.p0;
+        let p = ray.origin - self.p0;
+
+        // plane intersection
+        let plane_normal = a.cross(b);
+        let t = -p.dot(plane_normal) / ray.direction.dot(plane_normal);
+
+        // check against t bounds
+        if t < t_min || t > t_max {
             return None;
         }
 
-        let t = (center - ray.origin).dot(self.normal) / dir_dot_normal;
+        let point = p + ray.direction * t;
 
-        // Check with t bounds
-        if t > t_max || t < t_min {
+        // Projecting to 2D ("plane space")
+        const AXIS_IDXS: [usize; 4] = [1, 2, 0, 1];
+        let abs_normal = plane_normal.abs();
+        let axis_idx = if abs_normal.x > abs_normal.y && abs_normal.x > abs_normal.z {
+            0
+        } else if abs_normal.y > abs_normal.z {
+            1
+        } else {
+            2
+        };
+
+        let id_u = AXIS_IDXS[axis_idx];
+        let id_v = AXIS_IDXS[axis_idx + 1];
+
+        // projection
+        let kp = Vec2::new(point[id_u], point[id_v]);
+        let ka = Vec2::new(a[id_u], a[id_v]);
+        let kb = Vec2::new(b[id_u], b[id_v]);
+        let kc = Vec2::new(c[id_u], c[id_v]);
+
+        // barycentric coords
+        let kg = kc - kb - ka;
+
+        let k0 = Self::cross(kp, kb);
+        let k1 = Self::cross(kp, kg) - plane_normal[axis_idx];
+        let k2 = Self::cross(kc - kb, ka);
+
+        let (u, v) = if k2.abs() < 1e-5 {
+            // if edges are parallel, solution is a linear eq
+            let u = Self::cross(kp, ka) / k1;
+            let v = -k0 / k1;
+            (u, v)
+        } else {
+            // otherwise, solution is quadratic eq
+            let w = k1 * k1 - 4.0 * k0 * k2;
+            if w < 0.0 {
+                return None;
+            }
+
+            let w = w.sqrt();
+            let ik2 = (2.0 * k2).recip();
+            let mut v = (-k1 - w) * ik2;
+            if !(0.0..=1.0).contains(&v) {
+                v = (-k1 + w) * ik2;
+            }
+
+            let u = (kp.x - ka.x * v) / (kb.x + kg.x * v);
+
+            (u, v)
+        };
+
+        if !(0.0..=1.0).contains(&u) || !(0.0..=1.0).contains(&v) {
             return None;
         }
-
-        // if so, compute the coords
-        let point = ray.at(t);
-
-        // if the coords lie in the quad, then we've intersected the quad
-        if point.cmplt(self.p0).any() || point.cmpgt(self.p1).any() {
-            return None;
-        }
-
-        let local_coords = point - self.p0;
 
         Some(HitRecord {
             point,
-            normal: self.normal,
+            normal: plane_normal,
             material: Rc::clone(&self.material),
             t,
-            u: local_coords.x,
-            v: local_coords.y,
+            u,
+            v,
             front_face: true,
         })
     }
