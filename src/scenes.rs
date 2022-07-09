@@ -2,7 +2,7 @@
 
 use std::{path::PathBuf, rc::Rc, str::FromStr};
 
-use glam::{Vec3, UVec2};
+use glam::{UVec2, Vec3};
 
 use crate::{
     camera::Camera,
@@ -84,7 +84,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
         bg_color,
     );
 
-    let image_height =  (image_width as f32 / aspect_ratio) as u32;
+    let image_height = (image_width as f32 / aspect_ratio) as u32;
     let dimensions = UVec2::new(image_width, image_height);
 
     (cam, scene, dimensions)
