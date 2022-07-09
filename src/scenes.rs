@@ -40,8 +40,7 @@ pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, Hitta
     let mut vert_fov = 20.0;
     let mut aperture = 0.0;
     let /* mut */ focus_dist = 10.0;
-    let /* mut */ shutter_open = 0.0;
-    let /* mut */ shutter_close = 1.0;
+    let /* mut */ shutter_time = 0.0..1.0;
     let mut bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
 
     // Grabs the scene and changes any cam params
@@ -78,8 +77,7 @@ pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, Hitta
         aspect_ratio,
         aperture,
         focus_dist,
-        shutter_open,
-        shutter_close,
+        shutter_time,
         bg_color,
     );
 

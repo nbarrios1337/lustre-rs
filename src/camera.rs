@@ -5,6 +5,8 @@
 //! * resizable film - Using `aspect_ratio`
 //! * depth of field (aka defocus blur) - Using the `aperture` and `focus_dist` data
 
+use std::ops::Range;
+
 use glam::Vec3;
 
 use crate::{
@@ -32,10 +34,8 @@ pub struct Camera {
     w: Vec3,
     /// Radius of the approximated camera lens
     lens_radius: f32,
-    /// Shutter open time
-    shutter_open: f32,
-    /// Shutter close time
-    shutter_close: f32,
+    /// Range of time in which shutter is open,
+    shutter_time: Range<f32>,
     /// Background color
     pub bg_color: Color,
 }
@@ -59,8 +59,7 @@ impl Camera {
         aspect_ratio: f32,
         aperture: f32,
         focus_dist: f32,
-        shutter_open: f32,
-        shutter_close: f32,
+        shutter_time: Range<f32>,
         bg_color: Color,
     ) -> Self {
         // Set up viewport
@@ -88,8 +87,7 @@ impl Camera {
             v,
             w,
             lens_radius,
-            shutter_open,
-            shutter_close,
+            shutter_time,
             bg_color,
         }
     }
@@ -103,7 +101,7 @@ impl Camera {
             direction: self.ll_corner + u * self.horizontal + v * self.vertical
                 - self.origin
                 - offest,
-            time: rand_range_f32(self.shutter_open, self.shutter_close),
+            time: rand_range_f32(self.shutter_time.start, self.shutter_time.end),
         }
     }
 }
@@ -118,8 +116,7 @@ impl Default for Camera {
             16.0 / 9.0,
             0.1,
             10.0,
-            0.0,
-            0.0,
+            0.0..1.0,
             Color::new(Vec3::ZERO),
         )
     }
