@@ -17,8 +17,3 @@ pub fn get_progressbar(len: u64) -> ProgressBar {
             .template("[{elapsed_precise}] {prefix} {wide_bar} {pos:>7}/{len:7} ({percent}%)"),
     )
 }
-
-/// Wrapper for [ProgressBar]'s with_prefix function
-pub fn set_progressbar_msg(msg: &'static str, bar: ProgressBar) -> ProgressBar {
-    bar.with_prefix(msg)
-}
