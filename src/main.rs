@@ -28,15 +28,13 @@ fn main() {
 
     // Set up image properties
     let samples_per_pixel = 100;
-    let aspect_ratio = 3.0 / 2.0;
     let img_w = 1200;
-    let img_h = (img_w as f32 / aspect_ratio) as u32;
 
     // Get scene
-    let (cam, world) = get_scene(aspect_ratio, scene);
+    let (cam, world, dimensions) = get_scene(img_w, scene);
     let world = BvhNode::new(world, 0.0, 1.0);
 
-    let renderer = Renderer::new(img_h, img_w, samples_per_pixel);
+    let renderer = Renderer::new(dimensions.y, dimensions.x, samples_per_pixel);
 
     let img_buf = renderer.render_scene((cam, world));
 

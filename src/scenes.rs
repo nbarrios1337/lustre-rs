@@ -2,7 +2,7 @@
 
 use std::{path::PathBuf, rc::Rc, str::FromStr};
 
-use glam::Vec3;
+use glam::{Vec3, UVec2};
 
 use crate::{
     camera::Camera,
@@ -31,10 +31,11 @@ pub enum SceneType {
     CornellBox,
 }
 
-/// Returns a [Camera] along with a corresponding list of objects ([HittableList]).
-pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, HittableList) {
+/// Returns a [Camera], a list of objects ([HittableList]), and the image dimensions as a tuple.
+pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableList, UVec2) {
     // Setup default camera properties
     // uncomment the `mut` once its needed
+    let mut aspect_ratio = 16.0 / 9.0;
     let mut look_form = Vec3::new(13.0, 2.0, 3.0);
     let mut look_at = Vec3::ZERO;
     let /* mut */ view_up = Vec3::Y;
@@ -48,6 +49,7 @@ pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, Hitta
     let scene = match scene_type {
         SceneType::CoverPhoto => {
             aperture = 0.1;
+            aspect_ratio = 3.0 / 2.0;
             gen_random_scene()
         }
         SceneType::TwoSpheres => gen_two_spheres(),
@@ -82,7 +84,10 @@ pub fn get_scene(mut aspect_ratio: f32, scene_type: SceneType) -> (Camera, Hitta
         bg_color,
     );
 
-    (cam, scene)
+    let image_height =  (image_width as f32 / aspect_ratio) as u32;
+    let dimensions = UVec2::new(image_width, image_height);
+
+    (cam, scene, dimensions)
 }
 
 /// Returns a [HittableList] containing randomly-generated spheres
