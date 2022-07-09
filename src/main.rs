@@ -1,5 +1,5 @@
 use render::Renderer;
-use scenes::{get_scene, SceneType};
+use scenes::get_scene;
 
 use crate::{
     bvh::BvhNode,
@@ -24,6 +24,7 @@ fn main() {
     // Parsing cli args
     let cli_args = Arguments::parse();
     let output_file = cli_args.output;
+    let scene = cli_args.scene;
 
     // Set up image properties
     let samples_per_pixel = 100;
@@ -32,7 +33,7 @@ fn main() {
     let img_h = (img_w as f32 / aspect_ratio) as u32;
 
     // Get scene
-    let (cam, world) = get_scene(aspect_ratio, SceneType::CoverPhoto);
+    let (cam, world) = get_scene(aspect_ratio, scene);
     let world = BvhNode::new(world, 0.0, 1.0);
 
     let renderer = Renderer::new(img_h, img_w, samples_per_pixel);

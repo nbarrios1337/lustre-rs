@@ -15,6 +15,7 @@ use crate::{
 
 /// Possible hard-coded scenes to choose from.
 #[allow(dead_code)]
+#[derive(Debug, Clone, Copy, clap::clap_derive::ArgEnum)]
 pub enum SceneType {
     /// Scene like the cover of "Ray Tracing in One Weekend".
     CoverPhoto,
