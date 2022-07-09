@@ -27,7 +27,7 @@ fn main() {
     let scene = cli_args.scene;
 
     // Set up image properties
-    let samples_per_pixel = 100;
+    let samples_per_pixel = cli_args.samples_per_pixel;
     let img_w = 1200;
 
     // Get scene

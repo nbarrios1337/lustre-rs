@@ -15,4 +15,8 @@ pub struct Arguments {
     /// The scene to use
     #[clap(short, long, arg_enum)]
     pub scene: SceneType,
+
+    /// samples per pixel
+    #[clap(short='n', long, value_parser, default_value_t = 100, value_name = "NUM")]
+    pub samples_per_pixel: u32,
 }
