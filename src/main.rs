@@ -34,7 +34,7 @@ fn main() {
     let (cam, world, dimensions) = get_scene(img_w, scene);
     let world = BvhNode::new(world, 0.0, 1.0);
 
-    let renderer = Renderer::new(dimensions.y, dimensions.x, samples_per_pixel);
+    let renderer = Renderer::new(dimensions.x, dimensions.y, samples_per_pixel);
 
     let img_buf = renderer.render_scene((cam, world));
 

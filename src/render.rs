@@ -12,17 +12,17 @@ use crate::{
 /// Image Renderer
 #[derive(Debug, Clone, Copy)]
 pub struct Renderer {
-    image_height: u32,
     image_width: u32,
+    image_height: u32,
     samples_per_pixel: u32,
 }
 
 impl Renderer {
     /// Creates a new [Renderer].
-    pub fn new(image_height: u32, image_width: u32, samples_per_pixel: u32) -> Self {
+    pub fn new(image_width: u32, image_height: u32, samples_per_pixel: u32) -> Self {
         Self {
-            image_height,
             image_width,
+            image_height,
             samples_per_pixel,
         }
     }
