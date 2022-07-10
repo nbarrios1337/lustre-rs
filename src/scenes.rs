@@ -17,6 +17,8 @@ use crate::{
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, clap::clap_derive::ArgEnum)]
 pub enum SceneType {
+    /// Test scene for materials development
+    MaterialDev,
     /// Scene like the cover of "Ray Tracing in One Weekend".
     CoverPhoto,
     /// Two checkered spheres with the camera looking at their point of contact
@@ -41,17 +43,26 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
     let /* mut */ view_up = Vec3::Y;
     let mut vert_fov = 20.0;
     let mut aperture = 0.0;
-    let /* mut */ focus_dist = 10.0;
+    let mut focus_dist = 10.0;
     let /* mut */ shutter_time = 0.0..1.0;
     let mut bg_color = Color::new(Vec3::new(0.7, 0.8, 1.0));
 
     // Grabs the scene and changes any cam params
     let scene = match scene_type {
+        SceneType::MaterialDev => {
+            aspect_ratio = 16.0/9.0;
+            look_from = Vec3::ZERO;
+            look_at = -Vec3::Z;
+            focus_dist = 1.0;
+            vert_fov = 90.0;
+            get_mat_dev_scene()
+        }
         SceneType::CoverPhoto => {
             aperture = 0.1;
             aspect_ratio = 3.0 / 2.0;
             gen_random_scene()
         }
+
         SceneType::TwoSpheres => gen_two_spheres(),
         SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(),
         SceneType::Earth => gen_earth(),
@@ -88,6 +99,35 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
     let dimensions = UVec2::new(image_width, image_height);
 
     (cam, scene, dimensions)
+}
+
+/// Retusn a [HittableList] containing a few spheres with unique materials
+fn get_mat_dev_scene() -> HittableList {
+    //  Create ground sphere
+    let ground_material = Rc::new(Material::Lambertian {
+        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
+    });
+    let ground_sph = Sphere::new(Vec3::new(0.0, -1000.5, 0.0), 1000.0, &ground_material);
+
+    let mat_left = Rc::new(Material::Dielectric { refract_index: 1.5 });
+    let mat_right = Rc::new(Material::Metal {
+        albedo: Vec3::new(0.8, 0.6, 0.2),
+        roughness: 0.1,
+    });
+    let mat_center = Rc::new(Material::Lambertian {
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.1, 0.2, 0.5))),
+    });
+
+    let left_sph = Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &mat_left);
+    let right_sph = Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, &mat_right);
+    let center_sph = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, &mat_center);
+
+    vec![
+        ground_sph.wrap(),
+        left_sph.wrap(),
+        right_sph.wrap(),
+        center_sph.wrap(),
+    ]
 }
 
 /// Returns a [HittableList] containing randomly-generated spheres
