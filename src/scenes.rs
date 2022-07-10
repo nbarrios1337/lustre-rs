@@ -50,7 +50,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
     // Grabs the scene and changes any cam params
     let scene = match scene_type {
         SceneType::MaterialDev => {
-            aspect_ratio = 16.0/9.0;
+            aspect_ratio = 16.0 / 9.0;
             look_from = Vec3::ZERO;
             look_at = -Vec3::Z;
             focus_dist = 1.0;
