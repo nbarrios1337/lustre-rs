@@ -36,7 +36,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
     // Setup default camera properties
     // uncomment the `mut` once its needed
     let mut aspect_ratio = 16.0 / 9.0;
-    let mut look_form = Vec3::new(13.0, 2.0, 3.0);
+    let mut look_from = Vec3::new(13.0, 2.0, 3.0);
     let mut look_at = Vec3::ZERO;
     let /* mut */ view_up = Vec3::Y;
     let mut vert_fov = 20.0;
@@ -57,14 +57,14 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
         SceneType::Earth => gen_earth(),
         SceneType::SimpleLight => {
             bg_color = Color::new(Vec3::ZERO);
-            look_form = Vec3::new(26.0, 3.0, 6.0);
+            look_from = Vec3::new(26.0, 3.0, 6.0);
             look_at = Vec3::new(0.0, 2.0, 0.0);
             gen_simple_light()
         }
         SceneType::CornellBox => {
             aspect_ratio = 1.0;
             bg_color = Color::new(Vec3::ZERO);
-            look_form = Vec3::new(278.0, 278.0, -800.0);
+            look_from = Vec3::new(278.0, 278.0, -800.0);
             look_at = Vec3::new(278.0, 278.0, 0.0);
             vert_fov = 40.0;
             gen_cornell_box()
@@ -73,7 +73,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
 
     // set up camera with (possibly modified) properies
     let cam = Camera::new(
-        look_form,
+        look_from,
         look_at,
         view_up,
         vert_fov,

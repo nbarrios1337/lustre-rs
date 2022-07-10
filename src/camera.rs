@@ -95,12 +95,12 @@ impl Camera {
     /// Returns a ray from the camera for the normalized pixel (u,v)
     pub fn get_ray(&self, u: f32, v: f32) -> Ray {
         let rd = self.lens_radius * rand_vec3_in_unit_disk();
-        let offest = self.u * rd.x + self.v * rd.y;
+        let offset = self.u * rd.x + self.v * rd.y;
         Ray {
-            origin: self.origin + offest,
+            origin: self.origin + offset,
             direction: self.ll_corner + u * self.horizontal + v * self.vertical
                 - self.origin
-                - offest,
+                - offset,
             time: rand_range_f32(self.shutter_time.start, self.shutter_time.end),
         }
     }
