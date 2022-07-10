@@ -58,7 +58,7 @@ impl Material {
                 ))
             }
             Material::Metal { albedo, roughness } => {
-                let reflected = reflect(&ray.direction.normalize(), &rec.normal);
+                let reflected = reflect(ray.direction.normalize(), rec.normal);
 
                 let scattered = Ray::new(
                     rec.point,
@@ -88,10 +88,10 @@ impl Material {
                 let no_reflect = Self::reflectance(cos_theta, refract_ratio) > rand_f32();
                 let direction = if no_refract || no_reflect {
                     // must reflect
-                    reflect(&unit_dir, &rec.normal)
+                    reflect(unit_dir, rec.normal)
                 } else {
                     // can refract
-                    refract(&unit_dir, &rec.normal, refract_ratio)
+                    refract(unit_dir, rec.normal, refract_ratio)
                 };
 
                 Some((Ray::new(rec.point, direction, ray.time), attenuation))
