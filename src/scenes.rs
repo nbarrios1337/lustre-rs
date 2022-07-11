@@ -105,7 +105,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
 fn get_mat_dev_scene() -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
+        albedo: Rc::new(Color::new(Vec3::new(0.8, 0.2, 0.2))),
     });
     let ground_sph = Sphere::new(Vec3::new(0.0, -1000.5, 0.0), 1000.0, &ground_material);
 
