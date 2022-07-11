@@ -43,6 +43,8 @@ impl Material {
     ///
     /// Returns `None` if the material type computes a lack of scattering
     pub fn scatter(&self, ray: &Ray, rec: &HitRecord) -> Option<(Ray, Vec3)> {
+        // common calcs
+        let normed_dir = ray.direction.normalize();
         match self {
             Material::Lambertian { albedo } => {
                 let mut scatter_dir = rec.normal + rand_unit_vec3();
@@ -58,7 +60,7 @@ impl Material {
                 ))
             }
             Material::Metal { albedo, roughness } => {
-                let reflected = reflect(ray.direction.normalize(), rec.normal);
+                let reflected = reflect(normed_dir, rec.normal);
 
                 let scattered = Ray::new(
                     rec.point,
@@ -80,18 +82,17 @@ impl Material {
                     *refract_index
                 };
 
-                let unit_dir = ray.direction.normalize();
-                let cos_theta = (-unit_dir).dot(rec.normal).min(1.0);
+                let cos_theta = (-normed_dir).dot(rec.normal).min(1.0);
                 let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
                 let no_refract = refract_ratio * sin_theta > 1.0;
                 let no_reflect = Self::reflectance(cos_theta, refract_ratio) > rand_f32();
                 let direction = if no_refract || no_reflect {
                     // must reflect
-                    reflect(unit_dir, rec.normal)
+                    reflect(normed_dir, rec.normal)
                 } else {
                     // can refract
-                    refract(unit_dir, rec.normal, refract_ratio)
+                    refract(normed_dir, rec.normal, refract_ratio)
                 };
 
                 Some((Ray::new(rec.point, direction, ray.time), attenuation))
@@ -104,10 +105,10 @@ impl Material {
     pub fn emit(&self, u: f32, v: f32, point: Vec3) -> Option<Color> {
         match self {
             Material::DiffuseLight {
-                albedo: emit,
+                albedo,
                 brightness,
             } => {
-                let color = emit.color(u, v, point);
+                let color = albedo.color(u, v, point);
                 let val = *brightness * Vec3::from(color);
                 Some(Color::new(val))
             }
