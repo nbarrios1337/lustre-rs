@@ -111,7 +111,7 @@ fn get_mat_dev_scene() -> HittableList {
 
     let mat_left = Rc::new(Material::Dielectric { refract_index: 1.5 });
     let mat_right = Rc::new(Material::Metal {
-        albedo: Vec3::new(0.8, 0.6, 0.2),
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.8, 0.6, 0.2))),
         roughness: 0.1,
     });
     let mat_center = Rc::new(Material::Lambertian {
@@ -158,7 +158,7 @@ fn gen_random_scene() -> HittableList {
                     Rc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
-                    let albedo = rand_vec3();
+                    let albedo = Rc::new(SolidColor::new(rand_vec3()));
                     let roughness = rand_f32();
                     Rc::new(Material::Metal { albedo, roughness })
                 } else {
@@ -192,7 +192,7 @@ fn gen_random_scene() -> HittableList {
     let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
 
     let mat_3 = Material::Metal {
-        albedo: Vec3::new(0.7, 0.6, 0.5),
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
         roughness: 0.0,
     };
     let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));

@@ -21,7 +21,10 @@ pub enum Material {
     /// See the [Wikipedia page on Lambertian reflectance](https://en.wikipedia.org/wiki/Lambertian_reflectance) for more information.
     Lambertian { albedo: Rc<dyn Texture> },
     /// A metallic material that reflects rays based on the given roughness.
-    Metal { albedo: Vec3, roughness: f32 },
+    Metal {
+        albedo: Rc<dyn Texture>,
+        roughness: f32,
+    },
     /// A glass material that scatters rays based on the given refractive index.
     Dielectric { refract_index: f32 },
     /// A material emitting diffuse light
@@ -69,7 +72,7 @@ impl Material {
                 );
 
                 if scattered.direction.dot(rec.normal) > 0.0 {
-                    Some((scattered, *albedo))
+                    Some((scattered, albedo.color(rec.u, rec.v, rec.point).into()))
                 } else {
                     None
                 }
@@ -104,10 +107,7 @@ impl Material {
     /// Returns the emmited color of light from the material, if any.
     pub fn emit(&self, u: f32, v: f32, point: Vec3) -> Option<Color> {
         match self {
-            Material::DiffuseLight {
-                albedo,
-                brightness,
-            } => {
+            Material::DiffuseLight { albedo, brightness } => {
                 let color = albedo.color(u, v, point);
                 let val = *brightness * Vec3::from(color);
                 Some(Color::new(val))
