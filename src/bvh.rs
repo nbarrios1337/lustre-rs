@@ -8,7 +8,6 @@ use crate::{
     bounds::Aabb,
     hittables::{HitRecord, Hittable, HittableList},
     ray::Ray,
-    utils::random::rand_range_usize,
 };
 
 /// A node in the BVH.
@@ -41,7 +40,12 @@ impl BvhNode {
     }
 
     /// Implementation of `new`
-    fn new_node(hitlist: &mut [Rc<dyn Hittable>], time0: f32, time1: f32, rng: &mut impl Rng) -> Self {
+    fn new_node(
+        hitlist: &mut [Rc<dyn Hittable>],
+        time0: f32,
+        time1: f32,
+        rng: &mut impl Rng,
+    ) -> Self {
         if hitlist.is_empty() {
             panic!("Given empty scene!");
         }

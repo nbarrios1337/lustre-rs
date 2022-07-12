@@ -51,7 +51,7 @@ pub fn rand_vec3_in_unit_sphere(rng: &mut impl Rng) -> Vec3 {
 ///
 /// wrapper function around [UnitDisc]'s `sample` method.
 pub fn rand_vec3_in_unit_disk(rng: &mut impl Rng) -> Vec3 {
-    let [x,y] = UnitDisc.sample(rng);
+    let [x, y] = UnitDisc.sample(rng);
     Vec3::new(x, y, 0.0)
 }
 

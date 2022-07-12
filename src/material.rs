@@ -11,7 +11,7 @@ use crate::{
     ray::Ray,
     scatter::{reflect, refract},
     textures::Texture,
-    utils::random::{rand_f32, rand_unit_vec3},
+    utils::random::rand_unit_vec3,
 };
 
 /// Enumeration of possible material types.

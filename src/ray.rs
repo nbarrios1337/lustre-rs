@@ -38,7 +38,13 @@ impl Ray {
     /// Returns a [`Color`] value based on the accumulated light and color at the initial intersection point.
     ///
     /// Uses `bounce_depth` to limit the amount of recursion when gathering contributions.
-    pub fn shade(&self, hittable: &impl Hittable, bounce_depth: u16, bg_color: Color, rng: &mut impl Rng) -> Color {
+    pub fn shade(
+        &self,
+        hittable: &impl Hittable,
+        bounce_depth: u16,
+        bg_color: Color,
+        rng: &mut impl Rng,
+    ) -> Color {
         // Limit recursion depth
         if bounce_depth == 0 {
             return Color::new(Vec3::ZERO);

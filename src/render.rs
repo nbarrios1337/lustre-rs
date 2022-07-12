@@ -3,12 +3,7 @@
 use glam::Vec3;
 use rand::Rng;
 
-use crate::{
-    camera::Camera,
-    color::Color,
-    hittables::Hittable,
-    utils::{progress::get_progressbar, random::rand_f32},
-};
+use crate::{camera::Camera, color::Color, hittables::Hittable, utils::progress::get_progressbar};
 
 /// Image Renderer
 #[derive(Debug, Clone, Copy)]
@@ -32,7 +27,11 @@ impl Renderer {
     ///
     /// A scene consists of a [Camera] and some [Hittable].
     /// This functions outputs its progress to the commandline.
-    pub fn render_scene(&self, scene: (Camera, impl Hittable), rng: &mut impl Rng) -> image::RgbImage {
+    pub fn render_scene(
+        &self,
+        scene: (Camera, impl Hittable),
+        rng: &mut impl Rng,
+    ) -> image::RgbImage {
         let progress_bar = get_progressbar((self.image_height * self.image_width) as u64)
             .with_prefix("Generating pixels");
 
@@ -51,9 +50,12 @@ impl Renderer {
                     let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
                     let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
                         / (self.image_height - 1) as f64;
-                    let contrib =
-                        cam.get_ray(u as f32, v as f32, rng)
-                            .shade(&world, depth, cam.bg_color, rng);
+                    let contrib = cam.get_ray(u as f32, v as f32, rng).shade(
+                        &world,
+                        depth,
+                        cam.bg_color,
+                        rng,
+                    );
                     color_v += Vec3::from(contrib);
                 }
                 color_v /= self.samples_per_pixel as f32;
