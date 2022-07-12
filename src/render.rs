@@ -1,5 +1,7 @@
 //! Render an image given a [Camera] and a [Hittable].
 
+use std::ops::{Index, IndexMut};
+
 use glam::Vec3;
 
 use crate::{
@@ -8,6 +10,69 @@ use crate::{
     hittables::Hittable,
     utils::{progress::get_progressbar, random::rand_f32},
 };
+
+#[derive(Debug)]
+struct Render {
+    width: usize,
+    height: usize,
+    buffer: Vec<Color>,
+}
+
+impl Render {
+    fn new(width: usize, height: usize) -> Self {
+        Self {
+            width,
+            height,
+            buffer: Vec::with_capacity(width * height),
+        }
+    }
+
+    fn flatten_index(&self, row: usize, col: usize) -> Option<usize> {
+        let index = row * self.height + col;
+        if index > self.width * self.height {
+            None
+        } else {
+            Some(index)
+        }
+    }
+
+    fn pixel_at(&self, row: usize, col: usize) -> &Color {
+        if let Some(index) = self.flatten_index(row, col) {
+            &self.buffer[index]
+        } else {
+            panic!(
+                "Image index {:?} out of bounds {:?}",
+                (row, col),
+                (self.width, self.height)
+            )
+        }
+    }
+
+    fn pixel_at_mut(&mut self, row: usize, col: usize) -> &mut Color {
+        if let Some(index) = self.flatten_index(row, col) {
+            &mut self.buffer[index]
+        } else {
+            panic!(
+                "Image index {:?} out of bounds {:?}",
+                (row, col),
+                (self.width, self.height)
+            )
+        }
+    }
+}
+
+impl Index<(usize, usize)> for Render {
+    type Output = Color;
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        self.pixel_at(index.0, index.1)
+    }
+}
+
+impl IndexMut<(usize, usize)> for Render {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
+        self.pixel_at_mut(index.0, index.1)
+    }
+}
 
 /// Image Renderer
 #[derive(Debug, Clone, Copy)]
