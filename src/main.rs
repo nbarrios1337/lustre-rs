@@ -1,3 +1,4 @@
+use rand::SeedableRng;
 use render::Renderer;
 use scenes::get_scene;
 
@@ -31,7 +32,7 @@ fn main() {
     let img_w = 1200;
 
     // set up enviroment
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rngs::SmallRng::from_entropy();
 
     // Get scene
     let (cam, world, dimensions) = get_scene(img_w, scene, &mut rng);
