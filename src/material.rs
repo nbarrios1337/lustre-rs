@@ -11,7 +11,7 @@ use crate::{
     ray::Ray,
     scatter::{reflect, refract},
     textures::Texture,
-    utils::random::rand_unit_vec3,
+    utils::random::rand_vec3_in_unit_sphere,
 };
 
 /// Enumeration of possible material types.
@@ -51,7 +51,7 @@ impl Material {
         let normed_dir = ray.direction.normalize();
         match self {
             Material::Lambertian { albedo } => {
-                let mut scatter_dir = rec.normal + rand_unit_vec3(rng);
+                let mut scatter_dir = rec.normal + rand_vec3_in_unit_sphere(rng);
 
                 // If the scatter direction is close to zero in all dimensions
                 if scatter_dir.cmplt(Vec3::splat(EPSILON)).all() {
@@ -68,7 +68,7 @@ impl Material {
 
                 let scattered = Ray::new(
                     rec.point,
-                    reflected + roughness.clamp(0.0, 1.0) * rand_unit_vec3(rng),
+                    reflected + roughness.clamp(0.0, 1.0) * rand_vec3_in_unit_sphere(rng),
                     ray.time,
                 );
 
@@ -90,8 +90,9 @@ impl Material {
                 let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
                 let no_refract = refract_ratio * sin_theta > 1.0;
-                let no_reflect = Self::reflectance(cos_theta, refract_ratio) > rng.gen();
-                let direction = if no_refract || no_reflect {
+                let reflect_chance = Self::reflectance(cos_theta, refract_ratio);
+                let do_reflect =  reflect_chance > rng.gen();
+                let direction = if no_refract || do_reflect {
                     // must reflect
                     reflect(normed_dir, rec.normal)
                 } else {
