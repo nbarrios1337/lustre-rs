@@ -8,6 +8,7 @@
 use std::ops::Range;
 
 use glam::Vec3;
+use rand::Rng;
 
 use crate::{
     color::Color,
@@ -93,7 +94,7 @@ impl Camera {
     }
 
     /// Returns a ray from the camera for the normalized pixel (u,v)
-    pub fn get_ray(&self, u: f32, v: f32) -> Ray {
+    pub fn get_ray(&self, u: f32, v: f32, rng: &mut impl Rng) -> Ray {
         let rd = self.lens_radius * rand_vec3_in_unit_disk();
         let offset = self.u * rd.x + self.v * rd.y;
         Ray {
@@ -101,7 +102,7 @@ impl Camera {
             direction: self.ll_corner + u * self.horizontal + v * self.vertical
                 - self.origin
                 - offset,
-            time: rand_range_f32(self.shutter_time.start, self.shutter_time.end),
+            time: rng.gen_range(self.shutter_time.start..self.shutter_time.end),
         }
     }
 }

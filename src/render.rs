@@ -52,7 +52,7 @@ impl Renderer {
                     let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
                         / (self.image_height - 1) as f64;
                     let contrib =
-                        cam.get_ray(u as f32, v as f32)
+                        cam.get_ray(u as f32, v as f32, rng)
                             .shade(&world, depth, cam.bg_color, rng);
                     color_v += Vec3::from(contrib);
                 }
