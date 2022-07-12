@@ -104,6 +104,11 @@ impl Renderer {
 
         // Generate image
         let depth = 50;
+        for y in 0..self.image_height {
+            for x in 0..self.image_width {
+                let mut accumulated_color = Vec3::ZERO;
+            }
+        }
         let img_buf: image::RgbImage = image::ImageBuffer::from_fn(
             self.image_width,
             self.image_height,
