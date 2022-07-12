@@ -11,7 +11,6 @@ use crate::{
     hittables::{Hittable, HittableList, MovingSphere, Quad, Sphere},
     material::Material,
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
-    utils::random::*,
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -56,7 +55,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType, rng: &mut impl Rng) ->
             look_at = -Vec3::Z;
             focus_dist = 1.0;
             vert_fov = 90.0;
-            get_mat_dev_scene(rng)
+            get_mat_dev_scene()
         }
         SceneType::CoverPhoto => {
             aperture = 0.1;
@@ -64,14 +63,14 @@ pub fn get_scene(image_width: u32, scene_type: SceneType, rng: &mut impl Rng) ->
             gen_random_scene(rng)
         }
 
-        SceneType::TwoSpheres => gen_two_spheres(rng),
-        SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(rng),
-        SceneType::Earth => gen_earth(rng),
+        SceneType::TwoSpheres => gen_two_spheres(),
+        SceneType::TwoPerlinSpheres => gen_two_perlin_spheres(),
+        SceneType::Earth => gen_earth(),
         SceneType::SimpleLight => {
             bg_color = Color::new(Vec3::ZERO);
             look_from = Vec3::new(26.0, 3.0, 6.0);
             look_at = Vec3::new(0.0, 2.0, 0.0);
-            gen_simple_light(rng)
+            gen_simple_light()
         }
         SceneType::CornellBox => {
             aspect_ratio = 1.0;
@@ -79,7 +78,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType, rng: &mut impl Rng) ->
             look_from = Vec3::new(278.0, 278.0, -800.0);
             look_at = Vec3::new(278.0, 278.0, 0.0);
             vert_fov = 40.0;
-            gen_cornell_box(rng)
+            gen_cornell_box()
         }
     };
 
@@ -103,7 +102,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType, rng: &mut impl Rng) ->
 }
 
 /// Retusn a [HittableList] containing a few spheres with unique materials
-fn get_mat_dev_scene(rng: &mut impl Rng) -> HittableList {
+fn get_mat_dev_scene() -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Rc::new(Color::new(Vec3::new(0.8, 0.2, 0.2))),
@@ -207,7 +206,7 @@ fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
 }
 
 /// Returns a [HittableList] containing two checkered spheres.
-fn gen_two_spheres(rng: &mut impl Rng) -> HittableList {
+fn gen_two_spheres() -> HittableList {
     let checkered = Rc::new(Material::Lambertian {
         albedo: Rc::new(Checkered::new(
             &(Rc::new(SolidColor::new(Vec3::new(0.2, 0.3, 0.1))) as Rc<dyn Texture>),
@@ -222,7 +221,7 @@ fn gen_two_spheres(rng: &mut impl Rng) -> HittableList {
 }
 
 /// Returns a [HittableList] containing two Perlin noise spheres.
-fn gen_two_perlin_spheres(rng: &mut impl Rng) -> HittableList {
+fn gen_two_perlin_spheres() -> HittableList {
     let perlin_tex = Rc::new(Material::Lambertian {
         albedo: Rc::new(PerlinNoise::new(4.0)),
     });
@@ -234,7 +233,7 @@ fn gen_two_perlin_spheres(rng: &mut impl Rng) -> HittableList {
 }
 
 /// Returns a [HittableList] containing a single image-backed sphere.
-fn gen_earth(rng: &mut impl Rng) -> HittableList {
+fn gen_earth() -> HittableList {
     let earth_tex = Rc::new(Material::Lambertian {
         albedo: Rc::new(ImageMap::new(
             PathBuf::from_str("resources/earthmap.jpg").unwrap(),
@@ -246,13 +245,13 @@ fn gen_earth(rng: &mut impl Rng) -> HittableList {
 }
 
 /// Returns a [HittableList] resembling [gen_two_perlin_spheres], with a rectangular diffuse light
-fn gen_simple_light(rng: &mut impl Rng) -> HittableList {
+fn gen_simple_light() -> HittableList {
     let diff_light = Rc::new(Material::DiffuseLight {
         albedo: Rc::new(SolidColor::new(Vec3::ONE)),
         brightness: 4.0,
     });
 
-    let mut world = gen_two_perlin_spheres(rng);
+    let mut world = gen_two_perlin_spheres();
     world.push(
         Quad::from_two_points_z(
             Vec3::new(3.0, 1.0, 0.0),
@@ -266,7 +265,7 @@ fn gen_simple_light(rng: &mut impl Rng) -> HittableList {
     world
 }
 
-fn gen_cornell_box(rng: &mut impl Rng) -> HittableList {
+fn gen_cornell_box() -> HittableList {
     let red_diffuse = Rc::new(Material::Lambertian {
         albedo: Rc::new(SolidColor::new(Vec3::new(0.65, 0.05, 0.05))),
     });
