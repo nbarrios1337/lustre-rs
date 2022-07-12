@@ -1,6 +1,7 @@
 //! Render an image given a [Camera] and a [Hittable].
 
 use glam::Vec3;
+use rand::Rng;
 
 use crate::{
     camera::Camera,
@@ -31,7 +32,7 @@ impl Renderer {
     ///
     /// A scene consists of a [Camera] and some [Hittable].
     /// This functions outputs its progress to the commandline.
-    pub fn render_scene(&self, scene: (Camera, impl Hittable)) -> image::RgbImage {
+    pub fn render_scene(&self, scene: (Camera, impl Hittable), rng: &mut impl Rng) -> image::RgbImage {
         let progress_bar = get_progressbar((self.image_height * self.image_width) as u64)
             .with_prefix("Generating pixels");
 
@@ -45,8 +46,10 @@ impl Renderer {
             |x: u32, y: u32| -> image::Rgb<u8> {
                 let mut color_v = Vec3::ZERO;
                 for _ in 0..self.samples_per_pixel {
-                    let u: f64 = (x as f32 + rand_f32()) as f64 / (self.image_width - 1) as f64;
-                    let v: f64 = ((self.image_height - y) as f32 + rand_f32()) as f64
+                    let offset_u: f32 = rng.gen();
+                    let offset_v: f32 = rng.gen();
+                    let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
+                    let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
                         / (self.image_height - 1) as f64;
                     let contrib =
                         cam.get_ray(u as f32, v as f32)
