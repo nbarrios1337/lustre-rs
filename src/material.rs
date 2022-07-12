@@ -3,6 +3,7 @@
 use std::{f32::EPSILON, rc::Rc};
 
 use glam::Vec3;
+use rand::Rng;
 
 use crate::{
     color::Color,
@@ -45,7 +46,7 @@ impl Material {
     /// Returns a scattered ray and its attenuation based on the specific material type.
     ///
     /// Returns `None` if the material type computes a lack of scattering
-    pub fn scatter(&self, ray: &Ray, rec: &HitRecord) -> Option<(Ray, Vec3)> {
+    pub fn scatter(&self, ray: &Ray, rec: &HitRecord, rng: &mut impl Rng) -> Option<(Ray, Vec3)> {
         // common calcs
         let normed_dir = ray.direction.normalize();
         match self {
@@ -89,7 +90,7 @@ impl Material {
                 let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
                 let no_refract = refract_ratio * sin_theta > 1.0;
-                let no_reflect = Self::reflectance(cos_theta, refract_ratio) > rand_f32();
+                let no_reflect = Self::reflectance(cos_theta, refract_ratio) > rng.gen();
                 let direction = if no_refract || no_reflect {
                     // must reflect
                     reflect(normed_dir, rec.normal)
