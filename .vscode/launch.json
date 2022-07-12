@@ -7,38 +7,38 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'rt'",
+            "name": "Debug executable 'lustre'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=rt",
-                    "--package=rt"
+                    "--bin=lustre",
+                    "--package=lustre"
                 ],
                 "filter": {
-                    "name": "rt",
+                    "name": "lustre",
                     "kind": "bin"
                 }
             },
-            "args": ["-o", "target/image.png"],
+            "args": ["-o", "target/image.png", "-s", "material-dev"],
             "cwd": "${workspaceFolder}"
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'rt'",
+            "name": "Debug unit tests in executable 'lustre'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=rt",
-                    "--package=rt"
+                    "--bin=lustre",
+                    "--package=lustre"
                 ],
                 "filter": {
-                    "name": "rt",
+                    "name": "lustre",
                     "kind": "bin"
                 }
             },
-            "args": ["-o", "target/image.png"],
+            "args": ["-o", "target/image.png", "-s", "material-dev"],
             "cwd": "${workspaceFolder}"
         }
     ]
