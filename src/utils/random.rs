@@ -4,6 +4,7 @@
 
 use glam::Vec3;
 use rand::Rng;
+use rand_distr::{Distribution, UnitDisc};
 
 /// Generates a random f32.
 pub fn rand_f32() -> f32 {
@@ -54,14 +55,10 @@ pub fn rand_vec3_in_unit_sphere() -> Vec3 {
 
 /// Generates a random [Vec3] within the unit disk (radius 1).
 ///
-/// Functionally similar to [rand_vec3_in_unit_sphere].
-pub fn rand_vec3_in_unit_disk() -> Vec3 {
-    loop {
-        let v = Vec3::new(rand_range_f32(-1.0, 1.0), rand_range_f32(-1.0, 1.0), 0.0);
-        if v.length_squared() < 1.0 {
-            return v;
-        }
-    }
+/// wrapper function around [UnitDisc]'s `sample` method.
+pub fn rand_vec3_in_unit_disk(rng: &mut impl Rng) -> Vec3 {
+    let [x,y] = UnitDisc.sample(rng);
+    Vec3::new(x, y, 0.0)
 }
 
 pub fn rand_unit_vec3() -> Vec3 {
