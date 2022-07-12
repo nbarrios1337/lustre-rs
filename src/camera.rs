@@ -95,7 +95,7 @@ impl Camera {
 
     /// Returns a ray from the camera for the normalized pixel (u,v)
     pub fn get_ray(&self, u: f32, v: f32, rng: &mut impl Rng) -> Ray {
-        let rd = self.lens_radius * rand_vec3_in_unit_disk();
+        let rd = self.lens_radius * rand_vec3_in_unit_disk(rng);
         let offset = self.u * rd.x + self.v * rd.y;
         Ray {
             origin: self.origin + offset,
