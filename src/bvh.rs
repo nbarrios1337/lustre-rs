@@ -2,6 +2,8 @@
 
 use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 
+use rand::{prelude::IteratorRandom, Rng};
+
 use crate::{
     bounds::Aabb,
     hittables::{HitRecord, Hittable, HittableList},
@@ -34,12 +36,12 @@ fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Ordering {
 
 impl BvhNode {
     /// Creates a new BvhNode
-    pub fn new(mut hitlist: HittableList, time0: f32, time1: f32) -> Self {
-        BvhNode::new_node(&mut hitlist[..], time0, time1)
+    pub fn new(mut hitlist: HittableList, time0: f32, time1: f32, rng: &mut impl Rng) -> Self {
+        BvhNode::new_node(&mut hitlist[..], time0, time1, rng)
     }
 
     /// Implementation of `new`
-    fn new_node(hitlist: &mut [Rc<dyn Hittable>], time0: f32, time1: f32) -> Self {
+    fn new_node(hitlist: &mut [Rc<dyn Hittable>], time0: f32, time1: f32, rng: &mut impl Rng) -> Self {
         if hitlist.is_empty() {
             panic!("Given empty scene!");
         }
@@ -52,7 +54,7 @@ impl BvhNode {
             2 => (hitlist[start].clone(), hitlist[start + 1].clone()),
             _ => {
                 // TODO implement better axis decision-making
-                let axis_idx = rand_range_usize(0, 3);
+                let axis_idx = (0..3).choose(rng).unwrap();
 
                 hitlist.sort_by(|a, b| {
                     box_cmp(
@@ -64,8 +66,8 @@ impl BvhNode {
 
                 let (half0, half1) = hitlist.split_at_mut(span / 2);
 
-                let left: Rc<dyn Hittable> = BvhNode::new_node(half0, time0, time1).wrap();
-                let right: Rc<dyn Hittable> = BvhNode::new_node(half1, time0, time1).wrap();
+                let left: Rc<dyn Hittable> = BvhNode::new_node(half0, time0, time1, rng).wrap();
+                let right: Rc<dyn Hittable> = BvhNode::new_node(half1, time0, time1, rng).wrap();
                 (left, right)
             }
         };
