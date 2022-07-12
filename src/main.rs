@@ -1,3 +1,4 @@
+use rand::SeedableRng;
 use render::Renderer;
 use scenes::get_scene;
 
@@ -30,13 +31,16 @@ fn main() {
     let samples_per_pixel = cli_args.samples_per_pixel;
     let img_w = 1200;
 
+    // set up enviroment
+    let mut rng = rand::rngs::SmallRng::from_entropy();
+
     // Get scene
-    let (cam, world, dimensions) = get_scene(img_w, scene);
-    let world = BvhNode::new(world, 0.0, 1.0);
+    let (cam, world, dimensions) = get_scene(img_w, scene, &mut rng);
+    let world = BvhNode::new(world, 0.0, 1.0, &mut rng);
 
     let renderer = Renderer::new(dimensions.x, dimensions.y, samples_per_pixel);
 
-    let img_buf = renderer.render_scene((cam, world));
+    let img_buf = renderer.render_scene((cam, world), &mut rng);
 
     // write image to file
     match img_buf.save(output_file.clone()) {

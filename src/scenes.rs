@@ -3,6 +3,7 @@
 use std::{path::PathBuf, rc::Rc, str::FromStr};
 
 use glam::{UVec2, Vec3};
+use rand::Rng;
 
 use crate::{
     camera::Camera,
@@ -10,7 +11,6 @@ use crate::{
     hittables::{Hittable, HittableList, MovingSphere, Quad, Sphere},
     material::Material,
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
-    utils::random::*,
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -34,7 +34,11 @@ pub enum SceneType {
 }
 
 /// Returns a [Camera], a list of objects ([HittableList]), and the image dimensions as a tuple.
-pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableList, UVec2) {
+pub fn get_scene(
+    image_width: u32,
+    scene_type: SceneType,
+    rng: &mut impl Rng,
+) -> (Camera, HittableList, UVec2) {
     // Setup default camera properties
     // uncomment the `mut` once its needed
     let mut aspect_ratio = 16.0 / 9.0;
@@ -60,7 +64,7 @@ pub fn get_scene(image_width: u32, scene_type: SceneType) -> (Camera, HittableLi
         SceneType::CoverPhoto => {
             aperture = 0.1;
             aspect_ratio = 3.0 / 2.0;
-            gen_random_scene()
+            gen_random_scene(rng)
         }
 
         SceneType::TwoSpheres => gen_two_spheres(),
@@ -131,7 +135,7 @@ fn get_mat_dev_scene() -> HittableList {
 }
 
 /// Returns a [HittableList] containing randomly-generated spheres
-fn gen_random_scene() -> HittableList {
+fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
     //  Create ground sphere
     let ground_material = Rc::new(Material::Lambertian {
         albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
@@ -144,22 +148,23 @@ fn gen_random_scene() -> HittableList {
     for a in -11..11 {
         for b in -11..11 {
             let center = Vec3::new(
-                a as f32 + 0.9 * rand_f32(),
+                a as f32 + 0.9 * rng.gen::<f32>(),
                 0.2,
-                b as f32 + 0.9 * rand_f32(),
+                b as f32 + 0.9 * rng.gen::<f32>(),
             );
 
             if (center - ORIGIN).length() > 0.9 {
-                let decide_mat = rand_f32();
+                let decide_mat = rng.gen();
                 // pick a material by "rarity"
                 let mat = if (0.0..0.8).contains(&decide_mat) {
                     // diffuse
-                    let albedo = Rc::new(Color::new(rand_vec3() * rand_vec3()));
+                    let rand_color_v = rng.gen::<Vec3>() * rng.gen::<Vec3>();
+                    let albedo = Rc::new(Color::new(rand_color_v));
                     Rc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
-                    let albedo = Rc::new(SolidColor::new(rand_vec3()));
-                    let roughness = rand_f32();
+                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let roughness = rng.gen();
                     Rc::new(Material::Metal { albedo, roughness })
                 } else {
                     // glass
@@ -169,7 +174,7 @@ fn gen_random_scene() -> HittableList {
                 // make the diffuse spheres moveable
                 match mat.as_ref() {
                     Material::Lambertian { .. } => {
-                        let center2 = center + Vec3::Y * rand_range_f32(0.0, 0.5);
+                        let center2 = center + Vec3::Y * rng.gen_range(0.0..0.5);
                         let sph = MovingSphere::new(center, center2, 0.0, 1.0, 0.2, &mat);
                         world.push(sph.wrap())
                     }
