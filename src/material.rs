@@ -51,7 +51,7 @@ impl Material {
         let normed_dir = ray.direction.normalize();
         match self {
             Material::Lambertian { albedo } => {
-                let mut scatter_dir = rec.normal + rand_unit_vec3();
+                let mut scatter_dir = rec.normal + rand_unit_vec3(rng);
 
                 // If the scatter direction is close to zero in all dimensions
                 if scatter_dir.cmplt(Vec3::splat(EPSILON)).all() {
@@ -68,7 +68,7 @@ impl Material {
 
                 let scattered = Ray::new(
                     rec.point,
-                    reflected + roughness.clamp(0.0, 1.0) * rand_unit_vec3(),
+                    reflected + roughness.clamp(0.0, 1.0) * rand_unit_vec3(rng),
                     ray.time,
                 );
 
