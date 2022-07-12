@@ -34,7 +34,11 @@ pub enum SceneType {
 }
 
 /// Returns a [Camera], a list of objects ([HittableList]), and the image dimensions as a tuple.
-pub fn get_scene(image_width: u32, scene_type: SceneType, rng: &mut impl Rng) -> (Camera, HittableList, UVec2) {
+pub fn get_scene(
+    image_width: u32,
+    scene_type: SceneType,
+    rng: &mut impl Rng,
+) -> (Camera, HittableList, UVec2) {
     // Setup default camera properties
     // uncomment the `mut` once its needed
     let mut aspect_ratio = 16.0 / 9.0;
