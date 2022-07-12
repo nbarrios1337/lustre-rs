@@ -29,6 +29,7 @@ fn main() {
     // Set up image properties
     let samples_per_pixel = cli_args.samples_per_pixel;
     let img_w = 1200;
+
     // set up enviroment
     let mut rng = rand::thread_rng();
 
