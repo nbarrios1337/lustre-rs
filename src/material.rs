@@ -91,7 +91,7 @@ impl Material {
 
                 let no_refract = refract_ratio * sin_theta > 1.0;
                 let reflect_chance = Self::reflectance(cos_theta, refract_ratio);
-                let do_reflect =  reflect_chance > rng.gen();
+                let do_reflect = reflect_chance > rng.gen();
                 let direction = if no_refract || do_reflect {
                     // must reflect
                     reflect(normed_dir, rec.normal)
