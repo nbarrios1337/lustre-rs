@@ -31,6 +31,8 @@ pub enum SceneType {
     SimpleLight,
     /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box),
     CornellBox,
+    /// The [SceneType::CoverPhoto] in the dark with lights
+    RandomLights,
 }
 
 /// Returns a [Camera], a list of objects ([HittableList]), and the image dimensions as a tuple.
@@ -83,6 +85,12 @@ pub fn get_scene(
             look_at = Vec3::new(278.0, 278.0, 0.0);
             vert_fov = 40.0;
             gen_cornell_box()
+        }
+        SceneType::RandomLights => {
+            aperture = 0.1;
+            aspect_ratio = 3.0 / 2.0;
+            bg_color = Color::new(Vec3::from(bg_color) / 10.0);
+            gen_emissive_random(rng)
         }
     };
 
@@ -336,4 +344,78 @@ fn gen_cornell_box() -> HittableList {
         back_side.wrap(),
         light_rec.wrap(),
     ]
+}
+
+/// Returns a [HittableList] containing randomly-generated spheres, some emissive
+fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
+    // the set of objects with estimated capacity
+    let mut world: HittableList = Vec::with_capacity(4 + (-11..11).len().pow(2));
+
+    //  Create ground sphere
+    let ground_material = Rc::new(Material::Lambertian {
+        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
+    });
+
+    let ground = Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &ground_material);
+    world.push(ground.wrap());
+
+    // The random generation part
+    const ORIGIN: Vec3 = Vec3::from_array([4.0, 0.2, 0.0]);
+    for a in -11..11 {
+        for b in -11..11 {
+            let center = Vec3::new(
+                a as f32 + 0.9 * rng.gen::<f32>(),
+                0.2,
+                b as f32 + 0.9 * rng.gen::<f32>(),
+            );
+
+            if (center - ORIGIN).length() > 0.9 {
+                let decide_mat = rng.gen();
+                // pick a material by "rarity"
+                let mat = if (0.0..0.75).contains(&decide_mat) {
+                    // diffuse
+                    let rand_color_v = rng.gen::<Vec3>() * rng.gen::<Vec3>();
+                    let albedo = Rc::new(Color::new(rand_color_v));
+                    Rc::new(Material::Lambertian { albedo })
+                } else if (0.0..0.85).contains(&decide_mat) {
+                    // metal
+                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let roughness = rng.gen();
+                    Rc::new(Material::Metal { albedo, roughness })
+                } else if (0.0..0.90).contains(&decide_mat) {
+                    // emissive
+                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let brightness = 10.0;
+                    Rc::new(Material::DiffuseLight { albedo, brightness })
+                } else {
+                    // glass
+                    Rc::new(Material::Dielectric { refract_index: 1.5 })
+                };
+
+                let sph = Sphere::new(center, 0.2, &mat);
+                world.push(sph.wrap())
+            }
+        }
+    }
+
+    // The signature central spheres
+    let mat_1 = Material::Dielectric { refract_index: 1.5 };
+    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
+
+    let mat_2 = Material::Lambertian {
+        albedo: Rc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
+    };
+    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
+
+    let mat_3 = Material::Metal {
+        albedo: Rc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
+        roughness: 0.0,
+    };
+    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
+
+    world.push(sphere_1.wrap());
+    world.push(sphere_2.wrap());
+    world.push(sphere_3.wrap());
+
+    world
 }
