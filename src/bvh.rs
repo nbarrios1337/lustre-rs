@@ -5,7 +5,7 @@ use std::{cmp::Ordering, fmt::Debug, rc::Rc};
 use rand::{prelude::IteratorRandom, Rng};
 
 use crate::{
-    bounds::Aabb,
+    bounds::BoundingBox,
     hittables::{HitRecord, Hittable, HittableList},
     ray::Ray,
 };
@@ -16,11 +16,11 @@ use crate::{
 pub struct BvhNode {
     left: Rc<dyn Hittable>,
     right: Rc<dyn Hittable>,
-    bbox: Aabb,
+    bbox: BoundingBox,
 }
 
 /// Compares two bounding boxes based on existence and then along the given axis
-fn box_cmp(a: &Option<Aabb>, b: &Option<Aabb>, axis_idx: usize) -> Ordering {
+fn box_cmp(a: &Option<BoundingBox>, b: &Option<BoundingBox>, axis_idx: usize) -> Ordering {
     match (a, b) {
         (None, None) => {
             panic!("box_cmp encountered two unbounded objects");
@@ -126,7 +126,7 @@ impl Hittable for BvhNode {
         }
     }
 
-    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<Aabb> {
+    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<BoundingBox> {
         Some(self.bbox)
     }
 }

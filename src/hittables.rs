@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use glam::Vec3;
 
-use crate::{bounds::Aabb, material::Material, ray::Ray};
+use crate::{bounds::BoundingBox, material::Material, ray::Ray};
 
 pub mod list;
 pub mod quad;
@@ -68,7 +68,7 @@ pub trait Hittable {
     /// Returns the axis aligned bounding box for the object
     ///
     /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
-    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb>;
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox>;
 
     fn wrap(self) -> Rc<Self>
     where

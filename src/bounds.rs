@@ -6,12 +6,12 @@ use crate::ray::Ray;
 
 /// An axis aligned bounding box
 #[derive(Debug, Clone, Copy)]
-pub struct Aabb {
+pub struct BoundingBox {
     pub min: Vec3,
     pub max: Vec3,
 }
 
-impl Aabb {
+impl BoundingBox {
     /// Creates a new Axis aligned bounding box
     pub fn new(min: Vec3, max: Vec3) -> Self {
         Self { min, max }
@@ -53,14 +53,14 @@ impl Aabb {
     /// In other words, combines the two boxes by taking:
     /// * the minimums of the two boxes' min members
     /// * the maximums of the two boxes' max members
-    pub fn union(&self, other: &Aabb) -> Aabb {
+    pub fn union(&self, other: &BoundingBox) -> BoundingBox {
         let min = self.min.min(other.min);
         let max = self.max.max(other.max);
         Self { min, max }
     }
 }
 
-impl Default for Aabb {
+impl Default for BoundingBox {
     fn default() -> Self {
         Self {
             min: Vec3::ZERO,

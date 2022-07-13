@@ -8,7 +8,7 @@ use std::{
 use glam::Vec3;
 
 use crate::{
-    bounds::Aabb,
+    bounds::BoundingBox,
     hittables::{HitRecord, Hittable},
     material::Material,
     ray::Ray,
@@ -88,8 +88,8 @@ impl Hittable for Sphere {
         })
     }
 
-    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<crate::bounds::Aabb> {
-        Some(Aabb::new(
+    fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<crate::bounds::BoundingBox> {
+        Some(BoundingBox::new(
             self.center - Vec3::splat(self.radius),
             self.center + Vec3::splat(self.radius),
         ))
@@ -191,12 +191,12 @@ impl Hittable for MovingSphere {
         })
     }
 
-    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
-        let box0 = Aabb::new(
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox> {
+        let box0 = BoundingBox::new(
             self.center(time0) - Vec3::splat(self.radius),
             self.center(time0) + Vec3::splat(self.radius),
         );
-        let box1 = Aabb::new(
+        let box1 = BoundingBox::new(
             self.center(time1) - Vec3::splat(self.radius),
             self.center(time1) + Vec3::splat(self.radius),
         );

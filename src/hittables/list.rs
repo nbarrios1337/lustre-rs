@@ -2,7 +2,7 @@
 
 use std::rc::Rc;
 
-use crate::{bounds::Aabb, ray::Ray};
+use crate::{bounds::BoundingBox, ray::Ray};
 
 use super::{HitRecord, Hittable};
 
@@ -24,7 +24,7 @@ impl Hittable for HittableList {
         rec
     }
 
-    fn bounding_box(&self, time0: f32, time1: f32) -> Option<Aabb> {
+    fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox> {
         if self.is_empty() {
             return None;
         }
