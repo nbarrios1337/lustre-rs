@@ -8,7 +8,7 @@ use rand::Rng;
 use crate::{
     camera::Camera,
     color::Color,
-    hittables::{Hittable, HittableList, MovingSphere, Quad, Sphere},
+    hittables::{Hittable, HittableList, MovingSphere, Quad, QuadBox, Sphere},
     material::Material,
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
 };
@@ -336,6 +336,17 @@ fn gen_cornell_box() -> HittableList {
         &white_diffuse,
     );
 
+    let squarish_box = QuadBox::new(
+        Vec3::new(130.0, 0.0, 65.0),
+        Vec3::new(295.0, 165.0, 230.0),
+        &white_diffuse,
+    );
+    let tall_box = QuadBox::new(
+        Vec3::new(265.0, 0.0, 295.0),
+        Vec3::new(430.0, 330.0, 460.0),
+        &white_diffuse,
+    );
+
     vec![
         left_side.wrap(),
         right_side.wrap(),
@@ -343,6 +354,8 @@ fn gen_cornell_box() -> HittableList {
         top_side.wrap(),
         back_side.wrap(),
         light_rec.wrap(),
+        squarish_box.wrap(),
+        tall_box.wrap(),
     ]
 }
 
