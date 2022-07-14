@@ -47,8 +47,8 @@ impl Texture for ImageMap {
                 let i = u * img.width() as f32;
                 let j = v * img.height() as f32;
 
-                let i = (i as u32).clamp(0, img.width());
-                let j = (j as u32).clamp(0, img.height());
+                let i = (i as u32).clamp(0, img.width() - 1);
+                let j = (j as u32).clamp(0, img.height() - 1);
 
                 // let color_scale = 1.0 / 255.0;
                 let pixel = img[(i, j)];
