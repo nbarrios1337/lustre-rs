@@ -4,10 +4,10 @@ use std::rc::Rc;
 
 use crate::{bounds::BoundingBox, ray::Ray};
 
-use super::{HitRecord, Hittable};
+use super::{HitRecord, Hittable, HitObject};
 
 /// Type alias for a vector of objects implementing [Hittable]
-pub type HittableList = Vec<Rc<dyn Hittable>>;
+pub type HittableList = Vec<Rc<HitObject>>;
 
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
