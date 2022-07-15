@@ -6,7 +6,7 @@ use rand::{prelude::IteratorRandom, Rng};
 
 use crate::{
     bounds::BoundingBox,
-    hittables::{HitRecord, Hittable, HittableList},
+    hittables::{HitRecord, Hittable, HittableList, HitObject},
     ray::Ray,
 };
 
@@ -14,8 +14,8 @@ use crate::{
 ///
 /// Holds the bounding box that contains the two [Hittable] children
 pub struct BvhNode {
-    left: Rc<dyn Hittable>,
-    right: Rc<dyn Hittable>,
+    left: Rc<HitObject>,
+    right: Rc<HitObject>,
     bbox: BoundingBox,
 }
 
@@ -41,7 +41,7 @@ impl BvhNode {
 
     /// Implementation of `new`
     fn new_node(
-        hitlist: &mut [Rc<dyn Hittable>],
+        hitlist: &mut [Rc<HitObject>],
         time0: f32,
         time1: f32,
         rng: &mut impl Rng,
@@ -70,8 +70,8 @@ impl BvhNode {
 
                 let (half0, half1) = hitlist.split_at_mut(span / 2);
 
-                let left: Rc<dyn Hittable> = BvhNode::new_node(half0, time0, time1, rng).wrap();
-                let right: Rc<dyn Hittable> = BvhNode::new_node(half1, time0, time1, rng).wrap();
+                let left: Rc<HitObject> = BvhNode::new_node(half0, time0, time1, rng).wrap();
+                let right: Rc<HitObject> = BvhNode::new_node(half1, time0, time1, rng).wrap();
                 (left, right)
             }
         };
