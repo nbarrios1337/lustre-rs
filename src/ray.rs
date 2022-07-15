@@ -5,7 +5,7 @@ use std::f32::INFINITY;
 use glam::Vec3;
 use rand::Rng;
 
-use crate::{color::Color, hittables::Hittable};
+use crate::{color::Color, hittables::{Hittable, HitObject}};
 
 /// A 3-dimensional Ray
 ///
@@ -40,7 +40,7 @@ impl Ray {
     /// Uses `bounce_depth` to limit the amount of recursion when gathering contributions.
     pub fn shade(
         &self,
-        hittable: &impl Hittable,
+        hittable: &HitObject,
         bounce_depth: u16,
         bg_color: Color,
         rng: &mut impl Rng,
