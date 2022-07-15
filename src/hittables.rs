@@ -7,14 +7,14 @@ use glam::Vec3;
 
 use crate::{bounds::BoundingBox, material::Material, ray::Ray};
 
-pub mod quadbox;
 pub mod list;
 pub mod quad;
+pub mod quadbox;
 pub mod sphere;
 
-pub use quadbox::*;
 pub use list::*;
 pub use quad::*;
+pub use quadbox::*;
 pub use sphere::*;
 
 /// Defines a set of data returned upon a successful intersection
