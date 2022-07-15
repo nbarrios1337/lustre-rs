@@ -10,7 +10,7 @@ use super::{HitRecord, Hittable, Quad};
 pub struct QuadBox {
     min: Vec3,
     max: Vec3,
-    sides: Vec<Rc<Quad>>,
+    sides: Vec<Quad>,
 }
 
 impl QuadBox {
@@ -38,7 +38,7 @@ impl QuadBox {
         let min = min.min(max);
         let max = min.max(max);
 
-        let mut sides: Vec<Rc<Quad>> = Vec::with_capacity(6);
+        let mut sides: Vec<Quad> = Vec::with_capacity(6);
 
         let s0s1min = Vec3::new(min.x, min.y, 0.0);
         let s0s1max = Vec3::new(max.x, max.y, 0.0);
@@ -58,12 +58,12 @@ impl QuadBox {
         let s4 = Quad::from_two_points_z(s4s5min, s4s5max, min.x, m);
         let s5 = Quad::from_two_points_z(s4s5min, s4s5max, max.x, m);
 
-        sides.push(s0.wrap());
-        sides.push(s1.wrap());
-        sides.push(s2.wrap());
-        sides.push(s3.wrap());
-        sides.push(s4.wrap());
-        sides.push(s5.wrap());
+        sides.push(s0);
+        sides.push(s1);
+        sides.push(s2);
+        sides.push(s3);
+        sides.push(s4);
+        sides.push(s5);
 
         Self { min, max, sides }
     }

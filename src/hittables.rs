@@ -10,11 +10,12 @@ use crate::{bounds::BoundingBox, material::Material, ray::Ray, bvh::BvhNode};
 
 pub mod list;
 pub mod quad;
+pub mod quadbox;
 pub mod sphere;
 
-pub use quadbox::*;
 pub use list::*;
 pub use quad::*;
+pub use quadbox::*;
 pub use sphere::*;
 
 #[enum_dispatch/* (Hittable) */]
