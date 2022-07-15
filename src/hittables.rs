@@ -3,11 +3,11 @@
 
 use std::rc::Rc;
 
+use enum_dispatch::enum_dispatch;
 use glam::Vec3;
 
-use crate::{bounds::BoundingBox, material::Material, ray::Ray};
+use crate::{bounds::BoundingBox, material::Material, ray::Ray, bvh::BvhNode};
 
-pub mod quadbox;
 pub mod list;
 pub mod quad;
 pub mod sphere;
@@ -16,6 +16,16 @@ pub use quadbox::*;
 pub use list::*;
 pub use quad::*;
 pub use sphere::*;
+
+#[enum_dispatch/* (Hittable) */]
+pub enum HitObject {
+    HittableList,
+    Quad,
+    QuadBox,
+    Sphere,
+    MovingSphere,
+    BvhNode,
+}
 
 /// Defines a set of data returned upon a successful intersection
 #[derive(Debug)]
@@ -61,7 +71,12 @@ impl PartialEq for HitRecord {
 }
 
 /// Describes the behavior of objects that support intersection
-pub trait Hittable {
+#[enum_dispatch(HitObject)]
+pub trait Hittable
+where
+    HitObject: std::convert::From<Self>,
+    Self: Sized,
+{
     /// Intersects the given ray with the object
     ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
@@ -72,10 +87,10 @@ pub trait Hittable {
     /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox>;
 
-    fn wrap(self) -> Rc<Self>
+    fn wrap(self) -> Rc<HitObject>
     where
         Self: Sized,
     {
-        Rc::new(self)
+        Rc::new(self.into())
     }
 }
