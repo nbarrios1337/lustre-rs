@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 glam = {version = "0.21.2", features = ["debug-glam-assert", "rand"]}
 clap = { version = "3.1.18", features = ["derive"] }
+enum_dispatch = "0.3.8"
 indicatif = {version = "0.16.2"}
 image = "0.24.1"
 noise = "0.7.0"
