@@ -3,7 +3,7 @@
 use glam::Vec3;
 use rand::Rng;
 
-use crate::{camera::Camera, color::Color, hittables::Hittable, utils::progress::get_progressbar};
+use crate::{camera::Camera, color::Color, hittables::{Hittable, HitObject}, utils::progress::get_progressbar};
 
 /// Image Renderer
 #[derive(Debug, Clone, Copy)]
@@ -29,7 +29,7 @@ impl Renderer {
     /// This functions outputs its progress to the commandline.
     pub fn render_scene(
         &self,
-        scene: (Camera, impl Hittable),
+        scene: (Camera, HitObject),
         rng: &mut impl Rng,
     ) -> image::RgbImage {
         let progress_bar = get_progressbar((self.image_height * self.image_width) as u64)
