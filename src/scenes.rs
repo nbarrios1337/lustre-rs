@@ -398,7 +398,7 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
                 } else if (0.0..0.90).contains(&decide_mat) {
                     // emissive
                     let albedo = Rc::new(SolidColor::new(rng.gen()));
-                    let brightness = 10.0;
+                    let brightness = rng.gen_range(2.0..10.0);
                     Rc::new(Material::DiffuseLight { albedo, brightness })
                 } else {
                     // glass
