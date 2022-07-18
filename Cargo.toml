@@ -2,6 +2,11 @@
 name = "lustre"
 version = "0.1.0"
 edition = "2021"
+authors = ["Nicolas Barios <nbarrios1337@gmail.com>"]
+description = "Toy Ray-Tracing Renderer"
+repository = "https://github.com/nbarrios1337/lustre-rs"
+license = "MIT"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
