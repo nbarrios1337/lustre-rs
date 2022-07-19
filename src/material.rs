@@ -11,7 +11,7 @@ use crate::{
     ray::Ray,
     scatter::{reflect, refract},
     textures::Texture,
-    utils::random::rand_vec3_in_unit_sphere,
+    utils::random::{rand_vec3_in_unit_hemisphere, rand_vec3_in_unit_sphere},
 };
 
 /// Enumeration of possible material types.
@@ -49,9 +49,11 @@ impl Material {
     pub fn scatter(&self, ray: &Ray, rec: &HitRecord, rng: &mut impl Rng) -> Option<(Ray, Vec3)> {
         // common calcs
         let normed_dir = ray.direction.normalize();
+        let rand_unit_v = rand_vec3_in_unit_sphere(rng);
+        // let rand_unit_v = rand_vec3_in_unit_hemisphere(rng, rec.normal);
         match self {
             Material::Lambertian { albedo } => {
-                let mut scatter_dir = rec.normal + rand_vec3_in_unit_sphere(rng);
+                let mut scatter_dir = rec.normal + rand_unit_v;
 
                 // If the scatter direction is close to zero in all dimensions
                 if scatter_dir.cmplt(Vec3::splat(EPSILON)).all() {
@@ -68,7 +70,7 @@ impl Material {
 
                 let scattered = Ray::new(
                     rec.point,
-                    reflected + roughness.clamp(0.0, 1.0) * rand_vec3_in_unit_sphere(rng),
+                    reflected + roughness.clamp(0.0, 1.0) * rand_unit_v,
                     ray.time,
                 );
 
