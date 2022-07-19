@@ -61,7 +61,7 @@ impl PartialEq for HitRecord {
 }
 
 /// Describes the behavior of objects that support intersection
-pub trait Hittable {
+pub trait Hittable: Send + Sync {
     /// Intersects the given ray with the object
     ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
