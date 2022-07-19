@@ -38,14 +38,11 @@ impl Renderer {
         let depth = 50;
         let mut img_buf: image::RgbImage =
             image::ImageBuffer::new(self.image_width, self.image_height);
-        img_buf
-            .enumerate_pixels_mut()
-            .par_bridge()
-            .into_par_iter()
-            .for_each_init(SmallRng::from_entropy, |rng, p| {
-                let (x, y, pixel) = p;
-                let mut color_v = Vec3::ZERO;
-                for _ in 0..self.samples_per_pixel {
+        img_buf.enumerate_pixels_mut().par_bridge().for_each(|p| {
+            let (x, y, pixel) = p;
+            let mut color_v = (0..self.samples_per_pixel)
+                .into_par_iter()
+                .map_init(SmallRng::from_entropy, |rng, _| {
                     let offset_u: f32 = rng.gen();
                     let offset_v: f32 = rng.gen();
                     let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
@@ -57,13 +54,14 @@ impl Renderer {
                         cam.bg_color,
                         rng,
                     );
-                    color_v += Vec3::from(contrib);
-                }
-                color_v /= self.samples_per_pixel as f32;
-                color_v = color_v.powf(0.5); // sqrt
-                progress_bar.inc(1);
-                *pixel = Color::new(color_v).into();
-            });
+                    Vec3::from(contrib)
+                })
+                .reduce(|| Vec3::ZERO, |a, b| a + b);
+            color_v /= self.samples_per_pixel as f32;
+            color_v = color_v.powf(0.5); // sqrt
+            progress_bar.inc(1);
+            *pixel = image::Rgb::<u8>::from(Color::new(color_v));
+        });
 
         progress_bar.finish_with_message("Done generating pixels");
 
