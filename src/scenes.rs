@@ -1,6 +1,6 @@
 //! Scene generation functionality
 
-use std::{path::PathBuf, sync::Arc, str::FromStr};
+use std::{path::PathBuf, str::FromStr, sync::Arc};
 
 use glam::{UVec2, Vec3};
 use rand::Rng;
