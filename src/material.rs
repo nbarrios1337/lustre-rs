@@ -1,6 +1,6 @@
 //! Implementation of material types
 
-use std::{f32::EPSILON, rc::Rc};
+use std::{f32::EPSILON, sync::Arc};
 
 use glam::Vec3;
 use rand::Rng;
@@ -20,17 +20,17 @@ pub enum Material {
     /// An approximation of a diffuse, or matte, material.
     ///
     /// See the [Wikipedia page on Lambertian reflectance](https://en.wikipedia.org/wiki/Lambertian_reflectance) for more information.
-    Lambertian { albedo: Rc<dyn Texture> },
+    Lambertian { albedo: Arc<dyn Texture> },
     /// A metallic material that reflects rays based on the given roughness.
     Metal {
-        albedo: Rc<dyn Texture>,
+        albedo: Arc<dyn Texture>,
         roughness: f32,
     },
     /// A glass material that scatters rays based on the given refractive index.
     Dielectric { refract_index: f32 },
     /// A material emitting diffuse light
     DiffuseLight {
-        albedo: Rc<dyn Texture>,
+        albedo: Arc<dyn Texture>,
         brightness: f32,
     },
 }

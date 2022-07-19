@@ -1,6 +1,6 @@
 //! Scene generation functionality
 
-use std::{path::PathBuf, rc::Rc, str::FromStr};
+use std::{path::PathBuf, sync::Arc, str::FromStr};
 
 use glam::{UVec2, Vec3};
 use rand::Rng;
@@ -116,18 +116,18 @@ pub fn get_scene(
 /// Retusn a [HittableList] containing a few spheres with unique materials
 fn get_mat_dev_scene() -> HittableList {
     //  Create ground sphere
-    let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::new(0.8, 0.2, 0.2))),
+    let ground_material = Arc::new(Material::Lambertian {
+        albedo: Arc::new(Color::new(Vec3::new(0.8, 0.2, 0.2))),
     });
     let ground_sph = Sphere::new(Vec3::new(0.0, -1000.5, 0.0), 1000.0, &ground_material);
 
-    let mat_left = Rc::new(Material::Dielectric { refract_index: 1.5 });
-    let mat_right = Rc::new(Material::Metal {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.8, 0.6, 0.2))),
+    let mat_left = Arc::new(Material::Dielectric { refract_index: 1.5 });
+    let mat_right = Arc::new(Material::Metal {
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.8, 0.6, 0.2))),
         roughness: 0.1,
     });
-    let mat_center = Rc::new(Material::Lambertian {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.1, 0.2, 0.5))),
+    let mat_center = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.1, 0.2, 0.5))),
     });
 
     let left_sph = Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, &mat_left);
@@ -145,8 +145,8 @@ fn get_mat_dev_scene() -> HittableList {
 /// Returns a [HittableList] containing randomly-generated spheres
 fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
     //  Create ground sphere
-    let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
+    let ground_material = Arc::new(Material::Lambertian {
+        albedo: Arc::new(Color::new(Vec3::ONE / 2.0)),
     });
     let mut world: HittableList =
         vec![Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &ground_material).wrap()];
@@ -167,16 +167,16 @@ fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
                 let mat = if (0.0..0.8).contains(&decide_mat) {
                     // diffuse
                     let rand_color_v = rng.gen::<Vec3>() * rng.gen::<Vec3>();
-                    let albedo = Rc::new(Color::new(rand_color_v));
-                    Rc::new(Material::Lambertian { albedo })
+                    let albedo = Arc::new(Color::new(rand_color_v));
+                    Arc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.95).contains(&decide_mat) {
                     // metal
-                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let albedo = Arc::new(SolidColor::new(rng.gen()));
                     let roughness = rng.gen();
-                    Rc::new(Material::Metal { albedo, roughness })
+                    Arc::new(Material::Metal { albedo, roughness })
                 } else {
                     // glass
-                    Rc::new(Material::Dielectric { refract_index: 1.5 })
+                    Arc::new(Material::Dielectric { refract_index: 1.5 })
                 };
 
                 // make the diffuse spheres moveable
@@ -197,18 +197,18 @@ fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
 
     // The signature central spheres
     let mat_1 = Material::Dielectric { refract_index: 1.5 };
-    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
+    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Arc::new(mat_1));
 
     let mat_2 = Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
+        albedo: Arc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
     };
-    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
+    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Arc::new(mat_2));
 
     let mat_3 = Material::Metal {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
         roughness: 0.0,
     };
-    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
+    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Arc::new(mat_3));
 
     world.push(sphere_1.wrap());
     world.push(sphere_2.wrap());
@@ -219,10 +219,10 @@ fn gen_random_scene(rng: &mut impl Rng) -> HittableList {
 
 /// Returns a [HittableList] containing two checkered spheres.
 fn gen_two_spheres() -> HittableList {
-    let checkered = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Checkered::new(
-            &(Rc::new(SolidColor::new(Vec3::new(0.2, 0.3, 0.1))) as Rc<dyn Texture>),
-            &(Rc::new(SolidColor::new(Vec3::new(0.9, 0.9, 0.9))) as Rc<dyn Texture>),
+    let checkered = Arc::new(Material::Lambertian {
+        albedo: Arc::new(Checkered::new(
+            &(Arc::new(SolidColor::new(Vec3::new(0.2, 0.3, 0.1))) as Arc<dyn Texture>),
+            &(Arc::new(SolidColor::new(Vec3::new(0.9, 0.9, 0.9))) as Arc<dyn Texture>),
         )),
     });
 
@@ -234,8 +234,8 @@ fn gen_two_spheres() -> HittableList {
 
 /// Returns a [HittableList] containing two Perlin noise spheres.
 fn gen_two_perlin_spheres() -> HittableList {
-    let perlin_tex = Rc::new(Material::Lambertian {
-        albedo: Rc::new(PerlinNoise::new(4.0)),
+    let perlin_tex = Arc::new(Material::Lambertian {
+        albedo: Arc::new(PerlinNoise::new(4.0)),
     });
 
     vec![
@@ -246,8 +246,8 @@ fn gen_two_perlin_spheres() -> HittableList {
 
 /// Returns a [HittableList] containing a single image-backed sphere.
 fn gen_earth() -> HittableList {
-    let earth_tex = Rc::new(Material::Lambertian {
-        albedo: Rc::new(ImageMap::new(
+    let earth_tex = Arc::new(Material::Lambertian {
+        albedo: Arc::new(ImageMap::new(
             PathBuf::from_str("resources/earthmap.jpg").unwrap(),
         )),
     });
@@ -258,8 +258,8 @@ fn gen_earth() -> HittableList {
 
 /// Returns a [HittableList] resembling [gen_two_perlin_spheres], with a rectangular diffuse light
 fn gen_simple_light() -> HittableList {
-    let diff_light = Rc::new(Material::DiffuseLight {
-        albedo: Rc::new(SolidColor::new(Vec3::ONE)),
+    let diff_light = Arc::new(Material::DiffuseLight {
+        albedo: Arc::new(SolidColor::new(Vec3::ONE)),
         brightness: 4.0,
     });
 
@@ -278,17 +278,17 @@ fn gen_simple_light() -> HittableList {
 }
 
 fn gen_cornell_box() -> HittableList {
-    let red_diffuse = Rc::new(Material::Lambertian {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.65, 0.05, 0.05))),
+    let red_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.65, 0.05, 0.05))),
     });
-    let white_diffuse = Rc::new(Material::Lambertian {
-        albedo: Rc::new(SolidColor::new(Vec3::splat(0.73))),
+    let white_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3::splat(0.73))),
     });
-    let green_diffuse = Rc::new(Material::Lambertian {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.12, 0.45, 0.15))),
+    let green_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.12, 0.45, 0.15))),
     });
-    let light = Rc::new(Material::DiffuseLight {
-        albedo: Rc::new(SolidColor::new(Vec3::ONE)),
+    let light = Arc::new(Material::DiffuseLight {
+        albedo: Arc::new(SolidColor::new(Vec3::ONE)),
         brightness: 15.0,
     });
 
@@ -365,8 +365,8 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
     let mut world: HittableList = Vec::with_capacity(4 + (-11..11).len().pow(2));
 
     //  Create ground sphere
-    let ground_material = Rc::new(Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::ONE / 2.0)),
+    let ground_material = Arc::new(Material::Lambertian {
+        albedo: Arc::new(Color::new(Vec3::ONE / 2.0)),
     });
 
     let ground = Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, &ground_material);
@@ -388,21 +388,21 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
                 let mat = if (0.0..0.75).contains(&decide_mat) {
                     // diffuse
                     let rand_color_v = rng.gen::<Vec3>() * rng.gen::<Vec3>();
-                    let albedo = Rc::new(Color::new(rand_color_v));
-                    Rc::new(Material::Lambertian { albedo })
+                    let albedo = Arc::new(Color::new(rand_color_v));
+                    Arc::new(Material::Lambertian { albedo })
                 } else if (0.0..0.85).contains(&decide_mat) {
                     // metal
-                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let albedo = Arc::new(SolidColor::new(rng.gen()));
                     let roughness = rng.gen();
-                    Rc::new(Material::Metal { albedo, roughness })
+                    Arc::new(Material::Metal { albedo, roughness })
                 } else if (0.0..0.90).contains(&decide_mat) {
                     // emissive
-                    let albedo = Rc::new(SolidColor::new(rng.gen()));
+                    let albedo = Arc::new(SolidColor::new(rng.gen()));
                     let brightness = rng.gen_range(2.0..10.0);
-                    Rc::new(Material::DiffuseLight { albedo, brightness })
+                    Arc::new(Material::DiffuseLight { albedo, brightness })
                 } else {
                     // glass
-                    Rc::new(Material::Dielectric { refract_index: 1.5 })
+                    Arc::new(Material::Dielectric { refract_index: 1.5 })
                 };
 
                 let sph = Sphere::new(center, 0.2, &mat);
@@ -413,18 +413,18 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
 
     // The signature central spheres
     let mat_1 = Material::Dielectric { refract_index: 1.5 };
-    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Rc::new(mat_1));
+    let sphere_1 = Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, &Arc::new(mat_1));
 
     let mat_2 = Material::Lambertian {
-        albedo: Rc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
+        albedo: Arc::new(Color::new(Vec3::new(0.4, 0.2, 0.1))),
     };
-    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Rc::new(mat_2));
+    let sphere_2 = Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, &Arc::new(mat_2));
 
     let mat_3 = Material::Metal {
-        albedo: Rc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
+        albedo: Arc::new(SolidColor::new(Vec3::new(0.7, 0.6, 0.5))),
         roughness: 0.0,
     };
-    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Rc::new(mat_3));
+    let sphere_3 = Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, &Arc::new(mat_3));
 
     world.push(sphere_1.wrap());
     world.push(sphere_2.wrap());
