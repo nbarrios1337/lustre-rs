@@ -1,7 +1,8 @@
 //! Render an image given a [Camera] and a [Hittable].
 
 use glam::Vec3;
-use rand::Rng;
+use rand::{rngs::SmallRng, Rng, SeedableRng};
+use rayon::prelude::*;
 
 use crate::{camera::Camera, color::Color, hittables::Hittable, utils::progress::get_progressbar};
 
@@ -30,7 +31,7 @@ impl Renderer {
     pub fn render_scene(
         &self,
         scene: (Camera, impl Hittable),
-        rng: &mut impl Rng,
+        _rng: &mut impl Rng,
     ) -> image::RgbImage {
         let progress_bar = get_progressbar((self.image_height * self.image_width) as u64)
             .with_prefix("Generating pixels");
@@ -39,10 +40,14 @@ impl Renderer {
 
         // Generate image
         let depth = 50;
-        let img_buf: image::RgbImage = image::ImageBuffer::from_fn(
-            self.image_width,
-            self.image_height,
-            |x: u32, y: u32| -> image::Rgb<u8> {
+        let mut img_buf: image::RgbImage =
+            image::ImageBuffer::new(self.image_width, self.image_height);
+        img_buf
+            .enumerate_pixels_mut()
+            .par_bridge()
+            .into_par_iter()
+            .for_each_init(SmallRng::from_entropy, |rng, p| {
+                let (x, y, pixel) = p;
                 let mut color_v = Vec3::ZERO;
                 for _ in 0..self.samples_per_pixel {
                     let offset_u: f32 = rng.gen();
@@ -61,9 +66,8 @@ impl Renderer {
                 color_v /= self.samples_per_pixel as f32;
                 color_v = color_v.powf(0.5); // sqrt
                 progress_bar.inc(1);
-                Color::new(color_v).into()
-            },
-        );
+                *pixel = Color::new(color_v).into();
+            });
 
         progress_bar.finish_with_message("Done generating pixels");
 
