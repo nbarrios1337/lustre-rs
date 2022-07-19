@@ -16,8 +16,7 @@ pub fn rand_vec3_in_unit_sphere(rng: &mut impl Rng) -> Vec3 {
 
 /// Generates a random [Vec3] within the same unit hemisphere as the given normal.
 pub fn rand_vec3_in_unit_hemisphere(rng: &mut impl Rng, normal: Vec3) -> Vec3 {
-    let arr = UnitSphere.sample(rng);
-    let mut unit_v = Vec3::from_array(arr);
+    let mut unit_v = rand_vec3_in_unit_sphere(rng);
     if unit_v.dot(normal) < 0.0 {
         unit_v = -unit_v;
     }
