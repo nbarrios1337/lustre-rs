@@ -40,7 +40,7 @@ fn main() {
 
     let renderer = Renderer::new(dimensions.x, dimensions.y, samples_per_pixel);
 
-    let img_buf = renderer.render_scene((cam, world), &mut rng);
+    let img_buf = renderer.render_scene((cam, world));
 
     // write image to file
     match img_buf.save(output_file.clone()) {
