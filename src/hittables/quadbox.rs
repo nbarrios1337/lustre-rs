@@ -38,32 +38,16 @@ impl QuadBox {
         let min = min.min(max);
         let max = min.max(max);
 
-        let mut sides: Vec<Quad> = Vec::with_capacity(6);
+        let side0 = Quad::from_bounds_k(min.x, max.x, min.y, max.y, max.z, 2, m);
+        let side1 = Quad::from_bounds_k(min.x, max.x, min.y, max.y, min.z, 2, m);
 
-        let s0s1min = Vec3::new(min.x, min.y, 0.0);
-        let s0s1max = Vec3::new(max.x, max.y, 0.0);
+        let side2 = Quad::from_bounds_k(min.x, max.x, min.z, max.z, max.y, 1, m);
+        let side3 = Quad::from_bounds_k(min.x, max.x, min.z, max.z, min.y, 1, m);
 
-        let s2s3min = Vec3::new(min.x, 0.0, min.z);
-        let s2s3max = Vec3::new(max.x, 0.0, max.z);
+        let side4 = Quad::from_bounds_k(min.y, max.y, min.z, max.z, max.x, 0, m);
+        let side5 = Quad::from_bounds_k(min.y, max.y, min.z, max.z, min.x, 0, m);
 
-        let s4s5min = Vec3::new(0.0, min.y, min.z);
-        let s4s5max = Vec3::new(0.0, max.y, max.z);
-
-        let s0 = Quad::from_two_points_z(s0s1min, s0s1max, min.z, m);
-        let s1 = Quad::from_two_points_z(s0s1min, s0s1max, max.z, m);
-
-        let s2 = Quad::from_two_points_z(s2s3min, s2s3max, min.y, m);
-        let s3 = Quad::from_two_points_z(s2s3min, s2s3max, max.y, m);
-
-        let s4 = Quad::from_two_points_z(s4s5min, s4s5max, min.x, m);
-        let s5 = Quad::from_two_points_z(s4s5min, s4s5max, max.x, m);
-
-        sides.push(s0);
-        sides.push(s1);
-        sides.push(s2);
-        sides.push(s3);
-        sides.push(s4);
-        sides.push(s5);
+        let sides: Vec<Quad> = vec![side0, side1, side2, side3, side4, side5];
 
         Self { min, max, sides }
     }
