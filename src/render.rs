@@ -24,6 +24,32 @@ impl Renderer {
         }
     }
 
+    #[inline]
+    fn compute_pixel_v(
+        &self,
+        cam: &Camera,
+        world: &impl Hittable,
+        x: u32,
+        y: u32,
+        rng: &mut impl Rng,
+    ) -> Vec3 {
+        let depth = 50;
+        // from_rng(...) gives Result, unpack here
+        let rng = rng;
+        // convert buffer indices to viewport coordinates
+        let offset_u: f32 = rng.gen();
+        let offset_v: f32 = rng.gen();
+        let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
+        let v: f64 =
+            ((self.image_height - y) as f32 + offset_v) as f64 / (self.image_height - 1) as f64;
+
+        // trace ray
+        let contrib = cam
+            .get_ray(u as f32, v as f32, rng)
+            .shade(world, depth, cam.bg_color, rng);
+        Vec3::from(contrib)
+    }
+
     /// Generates an image from the given scene.
     ///
     /// A scene consists of a [Camera] and some [Hittable].
@@ -34,7 +60,6 @@ impl Renderer {
 
         // Set up rendering properties
         let (cam, world) = scene;
-        let depth = 50;
 
         // Allocate image buffer
         let mut img_buf: image::RgbImage =
@@ -53,26 +78,7 @@ impl Renderer {
                     .into_par_iter()
                     .map_init(
                         || SmallRng::from_rng(rand::thread_rng()),
-                        |rng, _| {
-                            // from_rng(...) gives Result, unpack here
-                            let rng = rng.as_mut().unwrap();
-                            // convert buffer indices to viewport coordinates
-                            let offset_u: f32 = rng.gen();
-                            let offset_v: f32 = rng.gen();
-                            let u: f64 =
-                                (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
-                            let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
-                                / (self.image_height - 1) as f64;
-
-                            // trace ray
-                            let contrib = cam.get_ray(u as f32, v as f32, rng).shade(
-                                &world,
-                                depth,
-                                cam.bg_color,
-                                rng,
-                            );
-                            Vec3::from(contrib)
-                        },
+                        |rng, _| self.compute_pixel_v(&cam, &world, x, y, rng.as_mut().unwrap()),
                     )
                     .reduce(|| Vec3::ZERO, |a, b| a + b);
 
