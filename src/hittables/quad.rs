@@ -40,6 +40,43 @@ impl Quad {
         }
     }
 
+    pub fn from_bounds_k(
+        a_min: f32,
+        a_max: f32,
+        b_min: f32,
+        b_max: f32,
+        k: f32,
+        axis: usize,
+        m: &Arc<Material>,
+    ) -> Self {
+        let (p0, p1, p2, p3) = match axis {
+            0 => {
+                let p0 = Vec3::new(k, a_min, b_min);
+                let p1 = Vec3::new(k, a_max, b_min);
+                let p2 = Vec3::new(k, a_max, b_max);
+                let p3 = Vec3::new(k, a_min, b_max);
+                (p0, p1, p2, p3)
+            }
+            1 => {
+                let p0 = Vec3::new(a_min, k, b_min);
+                let p1 = Vec3::new(a_max, k, b_min);
+                let p2 = Vec3::new(a_max, k, b_max);
+                let p3 = Vec3::new(a_min, k, b_max);
+                (p0, p1, p2, p3)
+            }
+            2 => {
+                let p0 = Vec3::new(a_min, b_min, k);
+                let p1 = Vec3::new(a_max, b_min, k);
+                let p2 = Vec3::new(a_max, b_max, k);
+                let p3 = Vec3::new(a_min, b_max, k);
+                (p0, p1, p2, p3)
+            }
+            _ => panic!("Invalid axis index"),
+        };
+
+        Self::new(p0, p1, p2, p3, m)
+    }
+
     /// Creates a new axis-aligned Quad based on 2 points on a plane + the plane's k value.
     ///
     /// Requires one dimension in each point to be zero-ed out to work.
