@@ -291,48 +291,22 @@ fn gen_cornell_box() -> HittableList {
     });
 
     // yz rect - zero x
-    let left_side = Quad::from_two_points_z(
-        Vec3::ZERO,
-        Vec3::new(0.0, 555.0, 555.0),
-        555.0,
-        &green_diffuse,
-    );
+    let left_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 0, &green_diffuse);
 
     // yz rect - zero x
-    let right_side =
-        Quad::from_two_points_z(Vec3::ZERO, Vec3::new(0.0, 555.0, 555.0), 0.0, &red_diffuse);
+    let right_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 0.0, 0, &red_diffuse);
 
     // xz rect - zero y
-    let light_rec = Quad::from_two_points_z(
-        Vec3::new(213.0, 0.0, 227.0),
-        Vec3::new(343.0, 0.0, 332.0),
-        554.0,
-        &light,
-    );
+    let light_rec = Quad::from_bounds_k(213.0, 343.0, 227.0, 332.0, 554.9, 1, &light);
 
     // xz rect - zero y
-    let bottom_side = Quad::from_two_points_z(
-        Vec3::ZERO,
-        Vec3::new(555.0, 0.0, 555.0),
-        0.0,
-        &white_diffuse,
-    );
+    let bottom_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 0.0, 1, &white_diffuse);
 
     // xz rect - zero y
-    let top_side = Quad::from_two_points_z(
-        Vec3::ZERO,
-        Vec3::new(555.0, 0.0, 555.0),
-        555.0,
-        &white_diffuse,
-    );
+    let top_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 1, &white_diffuse);
 
     // xy rect - zero z
-    let back_side = Quad::from_two_points_z(
-        Vec3::ZERO,
-        Vec3::new(555.0, 555.0, 0.0),
-        555.0,
-        &white_diffuse,
-    );
+    let back_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 2, &white_diffuse);
 
     let squarish_box = QuadBox::new(
         Vec3::new(130.0, 0.0, 65.0),
