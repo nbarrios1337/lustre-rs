@@ -42,20 +42,24 @@ impl Renderer {
             let (x, y, pixel) = p;
             let mut color_v = (0..self.samples_per_pixel)
                 .into_par_iter()
-                .map_init(SmallRng::from_entropy, |rng, _| {
-                    let offset_u: f32 = rng.gen();
-                    let offset_v: f32 = rng.gen();
-                    let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
-                    let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
-                        / (self.image_height - 1) as f64;
-                    let contrib = cam.get_ray(u as f32, v as f32, rng).shade(
-                        &world,
-                        depth,
-                        cam.bg_color,
-                        rng,
-                    );
-                    Vec3::from(contrib)
-                })
+                .map_init(
+                    || SmallRng::from_rng(rand::thread_rng()),
+                    |rng, _| {
+                        let rng = rng.as_mut().unwrap();
+                        let offset_u: f32 = rng.gen();
+                        let offset_v: f32 = rng.gen();
+                        let u: f64 = (x as f32 + offset_u) as f64 / (self.image_width - 1) as f64;
+                        let v: f64 = ((self.image_height - y) as f32 + offset_v) as f64
+                            / (self.image_height - 1) as f64;
+                        let contrib = cam.get_ray(u as f32, v as f32, rng).shade(
+                            &world,
+                            depth,
+                            cam.bg_color,
+                            rng,
+                        );
+                        Vec3::from(contrib)
+                    },
+                )
                 .reduce(|| Vec3::ZERO, |a, b| a + b);
             color_v /= self.samples_per_pixel as f32;
             color_v = color_v.powf(0.5); // sqrt
