@@ -1,6 +1,6 @@
 //! Scene generation functionality
 
-use std::{path::PathBuf, str::FromStr, sync::Arc};
+use std::{path::PathBuf, sync::Arc};
 
 use glam::{UVec2, Vec3};
 use rand::Rng;
@@ -247,9 +247,7 @@ fn gen_two_perlin_spheres() -> HittableList {
 /// Returns a [HittableList] containing a single image-backed sphere.
 fn gen_earth() -> HittableList {
     let earth_tex = Arc::new(Material::Lambertian {
-        albedo: Arc::new(ImageMap::new(
-            PathBuf::from_str("resources/earthmap.jpg").unwrap(),
-        )),
+        albedo: Arc::new(ImageMap::new(PathBuf::from("resources/earthmap.jpg"))),
     });
 
     let globe = Sphere::new(Vec3::ZERO, 2.0, &earth_tex);
