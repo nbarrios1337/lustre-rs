@@ -32,7 +32,13 @@ fn main() {
     let img_w = 1200;
 
     // set up enviroment
-    let mut rng = rand::rngs::SmallRng::from_entropy();
+    let mut rng = if cfg!(debug_assertions) {
+        // if debugging, use deterministic seed
+        rand::rngs::SmallRng::seed_from_u64(0)
+    } else {
+        // otherwise real psuedo-randomness
+        rand::rngs::SmallRng::from_entropy()
+    };
 
     // Get scene
     let (cam, world, dimensions) = get_scene(img_w, scene, &mut rng);
