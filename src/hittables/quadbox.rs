@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use glam::Vec3;
 
@@ -34,7 +34,7 @@ impl QuadBox {
     /// Creates a new Box comprised of 6 sides stored as [Quad]s
     ///
     /// uses the rather expensive Quad::from_two_points_z fn, determining
-    pub fn new(min: Vec3, max: Vec3, m: &Rc<Material>) -> Self {
+    pub fn new(min: Vec3, max: Vec3, m: &Arc<Material>) -> Self {
         let min = min.min(max);
         let max = min.max(max);
 

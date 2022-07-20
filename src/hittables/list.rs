@@ -1,13 +1,13 @@
 //! A list of [Hittable]s
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{bounds::BoundingBox, ray::Ray};
 
 use super::{HitRecord, Hittable};
 
 /// Type alias for a vector of objects implementing [Hittable]
-pub type HittableList = Vec<Rc<dyn Hittable>>;
+pub type HittableList = Vec<Arc<dyn Hittable>>;
 
 impl Hittable for HittableList {
     fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {

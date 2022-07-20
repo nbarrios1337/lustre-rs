@@ -18,7 +18,7 @@ pub mod image;
 pub mod perlin;
 
 /// Behavior of a texture
-pub trait Texture {
+pub trait Texture: Send + Sync {
     /// Returns the color value at the uv coordinates or point for the texture
     fn color(&self, u: f32, v: f32, point: Vec3) -> Color;
 }

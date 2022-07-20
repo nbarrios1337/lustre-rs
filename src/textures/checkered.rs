@@ -1,6 +1,6 @@
 //! A texture mapping alternating between two other Textures in a checkerboard fashion.
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use glam::Vec3;
 
@@ -10,16 +10,16 @@ use super::Texture;
 
 /// A checkered texture alternating between two enclosed textures.
 pub struct Checkered {
-    pub even: Rc<dyn Texture>,
-    pub odd: Rc<dyn Texture>,
+    pub even: Arc<dyn Texture>,
+    pub odd: Arc<dyn Texture>,
 }
 
 impl Checkered {
     /// Creates a new checkered texture
-    pub fn new(o: &Rc<dyn Texture>, e: &Rc<dyn Texture>) -> Self {
+    pub fn new(o: &Arc<dyn Texture>, e: &Arc<dyn Texture>) -> Self {
         Self {
-            even: Rc::clone(e),
-            odd: Rc::clone(o),
+            even: Arc::clone(e),
+            odd: Arc::clone(o),
         }
     }
 }

@@ -2,7 +2,7 @@
 
 use std::{
     f32::consts::{PI, TAU},
-    rc::Rc,
+    sync::Arc,
 };
 
 use glam::Vec3;
@@ -19,16 +19,16 @@ use crate::{
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
 }
 
 impl Sphere {
     // Creates a new Sphere.
-    pub fn new(c: Vec3, r: f32, m: &Rc<Material>) -> Self {
+    pub fn new(c: Vec3, r: f32, m: &Arc<Material>) -> Self {
         Self {
             center: c,
             radius: r,
-            material: Rc::clone(m),
+            material: Arc::clone(m),
         }
     }
 
@@ -104,7 +104,7 @@ pub struct MovingSphere {
     time0: f32,
     time1: f32,
     radius: f32,
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
 }
 
 impl MovingSphere {
@@ -115,7 +115,7 @@ impl MovingSphere {
         time0: f32,
         time1: f32,
         radius: f32,
-        m: &Rc<Material>,
+        m: &Arc<Material>,
     ) -> Self {
         Self {
             center0,
@@ -123,7 +123,7 @@ impl MovingSphere {
             time0,
             time1,
             radius,
-            material: Rc::clone(m),
+            material: Arc::clone(m),
         }
     }
 

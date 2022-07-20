@@ -1,7 +1,7 @@
 //! Contains description of what it means to intersect something,
 //! as well as what's returned on intersection
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use glam::Vec3;
 
@@ -25,7 +25,7 @@ pub struct HitRecord {
     /// Surface normal off the point of intersection
     pub normal: Vec3,
     /// Material of the intersected object
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
     /// distance from the origin to the point of intersection
     pub t: f32,
     /// u coordinate of surface of point of intersection
@@ -61,7 +61,7 @@ impl PartialEq for HitRecord {
 }
 
 /// Describes the behavior of objects that support intersection
-pub trait Hittable {
+pub trait Hittable: Send + Sync {
     /// Intersects the given ray with the object
     ///
     /// Returns a `Some(HitRecord)` if successful, otherwise `None`
@@ -72,10 +72,10 @@ pub trait Hittable {
     /// Returns a `Some(Aabb)` if the object has a bounding box (like spheres), otherwise `None` (like planes)
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox>;
 
-    fn wrap(self) -> Rc<Self>
+    fn wrap(self) -> Arc<Self>
     where
         Self: Sized,
     {
-        Rc::new(self)
+        Arc::new(self)
     }
 }

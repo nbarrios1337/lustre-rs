@@ -1,6 +1,6 @@
 //! Quadrilateral implementation
 
-use std::rc::Rc;
+use std::sync::Arc;
 
 use glam::{Vec2, Vec3};
 
@@ -19,7 +19,7 @@ pub struct Quad {
     p1: Vec3,
     p2: Vec3,
     p3: Vec3,
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
 }
 
 impl Quad {
@@ -30,20 +30,20 @@ impl Quad {
     // |    |
     // 1----2
     /// Creates a new Quad.
-    pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Rc<Material>) -> Self {
+    pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Arc<Material>) -> Self {
         Self {
             p0,
             p1,
             p2,
             p3,
-            material: Rc::clone(m),
+            material: Arc::clone(m),
         }
     }
 
     /// Creates a new axis-aligned Quad based on 2 points on a plane + the plane's k value.
     ///
     /// Requires one dimension in each point to be zero-ed out to work.
-    pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Rc<Material>) -> Self {
+    pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Arc<Material>) -> Self {
         let (x_min, y_min, z_min) = p_min.into();
         let (x_max, y_max, z_max) = p_max.into();
 
@@ -78,7 +78,7 @@ impl Quad {
             p1,
             p2,
             p3,
-            material: Rc::clone(m),
+            material: Arc::clone(m),
         }
     }
 
@@ -176,7 +176,7 @@ impl Hittable for Quad {
         let mut rec = HitRecord {
             point: ray.at(t),
             normal,
-            material: Rc::clone(&self.material),
+            material: Arc::clone(&self.material),
             t,
             u,
             v,
