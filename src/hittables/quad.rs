@@ -110,13 +110,7 @@ impl Quad {
             );
         };
 
-        Self {
-            p0,
-            p1,
-            p2,
-            p3,
-            material: Arc::clone(m),
-        }
+        Self::new(p0, p1, p2, p3, m)
     }
 
     fn cross(a: Vec2, b: Vec2) -> f32 {
