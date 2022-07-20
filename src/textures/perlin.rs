@@ -25,7 +25,7 @@ impl PerlinNoise {
 impl Texture for PerlinNoise {
     fn color(&self, _u: f32, _v: f32, point: Vec3) -> Color {
         let noise = &self.noise as &dyn NoiseFn<[f64; 3]>;
-        let noise_val = noise.get((self. scale * point).as_dvec3().to_array());
+        let noise_val = noise.get((self.scale * point).as_dvec3().to_array());
         Color::new(Vec3::ONE * 0.5 * (1.0 + noise_val) as f32)
     }
 }
