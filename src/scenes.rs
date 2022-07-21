@@ -31,6 +31,8 @@ pub enum SceneType {
     SimpleLight,
     /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box),
     CornellBox,
+    /// Cornell Box scene from the [definitive Cornell Box data](https://www.graphics.cornell.edu/online/box/data.html)
+    CornellBox2,
     /// The [SceneType::CoverPhoto] in the dark with lights
     RandomLights,
 }
@@ -85,6 +87,14 @@ pub fn get_scene(
             look_at = Vec3A::new(278.0, 278.0, 0.0);
             vert_fov = 40.0;
             gen_cornell_box()
+        }
+        SceneType::CornellBox2 => {
+            aspect_ratio = 1.0;
+            bg_color = Color::new(Vec3A::ZERO);
+            look_from = Vec3A::new(278.0, 278.0, -800.0);
+            look_at = Vec3A::new(278.0, 278.0, 0.0);
+            vert_fov = 40.0;
+            gen_cornell_box2()
         }
         SceneType::RandomLights => {
             aperture = 0.1;
@@ -323,6 +333,176 @@ fn gen_cornell_box() -> HittableList {
         back_side.wrap(),
         light_rec.wrap(),
         squarish_box.wrap(),
+        tall_box.wrap(),
+    ]
+}
+
+/// Returns the cornell box scene devised in [smallpt](https://www.kevinbeason.com/smallpt/)
+fn gen_cornell_box2() -> HittableList {
+    // materials
+    let red_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::new(0.65, 0.05, 0.05))),
+    });
+    let white_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::splat(0.73))),
+    });
+    let green_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::new(0.12, 0.45, 0.15))),
+    });
+    let light = Arc::new(Material::DiffuseLight {
+        albedo: Arc::new(SolidColor::new(Vec3A::ONE)),
+        brightness: 12.0,
+    });
+
+    let _mirror_like = Arc::new(Material::Metal {
+        albedo: Arc::new(SolidColor::new(Vec3A::splat(0.999))),
+        roughness: 0.0,
+    });
+    let _glass_like = Arc::new(Material::Dielectric { refract_index: 1.5 });
+
+    // walls
+    let floor = Quad::new(
+        Vec3A::new(552.8, 0.0, 0.0),
+        Vec3A::new(0.0, 0.0, 0.0),
+        Vec3A::new(0.0, 0.0, 559.2),
+        Vec3A::new(549.6, 0.0, 559.2),
+        &white_diffuse,
+    );
+
+    let light_quad = Quad::new(
+        Vec3A::new(343.0, 548.8, 227.0),
+        Vec3A::new(343.0, 548.8, 332.0),
+        Vec3A::new(213.0, 548.8, 332.0),
+        Vec3A::new(213.0, 548.8, 227.0),
+        &light,
+    );
+
+    let ceiling = Quad::new(
+        Vec3A::new(556.0, 548.8, 0.0),
+        Vec3A::new(556.0, 548.8, 559.2),
+        Vec3A::new(0.0, 548.8, 559.2),
+        Vec3A::new(0.0, 548.8, 0.0),
+        &white_diffuse,
+    );
+
+    let back_wall = Quad::new(
+        Vec3A::new(549.6, 0.0, 559.2),
+        Vec3A::new(0.0, 0.0, 559.2),
+        Vec3A::new(0.0, 548.8, 559.2),
+        Vec3A::new(556.0, 548.8, 559.2),
+        &white_diffuse,
+    );
+
+    let right_wall = Quad::new(
+        Vec3A::new(0.0, 0.0, 559.2),
+        Vec3A::new(0.0, 0.0, 0.0),
+        Vec3A::new(0.0, 548.8, 0.0),
+        Vec3A::new(0.0, 548.8, 559.2),
+        &green_diffuse,
+    );
+
+    let left_wall = Quad::new(
+        Vec3A::new(552.8, 0.0, 0.0),
+        Vec3A::new(549.6, 0.0, 559.2),
+        Vec3A::new(556.0, 548.8, 559.2),
+        Vec3A::new(556.0, 548.8, 0.0),
+        &red_diffuse,
+    );
+
+    // boxes
+    let short_box: HittableList = vec![
+        Quad::new(
+            Vec3A::new(130.0, 165.0, 65.0),
+            Vec3A::new(82.0, 165.0, 225.0),
+            Vec3A::new(240.0, 165.0, 272.0),
+            Vec3A::new(290.0, 165.0, 114.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(290.0, 0.0, 114.0),
+            Vec3A::new(290.0, 165.0, 114.0),
+            Vec3A::new(240.0, 165.0, 272.0),
+            Vec3A::new(240.0, 0.0, 272.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(130.0, 0.0, 65.0),
+            Vec3A::new(130.0, 165.0, 65.0),
+            Vec3A::new(290.0, 165.0, 114.0),
+            Vec3A::new(290.0, 0.0, 114.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(82.0, 0.0, 225.0),
+            Vec3A::new(82.0, 165.0, 225.0),
+            Vec3A::new(130.0, 165.0, 65.0),
+            Vec3A::new(130.0, 0.0, 65.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(240.0, 0.0, 272.0),
+            Vec3A::new(240.0, 165.0, 272.0),
+            Vec3A::new(82.0, 165.0, 225.0),
+            Vec3A::new(82.0, 0.0, 225.0),
+            &white_diffuse,
+        )
+        .wrap(),
+    ];
+
+    let tall_box: HittableList = vec![
+        Quad::new(
+            Vec3A::new(423.0, 330.0, 247.0),
+            Vec3A::new(265.0, 330.0, 296.0),
+            Vec3A::new(314.0, 330.0, 456.0),
+            Vec3A::new(472.0, 330.0, 406.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(423.0, 0.0, 247.0),
+            Vec3A::new(423.0, 330.0, 247.0),
+            Vec3A::new(472.0, 330.0, 406.0),
+            Vec3A::new(472.0, 0.0, 406.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(472.0, 0.0, 406.0),
+            Vec3A::new(472.0, 330.0, 406.0),
+            Vec3A::new(314.0, 330.0, 456.0),
+            Vec3A::new(314.0, 0.0, 456.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(314.0, 0.0, 456.0),
+            Vec3A::new(314.0, 330.0, 456.0),
+            Vec3A::new(265.0, 330.0, 296.0),
+            Vec3A::new(265.0, 0.0, 296.0),
+            &white_diffuse,
+        )
+        .wrap(),
+        Quad::new(
+            Vec3A::new(265.0, 0.0, 296.0),
+            Vec3A::new(265.0, 330.0, 296.0),
+            Vec3A::new(423.0, 330.0, 247.0),
+            Vec3A::new(423.0, 0.0, 247.0),
+            &white_diffuse,
+        )
+        .wrap(),
+    ];
+    vec![
+        floor.wrap(),
+        light_quad.wrap(),
+        ceiling.wrap(),
+        back_wall.wrap(),
+        right_wall.wrap(),
+        left_wall.wrap(),
+        short_box.wrap(),
         tall_box.wrap(),
     ]
 }
