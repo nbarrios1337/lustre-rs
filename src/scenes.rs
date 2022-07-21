@@ -308,17 +308,13 @@ fn gen_cornell_box() -> HittableList {
     // xy rect - zero z
     let back_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 2, &white_diffuse);
 
-    let squarish_box = QuadBox::new(
-        Vec3A::new(130.0, 0.0, 65.0),
-        Vec3A::new(295.0, 165.0, 230.0),
-        &white_diffuse,
-    );
-    let tall_box = QuadBox::new(
-        Vec3A::new(265.0, 0.0, 295.0),
-        Vec3A::new(430.0, 330.0, 460.0),
-        &white_diffuse,
-    );
+    let squarish_min = Vec3A::new(130.0, 0.0, 65.0);
+    let squarish_max = Vec3A::new(295.0, 165.0, 230.0);
+    let squarish_box = QuadBox::new(squarish_min, squarish_max, &white_diffuse);
 
+    let tall_min = Vec3A::new(265.0, 0.0, 295.0);
+    let tall_max = Vec3A::new(430.0, 330.0, 460.0);
+    let tall_box = QuadBox::new(tall_min, tall_max, &white_diffuse);
     vec![
         left_side.wrap(),
         right_side.wrap(),
