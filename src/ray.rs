@@ -65,7 +65,12 @@ impl Ray {
                     // A successful ray scatter leads to more contributions.
                     Some((scattered, attenuation)) => {
                         attenuation
-                            * Vec3A::from(scattered.shade(hittable, bounce_depth - 1, bg_color, rng))
+                            * Vec3A::from(scattered.shade(
+                                hittable,
+                                bounce_depth - 1,
+                                bg_color,
+                                rng,
+                            ))
                     }
                     // Otherwise, we're done
                     None => Vec3A::ZERO,
