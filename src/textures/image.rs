@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::color::Color;
 
@@ -37,9 +37,9 @@ impl ImageMap {
 }
 
 impl Texture for ImageMap {
-    fn color(&self, u: f32, v: f32, _point: glam::Vec3) -> Color {
+    fn color(&self, u: f32, v: f32, _point: glam::Vec3A) -> Color {
         match &self.image {
-            None => Color::new(Vec3::new(0.0, 1.0, 1.0)),
+            None => Color::new(Vec3A::new(0.0, 1.0, 1.0)),
             Some(img) => {
                 let u = u.clamp(0.0, 1.0);
                 let v = 1.0 - v.clamp(0.0, 1.0);

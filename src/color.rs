@@ -1,23 +1,23 @@
 //! Color and pixel output
 
-use glam::Vec3;
+use glam::Vec3A;
 
 /// A RGB color.
 ///
-/// Holds its value as a [Vec3]
+/// Holds its value as a [Vec3A]
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
-    value: Vec3,
+    value: Vec3A,
 }
 
 impl Color {
     /// Creates a new Color
-    pub fn new(value: Vec3) -> Self {
+    pub fn new(value: Vec3A) -> Self {
         Self { value }
     }
 }
 
-impl From<Color> for Vec3 {
+impl From<Color> for Vec3A {
     fn from(c: Color) -> Self {
         c.value
     }
@@ -27,7 +27,7 @@ impl From<Color> for Vec3 {
 impl From<Color> for image::Rgb<u8> {
     fn from(color: Color) -> Self {
         Self(
-            (color.value.clamp(Vec3::ZERO, Vec3::ONE) * 256.0)
+            (color.value.clamp(Vec3A::ZERO, Vec3A::ONE) * 256.0)
                 .to_array()
                 .iter()
                 .map(|&x| x as u8)
@@ -47,7 +47,7 @@ impl From<image::Rgb<u8>> for Color {
             rgb[2] as f32 * scale,
         ];
         Self {
-            value: Vec3::from(scaled),
+            value: Vec3A::from(scaled),
         }
     }
 }

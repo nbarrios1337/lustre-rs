@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::{bounds::BoundingBox, material::Material, ray::Ray};
 
@@ -21,9 +21,9 @@ pub use sphere::*;
 #[derive(Debug)]
 pub struct HitRecord {
     /// Point of intersection in 3D space
-    pub point: Vec3,
+    pub point: Vec3A,
     /// Surface normal off the point of intersection
-    pub normal: Vec3,
+    pub normal: Vec3A,
     /// Material of the intersected object
     pub material: Arc<Material>,
     /// distance from the origin to the point of intersection
@@ -37,7 +37,7 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-    pub fn set_face_normal(&mut self, ray: &Ray, outward_n: Vec3) {
+    pub fn set_face_normal(&mut self, ray: &Ray, outward_n: Vec3A) {
         if ray.direction.dot(outward_n) < 0.0 {
             self.front_face = true;
             self.normal = outward_n;

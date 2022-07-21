@@ -1,19 +1,19 @@
 //! Implementation of bounding volumes
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::ray::Ray;
 
 /// An axis aligned bounding box
 #[derive(Debug, Clone, Copy)]
 pub struct BoundingBox {
-    pub min: Vec3,
-    pub max: Vec3,
+    pub min: Vec3A,
+    pub max: Vec3A,
 }
 
 impl BoundingBox {
     /// Creates a new Axis aligned bounding box
-    pub fn new(min: Vec3, max: Vec3) -> Self {
+    pub fn new(min: Vec3A, max: Vec3A) -> Self {
         Self { min, max }
     }
 
@@ -63,8 +63,8 @@ impl BoundingBox {
 impl Default for BoundingBox {
     fn default() -> Self {
         Self {
-            min: Vec3::ZERO,
-            max: Vec3::ZERO,
+            min: Vec3A::ZERO,
+            max: Vec3A::ZERO,
         }
     }
 }

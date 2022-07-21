@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::color::Color;
 
@@ -25,7 +25,7 @@ impl Checkered {
 }
 
 impl Texture for Checkered {
-    fn color(&self, u: f32, v: f32, point: Vec3) -> Color {
+    fn color(&self, u: f32, v: f32, point: Vec3A) -> Color {
         let sin_x = (point * 10.0).x.sin();
         let sin_y = (point * 10.0).y.sin();
         let sin_z = (point * 10.0).z.sin();

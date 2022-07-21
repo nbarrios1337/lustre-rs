@@ -5,7 +5,7 @@ use std::{
     sync::Arc,
 };
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::{
     bounds::BoundingBox,
@@ -17,14 +17,14 @@ use crate::{
 /// A Sphere object
 #[derive(Debug)]
 pub struct Sphere {
-    pub center: Vec3,
+    pub center: Vec3A,
     pub radius: f32,
     pub material: Arc<Material>,
 }
 
 impl Sphere {
     // Creates a new Sphere.
-    pub fn new(c: Vec3, r: f32, m: &Arc<Material>) -> Self {
+    pub fn new(c: Vec3A, r: f32, m: &Arc<Material>) -> Self {
         Self {
             center: c,
             radius: r,
@@ -33,7 +33,7 @@ impl Sphere {
     }
 
     /// Returns the uv surface coordinates for a point on the sphere
-    fn surface_coords(&self, point: Vec3) -> (f32, f32) {
+    fn surface_coords(&self, point: Vec3A) -> (f32, f32) {
         let theta = (-point.y).acos();
         let phi = (-point.z).atan2(point.x) + PI;
         let u = phi / TAU;
@@ -90,8 +90,8 @@ impl Hittable for Sphere {
 
     fn bounding_box(&self, _time0: f32, _time1: f32) -> Option<crate::bounds::BoundingBox> {
         Some(BoundingBox::new(
-            self.center - Vec3::splat(self.radius),
-            self.center + Vec3::splat(self.radius),
+            self.center - Vec3A::splat(self.radius),
+            self.center + Vec3A::splat(self.radius),
         ))
     }
 }
@@ -99,8 +99,8 @@ impl Hittable for Sphere {
 /// Like [Sphere], but it moves.
 #[derive(Debug)]
 pub struct MovingSphere {
-    center0: Vec3,
-    center1: Vec3,
+    center0: Vec3A,
+    center1: Vec3A,
     time0: f32,
     time1: f32,
     radius: f32,
@@ -110,8 +110,8 @@ pub struct MovingSphere {
 impl MovingSphere {
     /// Creates a new MovingSphere.
     pub fn new(
-        center0: Vec3,
-        center1: Vec3,
+        center0: Vec3A,
+        center1: Vec3A,
         time0: f32,
         time1: f32,
         radius: f32,
@@ -128,14 +128,14 @@ impl MovingSphere {
     }
 
     /// determines the point in space of the center of the sphere
-    fn center(&self, time: f32) -> Vec3 {
+    fn center(&self, time: f32) -> Vec3A {
         let ratio = (time - self.time0) / (self.time1 - self.time0);
         let offset = ratio * (self.center1 - self.center0);
         self.center0 + offset
     }
 
     /// Returns the uv surface coordinates for a point on the sphere
-    fn surface_coords(&self, point: Vec3) -> (f32, f32) {
+    fn surface_coords(&self, point: Vec3A) -> (f32, f32) {
         let theta = (-point.y).acos();
         let phi = (-point.z).atan2(point.x) + PI;
         let u = phi / TAU;
@@ -193,12 +193,12 @@ impl Hittable for MovingSphere {
 
     fn bounding_box(&self, time0: f32, time1: f32) -> Option<BoundingBox> {
         let box0 = BoundingBox::new(
-            self.center(time0) - Vec3::splat(self.radius),
-            self.center(time0) + Vec3::splat(self.radius),
+            self.center(time0) - Vec3A::splat(self.radius),
+            self.center(time0) + Vec3A::splat(self.radius),
         );
         let box1 = BoundingBox::new(
-            self.center(time1) - Vec3::splat(self.radius),
-            self.center(time1) + Vec3::splat(self.radius),
+            self.center(time1) - Vec3A::splat(self.radius),
+            self.center(time1) + Vec3A::splat(self.radius),
         );
 
         Some(box0.union(&box1))

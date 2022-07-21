@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 use crate::{bounds::BoundingBox, material::Material};
 
@@ -8,8 +8,8 @@ use super::{HitRecord, Hittable, Quad};
 
 #[derive(Debug)]
 pub struct QuadBox {
-    min: Vec3,
-    max: Vec3,
+    min: Vec3A,
+    max: Vec3A,
     sides: Vec<Quad>,
 }
 
@@ -34,7 +34,7 @@ impl QuadBox {
     /// Creates a new Box comprised of 6 sides stored as [Quad]s
     ///
     /// uses the rather expensive Quad::from_two_points_z fn, determining
-    pub fn new(min: Vec3, max: Vec3, m: &Arc<Material>) -> Self {
+    pub fn new(min: Vec3A, max: Vec3A, m: &Arc<Material>) -> Self {
         let min = min.min(max);
         let max = min.max(max);
 

@@ -2,7 +2,7 @@
 
 use std::{f32::EPSILON, sync::Arc};
 
-use glam::Vec3;
+use glam::Vec3A;
 use rand::Rng;
 
 use crate::{
@@ -45,7 +45,7 @@ impl Material {
     /// Returns a scattered ray and its attenuation based on the specific material type.
     ///
     /// Returns `None` if the material type computes a lack of scattering
-    pub fn scatter(&self, ray: &Ray, rec: &HitRecord, rng: &mut impl Rng) -> Option<(Ray, Vec3)> {
+    pub fn scatter(&self, ray: &Ray, rec: &HitRecord, rng: &mut impl Rng) -> Option<(Ray, Vec3A)> {
         // common calcs
         let normed_dir = ray.direction.normalize();
         let rand_unit_v = crate::utils::random::rand_vec3_in_unit_sphere(rng);
@@ -54,7 +54,7 @@ impl Material {
                 let mut scatter_dir = rec.normal + rand_unit_v;
 
                 // If the scatter direction is close to zero in all dimensions
-                if scatter_dir.cmplt(Vec3::splat(EPSILON)).all() {
+                if scatter_dir.cmplt(Vec3A::splat(EPSILON)).all() {
                     scatter_dir = rec.normal;
                 }
 
@@ -79,7 +79,7 @@ impl Material {
                 }
             }
             Material::Dielectric { refract_index } => {
-                let attenuation = Vec3::ONE;
+                let attenuation = Vec3A::ONE;
                 let refract_ratio = if rec.front_face {
                     1.0 / refract_index
                 } else {
@@ -107,13 +107,14 @@ impl Material {
     }
 
     /// Returns the emmited color of light from the material, if any.
-    pub fn emit(&self, u: f32, v: f32, point: Vec3) -> Option<Color> {
+    pub fn emit(&self, u: f32, v: f32, point: Vec3A) -> Option<Color> {
         match self {
             Material::DiffuseLight { albedo, brightness } => {
                 let color = albedo.color(u, v, point);
-                let val = *brightness * Vec3::from(color);
+                let val = *brightness * Vec3A::from(color);
                 Some(Color::new(val))
             }
+            // Make emission explicit; nothing emits unless specifically implemented.
             _ => None,
         }
     }

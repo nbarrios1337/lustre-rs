@@ -2,7 +2,7 @@
 
 use std::f32::INFINITY;
 
-use glam::Vec3;
+use glam::Vec3A;
 use rand::Rng;
 
 use crate::{color::Color, hittables::Hittable};
@@ -13,14 +13,14 @@ use crate::{color::Color, hittables::Hittable};
 /// these two members are the primary way to determine an intersection with a [`Hittable`]
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Ray {
-    pub origin: Vec3,
-    pub direction: Vec3,
+    pub origin: Vec3A,
+    pub direction: Vec3A,
     pub time: f32,
 }
 
 impl Ray {
     /// Creates a new Ray.
-    pub fn new(origin: Vec3, direction: Vec3, time: f32) -> Self {
+    pub fn new(origin: Vec3A, direction: Vec3A, time: f32) -> Self {
         Self {
             origin,
             direction,
@@ -31,7 +31,7 @@ impl Ray {
     /// Returns a position in 3D space along the ray.
     ///
     /// Performs the following calculation: `position = origin + t * direction`
-    pub fn at(&self, t: f32) -> Vec3 {
+    pub fn at(&self, t: f32) -> Vec3A {
         self.origin + t * self.direction
     }
 
@@ -47,7 +47,7 @@ impl Ray {
     ) -> Color {
         // Limit recursion depth
         if bounce_depth == 0 {
-            return Color::new(Vec3::ZERO);
+            return Color::new(Vec3A::ZERO);
         }
 
         // Check for a hit against the `hittable` parameter
@@ -56,8 +56,8 @@ impl Ray {
             Some(rec) => {
                 // gather any emitted light contribution
                 let emitted = match rec.material.emit(rec.u, rec.v, rec.point) {
-                    Some(color) => Vec3::from(color),
-                    None => Vec3::ZERO,
+                    Some(color) => Vec3A::from(color),
+                    None => Vec3A::ZERO,
                 };
 
                 // gather any scattered light contribution
@@ -65,10 +65,10 @@ impl Ray {
                     // A successful ray scatter leads to more contributions.
                     Some((scattered, attenuation)) => {
                         attenuation
-                            * Vec3::from(scattered.shade(hittable, bounce_depth - 1, bg_color, rng))
+                            * Vec3A::from(scattered.shade(hittable, bounce_depth - 1, bg_color, rng))
                     }
                     // Otherwise, we're done
-                    None => Vec3::ZERO,
+                    None => Vec3A::ZERO,
                 };
 
                 // both emissives and scattered light contribute, unless they're zeroed

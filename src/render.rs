@@ -1,6 +1,6 @@
 //! Render an image given a [Camera] and a [Hittable].
 
-use glam::Vec3;
+use glam::Vec3A;
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use rayon::prelude::*;
 
@@ -32,7 +32,7 @@ impl Renderer {
         x: u32,
         y: u32,
         rng: &mut impl Rng,
-    ) -> Vec3 {
+    ) -> Vec3A {
         let depth = 50;
         // from_rng(...) gives Result, unpack here
         let rng = rng;
@@ -47,7 +47,7 @@ impl Renderer {
         let contrib = cam
             .get_ray(u as f32, v as f32, rng)
             .shade(world, depth, cam.bg_color, rng);
-        Vec3::from(contrib)
+        Vec3A::from(contrib)
     }
 
     /// Generates an image from the given scene.
@@ -73,14 +73,14 @@ impl Renderer {
                 // unpack the enumeration
                 let (x, y, pixel) = indexed_pixel;
 
-                // map reduce N samples into single Vec3
+                // map reduce N samples into single Vec3A
                 let mut color_v = (0..self.samples_per_pixel)
                     .into_par_iter()
                     .map_init(
                         || SmallRng::from_rng(rand::thread_rng()),
                         |rng, _| self.compute_pixel_v(&cam, &world, x, y, rng.as_mut().unwrap()),
                     )
-                    .reduce(|| Vec3::ZERO, |a, b| a + b);
+                    .reduce(|| Vec3A::ZERO, |a, b| a + b);
 
                 // Account for number of samples
                 color_v /= self.samples_per_pixel as f32;

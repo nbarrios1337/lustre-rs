@@ -7,7 +7,7 @@
 
 use std::ops::Range;
 
-use glam::Vec3;
+use glam::Vec3A;
 use rand::Rng;
 
 use crate::{color::Color, ray::Ray, utils::random::rand_vec3_in_unit_disk};
@@ -16,19 +16,19 @@ use crate::{color::Color, ray::Ray, utils::random::rand_vec3_in_unit_disk};
 #[derive(Debug)]
 pub struct Camera {
     /// Camera position in space
-    origin: Vec3,
+    origin: Vec3A,
     /// Position of the viewport's lower left corner
-    ll_corner: Vec3,
+    ll_corner: Vec3A,
     /// Horizontal 'size' of the viewport
-    horizontal: Vec3,
+    horizontal: Vec3A,
     /// Vertical 'size' of the viewport
-    vertical: Vec3,
+    vertical: Vec3A,
     /// Orthonormal base 1
-    u: Vec3,
+    u: Vec3A,
     /// Orthonormal base 2
-    v: Vec3,
+    v: Vec3A,
     /// Orthonormal base 3, works like focal length
-    w: Vec3,
+    w: Vec3A,
     /// Radius of the approximated camera lens
     lens_radius: f32,
     /// Range of time in which shutter is open,
@@ -41,17 +41,17 @@ impl Camera {
     /// Creates a new Camera
     ///
     /// # Arguments
-    /// * look_from - A [Vec3] holding the position of the camera
-    /// * look_at - A [Vec3] holding the eye direction of the camera
-    /// * view_up - A [Vec3] holding the "up" direction of the camera
+    /// * look_from - A [Vec3A] holding the position of the camera
+    /// * look_at - A [Vec3A] holding the eye direction of the camera
+    /// * view_up - A [Vec3A] holding the "up" direction of the camera
     /// * vert_fov - The vertical field of view
     /// * aspect_ratio - The aspect ratio of the viewport
     /// * aperture - How "big" the approximated lens is
     /// * focus_dist - The distance to the plane in space where objects are "in focus"
     pub fn new(
-        look_from: Vec3,
-        look_at: Vec3,
-        view_up: Vec3,
+        look_from: Vec3A,
+        look_at: Vec3A,
+        view_up: Vec3A,
         vert_fov: f32,
         aspect_ratio: f32,
         aperture: f32,
@@ -106,15 +106,15 @@ impl Camera {
 impl Default for Camera {
     fn default() -> Self {
         Self::new(
-            Vec3::new(0.0, 0.0, 0.0),
-            Vec3::new(0.0, 0.0, -1.0),
-            Vec3::new(0.0, 1.0, 0.0),
+            Vec3A::new(0.0, 0.0, 0.0),
+            Vec3A::new(0.0, 0.0, -1.0),
+            Vec3A::new(0.0, 1.0, 0.0),
             90.0,
             16.0 / 9.0,
             0.1,
             10.0,
             0.0..1.0,
-            Color::new(Vec3::ZERO),
+            Color::new(Vec3A::ZERO),
         )
     }
 }

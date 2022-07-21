@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use glam::{Vec2, Vec3};
+use glam::{Vec2, Vec3A};
 
 use crate::{bounds::BoundingBox, material::Material};
 
@@ -15,10 +15,10 @@ use super::{HitRecord, Hittable};
 /// * [Surface Ooords ShaderToy example](https://www.shadertoy.com/view/lsBSDm)
 #[derive(Debug)]
 pub struct Quad {
-    p0: Vec3,
-    p1: Vec3,
-    p2: Vec3,
-    p3: Vec3,
+    p0: Vec3A,
+    p1: Vec3A,
+    p2: Vec3A,
+    p3: Vec3A,
     pub material: Arc<Material>,
 }
 
@@ -30,7 +30,7 @@ impl Quad {
     // |    |
     // 1----2
     /// Creates a new Quad.
-    pub fn new(p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, m: &Arc<Material>) -> Self {
+    pub fn new(p0: Vec3A, p1: Vec3A, p2: Vec3A, p3: Vec3A, m: &Arc<Material>) -> Self {
         Self {
             p0,
             p1,
@@ -51,24 +51,24 @@ impl Quad {
     ) -> Self {
         let (p0, p1, p2, p3) = match axis {
             0 => {
-                let p0 = Vec3::new(k, a_min, b_min);
-                let p1 = Vec3::new(k, a_max, b_min);
-                let p2 = Vec3::new(k, a_max, b_max);
-                let p3 = Vec3::new(k, a_min, b_max);
+                let p0 = Vec3A::new(k, a_min, b_min);
+                let p1 = Vec3A::new(k, a_max, b_min);
+                let p2 = Vec3A::new(k, a_max, b_max);
+                let p3 = Vec3A::new(k, a_min, b_max);
                 (p0, p1, p2, p3)
             }
             1 => {
-                let p0 = Vec3::new(a_min, k, b_min);
-                let p1 = Vec3::new(a_max, k, b_min);
-                let p2 = Vec3::new(a_max, k, b_max);
-                let p3 = Vec3::new(a_min, k, b_max);
+                let p0 = Vec3A::new(a_min, k, b_min);
+                let p1 = Vec3A::new(a_max, k, b_min);
+                let p2 = Vec3A::new(a_max, k, b_max);
+                let p3 = Vec3A::new(a_min, k, b_max);
                 (p0, p1, p2, p3)
             }
             2 => {
-                let p0 = Vec3::new(a_min, b_min, k);
-                let p1 = Vec3::new(a_max, b_min, k);
-                let p2 = Vec3::new(a_max, b_max, k);
-                let p3 = Vec3::new(a_min, b_max, k);
+                let p0 = Vec3A::new(a_min, b_min, k);
+                let p1 = Vec3A::new(a_max, b_min, k);
+                let p2 = Vec3A::new(a_max, b_max, k);
+                let p3 = Vec3A::new(a_min, b_max, k);
                 (p0, p1, p2, p3)
             }
             _ => panic!("Invalid axis index"),
@@ -80,28 +80,28 @@ impl Quad {
     /// Creates a new axis-aligned Quad based on 2 points on a plane + the plane's k value.
     ///
     /// Requires one dimension in each point to be zero-ed out to work.
-    pub fn from_two_points_z(p_min: Vec3, p_max: Vec3, k: f32, m: &Arc<Material>) -> Self {
+    pub fn from_two_points_z(p_min: Vec3A, p_max: Vec3A, k: f32, m: &Arc<Material>) -> Self {
         let (x_min, y_min, z_min) = p_min.into();
         let (x_max, y_max, z_max) = p_max.into();
 
         // Check which dimension to use z value in
         let (p0, p1, p2, p3) = if x_min == x_max && x_min == 0.0 {
-            let p0 = Vec3::new(k, y_min, z_min);
-            let p1 = Vec3::new(k, y_max, z_min);
-            let p2 = Vec3::new(k, y_max, z_max);
-            let p3 = Vec3::new(k, y_min, z_max);
+            let p0 = Vec3A::new(k, y_min, z_min);
+            let p1 = Vec3A::new(k, y_max, z_min);
+            let p2 = Vec3A::new(k, y_max, z_max);
+            let p3 = Vec3A::new(k, y_min, z_max);
             (p0, p1, p2, p3)
         } else if y_min == y_max && y_min == 0.0 {
-            let p0 = Vec3::new(x_min, k, z_min);
-            let p1 = Vec3::new(x_max, k, z_min);
-            let p2 = Vec3::new(x_max, k, z_max);
-            let p3 = Vec3::new(x_min, k, z_max);
+            let p0 = Vec3A::new(x_min, k, z_min);
+            let p1 = Vec3A::new(x_max, k, z_min);
+            let p2 = Vec3A::new(x_max, k, z_max);
+            let p3 = Vec3A::new(x_min, k, z_max);
             (p0, p1, p2, p3)
         } else if z_min == z_max && z_min == 0.0 {
-            let p0 = Vec3::new(x_min, y_min, k);
-            let p1 = Vec3::new(x_max, y_min, k);
-            let p2 = Vec3::new(x_max, y_max, k);
-            let p3 = Vec3::new(x_min, y_max, k);
+            let p0 = Vec3A::new(x_min, y_min, k);
+            let p1 = Vec3A::new(x_max, y_min, k);
+            let p2 = Vec3A::new(x_max, y_max, k);
+            let p3 = Vec3A::new(x_min, y_max, k);
             (p0, p1, p2, p3)
         } else {
             panic!(
