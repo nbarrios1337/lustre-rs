@@ -54,14 +54,16 @@ impl Ray {
         match hittable.hit(self, 0.001, INFINITY) {
             // successful hit, let's do some light gathering
             Some(rec) => {
+                // need a ref since scatter takes a ref to rec later
+                let mat = &rec.material;
                 // gather any emitted light contribution
-                let emitted = match rec.material.emit(rec.u, rec.v, rec.point) {
+                let emit_contrib = match mat.emit(rec.u, rec.v, rec.point) {
                     Some(color) => Vec3A::from(color),
                     None => Vec3A::ZERO,
                 };
 
                 // gather any scattered light contribution
-                let atten = match rec.material.scatter(self, &rec, rng) {
+                let scatter_contrib = match mat.scatter(self, &rec, rng) {
                     // A successful ray scatter leads to more contributions.
                     Some((scattered, attenuation)) => {
                         attenuation
@@ -77,7 +79,8 @@ impl Ray {
                 };
 
                 // both emissives and scattered light contribute, unless they're zeroed
-                Color::new(emitted + atten)
+                // with current materials, one of these will always be zero
+                Color::new(emit_contrib + scatter_contrib)
             }
             // without a hit, functions like a miss shader
             None => bg_color,
