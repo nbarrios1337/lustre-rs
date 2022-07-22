@@ -26,28 +26,20 @@ impl From<Color> for Vec3A {
 // The important stuff
 impl From<Color> for image::Rgb<u8> {
     fn from(color: Color) -> Self {
-        Self(
-            (color.value.clamp(Vec3A::ZERO, Vec3A::ONE) * 256.0)
-                .to_array()
-                .iter()
-                .map(|&x| x as u8)
-                .collect::<Vec<u8>>()
-                .try_into()
-                .unwrap_or([0, 0, 0]),
-        )
+        let converted = color.value.clamp(Vec3A::ZERO, Vec3A::ONE) * 255.0;
+        Self([converted.x as u8, converted.y as u8, converted.z as u8])
     }
 }
 
 impl From<image::Rgb<u8>> for Color {
     fn from(rgb: image::Rgb<u8>) -> Self {
-        let scale = 1.0 / 256.0;
-        let scaled = [
-            rgb[0] as f32 * scale,
-            rgb[1] as f32 * scale,
-            rgb[2] as f32 * scale,
-        ];
+        let scale = 1.0 / 255.0;
         Self {
-            value: Vec3A::from(scaled),
+            value: Vec3A::from_array([
+                rgb[0] as f32 * scale,
+                rgb[1] as f32 * scale,
+                rgb[2] as f32 * scale,
+            ]),
         }
     }
 }
