@@ -337,7 +337,7 @@ fn gen_cornell_box() -> HittableList {
     ]
 }
 
-/// Returns the cornell box scene devised in [smallpt](https://www.kevinbeason.com/smallpt/)
+/// Returns the cornell box scene adapted from the original physical measurements
 fn gen_cornell_box2() -> HittableList {
     // materials
     let red_diffuse = Arc::new(Material::Lambertian {
