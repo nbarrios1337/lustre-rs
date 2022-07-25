@@ -13,7 +13,7 @@ pub struct Arguments {
     pub output: std::path::PathBuf,
 
     /// The scene to use
-    #[clap(short, long, value_enum)]
+    #[clap(short, long, value_enum, default_value_t = SceneType::CoverPhoto)]
     pub scene: SceneType,
 
     /// samples per pixel
