@@ -8,15 +8,17 @@ use crate::scenes::SceneType;
 /// Toy RT Renderer
 #[derive(Parser, Debug)]
 pub struct Arguments {
-    /// The path to the file to write an image into
+    /// The path to the file to write the resulting image into
     #[clap(short, long, value_parser, default_value = "output.png")]
     pub output: std::path::PathBuf,
 
-    /// The scene to use
+    /// The hardcoded scene to use
     #[clap(short, long, value_enum, default_value_t = SceneType::CoverPhoto)]
     pub scene: SceneType,
 
     /// samples per pixel
+    ///
+    /// A higher count of samples leads to higher visual fidelity
     #[clap(
         short = 'n',
         long = "samples",
