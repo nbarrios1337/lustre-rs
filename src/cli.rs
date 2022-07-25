@@ -25,7 +25,7 @@ pub struct Arguments {
     #[clap(
         short = 'n',
         long = "samples",
-        value_parser = valid_count,
+        value_parser = valid_count::<u32>,
         default_value_t = 100,
         value_name = "NUM"
     )]
@@ -37,7 +37,7 @@ pub struct Arguments {
     #[clap(
         short,
         long = "bounces",
-        value_parser = valid_count,
+        value_parser = valid_count::<u16>,
         default_value_t = 50,
         value_name = "NUM"
     )]
@@ -48,10 +48,14 @@ pub struct Arguments {
     pub scene: SceneType,
 }
 
-fn valid_count(s: &str) -> Result<u32, String> {
-    match s.parse() {
+fn valid_count<T>(s: &str) -> Result<T, String>
+where
+    T: num_traits::PrimInt + std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Display
+{
+    match s.parse::<T>() {
         Ok(count) => {
-            if count > 0 {
+            if count > T::zero() {
                 Ok(count)
             } else {
                 Err("count must be greater than 0".to_string())
