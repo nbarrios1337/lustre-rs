@@ -34,6 +34,18 @@ pub struct Arguments {
         value_name = "NUM"
     )]
     pub samples_per_pixel: u32,
+
+    /// number of light contribution bounces
+    ///
+    /// A higher number of bounces leads to higher visual fidelity due to more accurate gathered light
+    #[clap(
+        short,
+        long = "bounces",
+        value_parser,
+        default_value_t = 50,
+        value_name = "NUM"
+    )]
+    pub bounce_depth: u16,
 }
 
 fn valid_sample_count(s: &str) -> Result<u32, String> {
