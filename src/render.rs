@@ -12,15 +12,22 @@ pub struct Renderer {
     image_width: u32,
     image_height: u32,
     samples_per_pixel: u32,
+    bounce_depth: u16,
 }
 
 impl Renderer {
     /// Creates a new [Renderer].
-    pub fn new(image_width: u32, image_height: u32, samples_per_pixel: u32) -> Self {
+    pub fn new(
+        image_width: u32,
+        image_height: u32,
+        samples_per_pixel: u32,
+        bounce_depth: u16,
+    ) -> Self {
         Self {
             image_width,
             image_height,
             samples_per_pixel,
+            bounce_depth,
         }
     }
 
@@ -33,7 +40,6 @@ impl Renderer {
         y: u32,
         rng: &mut impl Rng,
     ) -> Vec3A {
-        let depth = 50;
         // from_rng(...) gives Result, unpack here
         let rng = rng;
         // convert buffer indices to viewport coordinates
@@ -44,9 +50,9 @@ impl Renderer {
             ((self.image_height - y) as f32 + offset_v) as f64 / (self.image_height - 1) as f64;
 
         // trace ray
-        let contrib = cam
-            .get_ray(u as f32, v as f32, rng)
-            .shade(world, depth, cam.bg_color, rng);
+        let contrib =
+            cam.get_ray(u as f32, v as f32, rng)
+                .shade(world, self.bounce_depth, cam.bg_color, rng);
         Vec3A::from(contrib)
     }
 
