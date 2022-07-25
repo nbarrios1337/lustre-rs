@@ -19,7 +19,7 @@ pub struct Arguments {
     /// samples per pixel
     #[clap(
         short = 'n',
-        long,
+        long = "samples",
         value_parser,
         default_value_t = 100,
         value_name = "NUM"
