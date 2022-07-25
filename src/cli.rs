@@ -13,8 +13,8 @@ pub struct Arguments {
         short,
         long,
         value_parser,
-        value_name = "FILE",
-        default_value = "output.png"
+        default_value = "output.png",
+        value_name = "FILE"
     )]
     pub output: std::path::PathBuf,
 
