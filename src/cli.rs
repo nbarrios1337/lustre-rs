@@ -29,7 +29,7 @@ pub struct Arguments {
     #[clap(
         short = 'n',
         long = "samples",
-        value_parser = valid_sample_count,
+        value_parser = valid_count,
         default_value_t = 100,
         value_name = "NUM"
     )]
@@ -41,20 +41,20 @@ pub struct Arguments {
     #[clap(
         short,
         long = "bounces",
-        value_parser,
+        value_parser = valid_count,
         default_value_t = 50,
         value_name = "NUM"
     )]
     pub bounce_depth: u16,
 }
 
-fn valid_sample_count(s: &str) -> Result<u32, String> {
+fn valid_count(s: &str) -> Result<u32, String> {
     match s.parse() {
-        Ok(samples) => {
-            if samples > 0 {
-                Ok(samples)
+        Ok(count) => {
+            if count > 0 {
+                Ok(count)
             } else {
-                Err("sample count must be greater than 0".to_string())
+                Err("count must be greater than 0".to_string())
             }
         }
         Err(e) => Err(e.to_string()),
