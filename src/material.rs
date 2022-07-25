@@ -58,10 +58,10 @@ impl Material {
                     scatter_dir = rec.normal;
                 }
 
-                Some((
-                    Ray::new(rec.point, scatter_dir, ray.time),
-                    albedo.color(rec.u, rec.v, rec.point).into(),
-                ))
+                let scattered = Ray::new(rec.point, scatter_dir, ray.time);
+                let attenuation = albedo.color(rec.u, rec.v, rec.point).into();
+
+                Some((scattered, attenuation))
             }
             Material::Metal { albedo, roughness } => {
                 let reflected = reflect(normed_dir, rec.normal);
@@ -72,8 +72,10 @@ impl Material {
                     ray.time,
                 );
 
+                let attenuation = albedo.color(rec.u, rec.v, rec.point).into();
+
                 if scattered.direction.dot(rec.normal) > 0.0 {
-                    Some((scattered, albedo.color(rec.u, rec.v, rec.point).into()))
+                    Some((scattered, attenuation))
                 } else {
                     None
                 }
@@ -100,7 +102,9 @@ impl Material {
                     refract(normed_dir, rec.normal, refract_ratio)
                 };
 
-                Some((Ray::new(rec.point, direction, ray.time), attenuation))
+                let scattered = Ray::new(rec.point, direction, ray.time);
+
+                Some((scattered, attenuation))
             }
             Material::DiffuseLight { .. } => None,
         }
