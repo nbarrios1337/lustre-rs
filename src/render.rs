@@ -34,8 +34,6 @@ impl Renderer {
         rng: &mut impl Rng,
     ) -> Vec3A {
         let depth = 50;
-        // from_rng(...) gives Result, unpack here
-        let rng = rng;
         // convert buffer indices to viewport coordinates
         let offset_u: f32 = rng.gen();
         let offset_v: f32 = rng.gen();
@@ -78,7 +76,12 @@ impl Renderer {
                     .into_par_iter()
                     .map_init(
                         || SmallRng::from_rng(rand::thread_rng()),
-                        |rng, _| self.compute_pixel_v(&cam, &world, x, y, rng.as_mut().unwrap()),
+                        // current sample # doesn't matter, ignore
+                        |rng, _| {
+                            // from_rng(...) gives Result, unpack here
+                            let rng = rng.as_mut().unwrap();
+                            self.compute_pixel_v(&cam, &world, x, y, rng)
+                        },
                     )
                     .reduce(|| Vec3A::ZERO, |a, b| a + b);
 
