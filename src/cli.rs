@@ -29,11 +29,24 @@ pub struct Arguments {
     #[clap(
         short = 'n',
         long = "samples",
-        value_parser,
+        value_parser = valid_sample_count,
         default_value_t = 100,
         value_name = "NUM"
     )]
     pub samples_per_pixel: u32,
+}
+
+fn valid_sample_count(s: &str) -> Result<u32, String> {
+    match s.parse() {
+        Ok(samples) => {
+            if samples > 0 {
+                Ok(samples)
+            } else {
+                Err("sample count must be greater than 0".to_string())
+            }
+        }
+        Err(e) => Err(e.to_string()),
+    }
 }
 
 #[cfg(test)]
