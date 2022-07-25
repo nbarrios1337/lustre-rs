@@ -7,7 +7,7 @@ use crate::scenes::SceneType;
 
 /// Argument defintions for clap-derive
 #[derive(Parser, Debug)]
-#[clap(version, about)]
+#[clap(version, about, global_setting(clap::AppSettings::DeriveDisplayOrder))]
 pub struct Arguments {
     /// The path to the file to write the resulting image into
     #[clap(
@@ -18,10 +18,6 @@ pub struct Arguments {
         value_name = "FILE"
     )]
     pub output: std::path::PathBuf,
-
-    /// The hardcoded scene to use
-    #[clap(short, long, value_enum, default_value_t = SceneType::CoverPhoto)]
-    pub scene: SceneType,
 
     /// samples per pixel
     ///
@@ -46,6 +42,10 @@ pub struct Arguments {
         value_name = "NUM"
     )]
     pub bounce_depth: u16,
+
+    /// The hardcoded scene to use
+    #[clap(short, long, value_enum, default_value_t = SceneType::CoverPhoto)]
+    pub scene: SceneType,
 }
 
 fn valid_count(s: &str) -> Result<u32, String> {
