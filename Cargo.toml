@@ -12,7 +12,7 @@ readme = "README.md"
 
 [dependencies]
 glam = { version = "0.21.2", features = ["debug-glam-assert", "rand"] }
-clap = { version = "3.2.14", features = ["derive"] }
+clap = { version = "3.2.14", features = ["derive", "wrap_help"] }
 indicatif = { version = "0.16.2" }
 image = "0.24.1"
 noise = "0.7.0"
