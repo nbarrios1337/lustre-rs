@@ -34,3 +34,14 @@ pub struct Arguments {
     )]
     pub samples_per_pixel: u32,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn check_cli() {
+        use clap::CommandFactory;
+        Arguments::command().debug_assert()
+    }
+}
