@@ -9,7 +9,7 @@ use crate::scenes::SceneType;
 #[derive(Parser, Debug)]
 pub struct Arguments {
     /// The path to the file to write an image into
-    #[clap(short, long, parse(from_os_str))]
+    #[clap(short, long, value_parser, default_value = "output.png")]
     pub output: std::path::PathBuf,
 
     /// The scene to use
