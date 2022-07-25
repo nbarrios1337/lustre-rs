@@ -13,7 +13,7 @@ pub struct Arguments {
     pub output: std::path::PathBuf,
 
     /// The scene to use
-    #[clap(short, long, arg_enum)]
+    #[clap(short, long, value_enum)]
     pub scene: SceneType,
 
     /// samples per pixel
