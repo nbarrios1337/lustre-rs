@@ -7,7 +7,7 @@ use crate::scenes::SceneType;
 
 /// Argument defintions for clap-derive
 #[derive(Parser, Debug)]
-#[clap(about = "Toy RT Renderer")]
+#[clap(version, about)]
 pub struct Arguments {
     /// The path to the file to write the resulting image into
     #[clap(
