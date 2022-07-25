@@ -25,7 +25,7 @@ pub struct Arguments {
 
     /// samples per pixel
     ///
-    /// A higher count of samples leads to higher visual fidelity
+    /// A higher count of samples leads to higher visual fidelity due to more rays sent for a pixel
     #[clap(
         short = 'n',
         long = "samples",
