@@ -26,6 +26,7 @@ fn main() {
     let cli_args = Arguments::parse();
     let output_file = cli_args.output;
     let scene = cli_args.scene;
+    let bounce_depth = cli_args.bounce_depth;
 
     // Set up image properties
     let samples_per_pixel = cli_args.samples_per_pixel;
@@ -44,7 +45,7 @@ fn main() {
     let (cam, world, dimensions) = get_scene(img_w, scene, &mut rng);
     let world = BvhNode::new(world, 0.0, 1.0, &mut rng);
 
-    let renderer = Renderer::new(dimensions.x, dimensions.y, samples_per_pixel);
+    let renderer = Renderer::new(dimensions.x, dimensions.y, samples_per_pixel, bounce_depth);
 
     let img_buf = renderer.render_scene((cam, world));
 
