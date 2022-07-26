@@ -92,15 +92,16 @@ impl Transform {
 impl Hittable for Transform {
     fn hit(&self, ray: &crate::ray::Ray, t_min: f32, t_max: f32) -> Option<super::HitRecord> {
         let transformed_ray = crate::ray::Ray::new(
-            self.matrix.transform_point3a(ray.origin),
-            self.matrix.transform_vector3a(ray.direction),
+            self.matrix.inverse().transform_point3a(ray.origin),
+            self.matrix.inverse().transform_vector3a(ray.direction),
             ray.time,
         );
 
         match self.object.hit(&transformed_ray, t_min, t_max) {
             Some(rec) => {
                 let mut transformed_rec = super::HitRecord {
-                    point: self.matrix.inverse().transform_point3a(rec.point),
+                    point: self.matrix.transform_point3a(rec.point),
+                    normal: self.matrix.transform_vector3a(rec.normal),
                     ..rec
                 };
                 transformed_rec.set_face_normal(&transformed_ray, rec.normal);
