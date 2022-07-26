@@ -12,6 +12,7 @@ pub struct Transform {
     object: Arc<dyn Hittable>,
 }
 
+#[allow(dead_code/* , reason = "Exposing Affine3A constructors" */)]
 impl Transform {
     // creators
 
