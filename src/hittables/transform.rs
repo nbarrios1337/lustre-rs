@@ -15,6 +15,14 @@ pub struct Transform {
 impl Transform {
     // creators
 
+    /// Creates an affine transform that does not transform the underlying object
+    pub fn new(o: &Arc<dyn Hittable>) -> Self {
+        Self {
+            matrix: Affine3A::IDENTITY,
+            object: Arc::clone(o),
+        }
+    }
+
     /// Creates an affine transform that changes the size of the object.
     pub fn from_scale_factor(scale: Vec3, o: &Arc<dyn Hittable>) -> Self {
         Self {
@@ -49,6 +57,34 @@ impl Transform {
         Self {
             matrix: Affine3A::look_at_rh(camera_pos, focal_point, up_dir),
             object: Arc::clone(o),
+        }
+    }
+
+    // builders
+
+    /// Adds a scaling factor to the existing affine transform
+    pub fn with_scale_factor(&mut self, scale: Vec3) -> &mut Self {
+        self.matrix = self.matrix * Affine3A::from_scale(scale);
+        self
+    }
+
+    /// Adds a rotation based on the axis and angle to the existing affine transform
+    pub fn with_axis_angle(&mut self, axis: Vec3, angle: f32) -> &mut Self {
+        self.matrix = self.matrix * Affine3A::from_axis_angle(axis, angle);
+        self
+    }
+
+    /// Adds a translation to the existing affine transform
+    pub fn with_translation(&mut self, translation: Vec3) -> &mut Self {
+        self.matrix = self.matrix * Affine3A::from_translation(translation);
+        self
+    }
+
+    pub fn finalize(&mut self) -> Self {
+        println!("{:#?}", self.matrix);
+        Self {
+            matrix: self.matrix,
+            object: self.object.to_owned(),
         }
     }
 }

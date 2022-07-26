@@ -8,7 +8,7 @@ use rand::Rng;
 use crate::{
     camera::Camera,
     color::Color,
-    hittables::{Hittable, HittableList, MovingSphere, Quad, QuadBox, Sphere},
+    hittables::{Hittable, HittableList, MovingSphere, Quad, QuadBox, Sphere, Transform},
     material::Material,
     textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
 };
@@ -318,13 +318,24 @@ fn gen_cornell_box() -> HittableList {
     // xy rect - zero z
     let back_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 2, &white_diffuse);
 
-    let squarish_min = Vec3A::new(130.0, 0.0, 65.0);
-    let squarish_max = Vec3A::new(295.0, 165.0, 230.0);
+    let squarish_min = Vec3A::ZERO;
+    let squarish_max = Vec3A::splat(165.0);
     let squarish_box = QuadBox::new(squarish_min, squarish_max, &white_diffuse);
+    let squarish_box: Arc<dyn Hittable> = squarish_box.wrap();
+    let squarish_box = Transform::new(&squarish_box)
+        .with_translation(glam::Vec3::new(130.0, 0.0, 65.0))
+        .with_axis_angle(glam::Vec3::Y, -18.0f32.to_radians())
+        .finalize();
 
-    let tall_min = Vec3A::new(265.0, 0.0, 295.0);
-    let tall_max = Vec3A::new(430.0, 330.0, 460.0);
+    let tall_min = Vec3A::ZERO;
+    let tall_max = Vec3A::new(165.0, 330.0, 165.0);
     let tall_box = QuadBox::new(tall_min, tall_max, &white_diffuse);
+    let tall_box: Arc<dyn Hittable> = tall_box.wrap();
+    let tall_box = Transform::new(&tall_box)
+        .with_translation(glam::Vec3::new(265.0, 0.0, 295.0))
+        .with_axis_angle(glam::Vec3::Y, 15.0f32.to_radians())
+        .finalize();
+
     vec![
         left_side.wrap(),
         right_side.wrap(),
