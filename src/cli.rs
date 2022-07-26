@@ -51,7 +51,7 @@ pub struct Arguments {
 fn valid_count<T>(s: &str) -> Result<T, String>
 where
     T: num_traits::PrimInt + std::str::FromStr,
-    <T as std::str::FromStr>::Err: std::fmt::Display
+    <T as std::str::FromStr>::Err: std::fmt::Display,
 {
     match s.parse::<T>() {
         Ok(count) => {
