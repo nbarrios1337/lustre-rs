@@ -329,8 +329,8 @@ fn gen_cornell_box() -> HittableList {
     let squarish_box = QuadBox::new(squarish_min, squarish_max, &white_diffuse);
     let squarish_box: Arc<dyn Hittable> = squarish_box.wrap();
     let squarish_box = Transform::new(&squarish_box)
-        .with_translation(glam::Vec3::new(130.0, 0.0, 65.0))
         .with_axis_angle(glam::Vec3::Y, -18.0f32.to_radians())
+        .with_translation(glam::Vec3::new(130.0, 0.0, 65.0))
         .finalize();
 
     let tall_min = Vec3A::ZERO;
@@ -338,8 +338,8 @@ fn gen_cornell_box() -> HittableList {
     let tall_box = QuadBox::new(tall_min, tall_max, &white_diffuse);
     let tall_box: Arc<dyn Hittable> = tall_box.wrap();
     let tall_box = Transform::new(&tall_box)
-        .with_translation(glam::Vec3::new(265.0, 0.0, 295.0))
         .with_axis_angle(glam::Vec3::Y, 15.0f32.to_radians())
+        .with_translation(glam::Vec3::new(265.0, 0.0, 295.0))
         .finalize();
 
     vec![
@@ -729,8 +729,8 @@ fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
     let wrapped_spheres: Arc<dyn Hittable> = BvhNode::new(rand_sphere_group, 0.0, 1.0, rng).wrap();
     all_objects.push(
         Transform::new(&wrapped_spheres)
-            .with_translation(glam::Vec3::new(-100.0, 270.0, 395.0))
             .with_axis_angle(glam::Vec3::Y, 15.0)
+            .with_translation(glam::Vec3::new(-100.0, 270.0, 395.0))
             .finalize()
             .wrap(),
     );

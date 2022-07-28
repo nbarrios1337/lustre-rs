@@ -65,24 +65,23 @@ impl Transform {
 
     /// Adds a scaling factor to the existing affine transform
     pub fn with_scale_factor(&mut self, scale: Vec3) -> &mut Self {
-        self.matrix = self.matrix * Affine3A::from_scale(scale);
+        self.matrix = Affine3A::from_scale(scale) * self.matrix;
         self
     }
 
     /// Adds a rotation based on the axis and angle to the existing affine transform
     pub fn with_axis_angle(&mut self, axis: Vec3, angle: f32) -> &mut Self {
-        self.matrix = self.matrix * Affine3A::from_axis_angle(axis, angle);
+        self.matrix = Affine3A::from_axis_angle(axis, angle) * self.matrix;
         self
     }
 
     /// Adds a translation to the existing affine transform
     pub fn with_translation(&mut self, translation: Vec3) -> &mut Self {
-        self.matrix = self.matrix * Affine3A::from_translation(translation);
+        self.matrix = Affine3A::from_translation(translation) * self.matrix;
         self
     }
 
     pub fn finalize(&mut self) -> Self {
-        println!("{:#?}", self.matrix);
         Self {
             matrix: self.matrix,
             object: self.object.to_owned(),
