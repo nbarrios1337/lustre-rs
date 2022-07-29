@@ -5,7 +5,7 @@ pub use clap::Parser;
 
 use crate::scenes::SceneType;
 
-/// Argument defintions for clap-derive
+/// Argument defintions for [clap::Parser]
 #[derive(Parser, Debug)]
 #[clap(version, about, global_setting(clap::AppSettings::DeriveDisplayOrder))]
 pub struct Arguments {
