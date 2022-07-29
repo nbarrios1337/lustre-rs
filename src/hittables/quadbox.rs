@@ -1,4 +1,4 @@
-/// An intersectable box type
+//! An intersectable box type
 use std::sync::Arc;
 
 use glam::Vec3A;
