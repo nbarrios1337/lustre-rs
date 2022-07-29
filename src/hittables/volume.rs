@@ -1,3 +1,5 @@
+//! Intersectable volumes/participating media
+
 use std::{f32::INFINITY, ops::Neg, sync::Arc};
 
 use rand::Rng;
@@ -6,6 +8,7 @@ use crate::{material::Material, textures::Texture};
 
 use super::{HitRecord, Hittable};
 
+/// A Volume with a constant density
 pub struct ConstantMedium {
     boundary: Arc<dyn Hittable>,
     material: Arc<Material>,
