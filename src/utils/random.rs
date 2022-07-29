@@ -14,6 +14,7 @@ pub fn rand_vec3_in_unit_sphere(rng: &mut impl Rng) -> Vec3A {
     Vec3A::from_array(arr)
 }
 
+#[allow(dead_code/* , reason = "Want to A/B test with this sometimes" */)]
 /// Generates a random [Vec3A] within the same unit hemisphere as the given normal.
 pub fn rand_vec3_in_unit_hemisphere(rng: &mut impl Rng, normal: Vec3A) -> Vec3A {
     let mut unit_v = rand_vec3_in_unit_sphere(rng);

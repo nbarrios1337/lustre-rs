@@ -1,3 +1,4 @@
+//! An intersectable box type
 use std::sync::Arc;
 
 use glam::Vec3A;
@@ -6,6 +7,7 @@ use crate::{bounds::BoundingBox, material::Material};
 
 use super::{HitRecord, Hittable, Quad};
 
+/// A box defined by a set of [Quad] faces
 #[derive(Debug)]
 pub struct QuadBox {
     min: Vec3A,

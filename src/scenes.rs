@@ -6,11 +6,7 @@ use glam::{UVec2, Vec3A};
 use rand::Rng;
 
 use crate::{
-    camera::Camera,
-    color::Color,
-    hittables::{Hittable, HittableList, MovingSphere, Quad, QuadBox, Sphere},
-    material::Material,
-    textures::{Checkered, ImageMap, PerlinNoise, SolidColor, Texture},
+    bvh::BvhNode, camera::Camera, color::Color, hittables::*, material::Material, textures::*,
 };
 
 /// Possible hard-coded scenes to choose from.
@@ -29,12 +25,14 @@ pub enum SceneType {
     Earth,
     /// [SceneType::TwoPerlinSpheres] with a rectangular diffuse light
     SimpleLight,
-    /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box),
+    /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box)
     CornellBox,
     /// Cornell Box scene from the [definitive Cornell Box data](https://www.graphics.cornell.edu/online/box/data.html)
     CornellBox2,
     /// The [SceneType::CoverPhoto] in the dark with lights
     RandomLights,
+    /// The Final Scene from Ray Tracing in One Weekend: The Next Week
+    FinalScene,
 }
 
 /// Returns a [Camera], a list of objects ([HittableList]), and the image dimensions as a tuple.
@@ -101,6 +99,14 @@ pub fn get_scene(
             aspect_ratio = 3.0 / 2.0;
             bg_color = Color::new(Vec3A::from(bg_color) / 10.0);
             gen_emissive_random(rng)
+        }
+        SceneType::FinalScene => {
+            aspect_ratio = 1.0;
+            bg_color = Color::new(Vec3A::ZERO);
+            look_from = Vec3A::new(478.0, 278.0, -600.0);
+            look_at = Vec3A::new(278.0, 278.0, 0.0);
+            vert_fov = 40.0;
+            gen_book2_scene(rng)
         }
     };
 
@@ -245,7 +251,7 @@ fn gen_two_spheres() -> HittableList {
 /// Returns a [HittableList] containing two Perlin noise spheres.
 fn gen_two_perlin_spheres() -> HittableList {
     let perlin_tex = Arc::new(Material::Lambertian {
-        albedo: Arc::new(PerlinNoise::new(4.0)),
+        albedo: Arc::new(NoiseTexture::new(::noise::Perlin::new(), 4.0)),
     });
 
     vec![
@@ -285,6 +291,7 @@ fn gen_simple_light() -> HittableList {
     world
 }
 
+/// The Cornell Box scene as defined by the Ray Tracing in One Weekend: The Next Week
 fn gen_cornell_box() -> HittableList {
     let red_diffuse = Arc::new(Material::Lambertian {
         albedo: Arc::new(SolidColor::new(Vec3A::new(0.65, 0.05, 0.05))),
@@ -318,13 +325,24 @@ fn gen_cornell_box() -> HittableList {
     // xy rect - zero z
     let back_side = Quad::from_bounds_k(0.0, 555.0, 0.0, 555.0, 555.0, 2, &white_diffuse);
 
-    let squarish_min = Vec3A::new(130.0, 0.0, 65.0);
-    let squarish_max = Vec3A::new(295.0, 165.0, 230.0);
+    let squarish_min = Vec3A::ZERO;
+    let squarish_max = Vec3A::splat(165.0);
     let squarish_box = QuadBox::new(squarish_min, squarish_max, &white_diffuse);
+    let squarish_box: Arc<dyn Hittable> = squarish_box.wrap();
+    let squarish_box = Transform::new(&squarish_box)
+        .with_axis_angle(glam::Vec3::Y, -18.0f32.to_radians())
+        .with_translation(glam::Vec3::new(130.0, 0.0, 65.0))
+        .finalize();
 
-    let tall_min = Vec3A::new(265.0, 0.0, 295.0);
-    let tall_max = Vec3A::new(430.0, 330.0, 460.0);
+    let tall_min = Vec3A::ZERO;
+    let tall_max = Vec3A::new(165.0, 330.0, 165.0);
     let tall_box = QuadBox::new(tall_min, tall_max, &white_diffuse);
+    let tall_box: Arc<dyn Hittable> = tall_box.wrap();
+    let tall_box = Transform::new(&tall_box)
+        .with_axis_angle(glam::Vec3::Y, 15.0f32.to_radians())
+        .with_translation(glam::Vec3::new(265.0, 0.0, 295.0))
+        .finalize();
+
     vec![
         left_side.wrap(),
         right_side.wrap(),
@@ -337,7 +355,7 @@ fn gen_cornell_box() -> HittableList {
     ]
 }
 
-/// Returns the cornell box scene adapted from the original physical measurements
+/// The cornell box scene as defined from the original physical measurements
 fn gen_cornell_box2() -> HittableList {
     // materials
     let red_diffuse = Arc::new(Material::Lambertian {
@@ -579,4 +597,145 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
     world.push(sphere_3.wrap());
 
     world
+}
+
+/// The scene defined at the end of the second book for Ray Tracing in One Weekend
+fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
+    let mut ground_boxes: HittableList = vec![];
+    let ground_mat = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::new(0.48, 0.83, 0.53))),
+    });
+
+    let boxes_per_side = 20;
+    for i in 0..boxes_per_side {
+        for j in 0..boxes_per_side {
+            let w = 100.0;
+            let x0 = -1000.0 + i as f32 * w;
+            let z0 = -1000.0 + j as f32 * w;
+            let y0 = 0.0;
+
+            let x1 = x0 + w;
+            let y1 = rng.gen_range(1.0..101.0);
+            let z1 = z0 + w;
+
+            ground_boxes.push(
+                QuadBox::new(Vec3A::new(x0, y0, z0), Vec3A::new(x1, y1, z1), &ground_mat).wrap(),
+            )
+        }
+    }
+
+    // BVH-ify the ground boxes
+    let mut all_objects: HittableList = vec![BvhNode::new(ground_boxes, 0.0, 1.0, rng).wrap()];
+
+    let light_mat = Arc::new(Material::DiffuseLight {
+        albedo: Arc::new(SolidColor::new(Vec3A::ONE)),
+        brightness: 7.0,
+    });
+
+    // light
+    all_objects.push(Quad::from_bounds_k(123.0, 423.0, 147.0, 412.0, 554.0, 1, &light_mat).wrap());
+
+    let center1 = Vec3A::new(400.0, 400.0, 200.0);
+    let center2 = center1 + Vec3A::X * 30.0;
+    let moving_sphere_mat = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::new(0.7, 0.3, 0.1))),
+    });
+
+    // horizontally moving sphere
+    all_objects
+        .push(MovingSphere::new(center1, center2, 0.0, 1.0, 50.0, &moving_sphere_mat).wrap());
+
+    // glassy sphere
+    all_objects.push(
+        Sphere::new(
+            Vec3A::new(260.0, 150.0, 45.0),
+            50.0,
+            &Arc::new(Material::Dielectric { refract_index: 1.5 }),
+        )
+        .wrap(),
+    );
+
+    // metallic sphere
+    all_objects.push(
+        Sphere::new(
+            Vec3A::new(0.0, 150.0, 145.0),
+            50.0,
+            &Arc::new(Material::Metal {
+                albedo: Arc::new(SolidColor::new(Vec3A::new(0.8, 0.8, 0.9))),
+                roughness: 1.0,
+            }),
+        )
+        .wrap(),
+    );
+
+    // boundary for sub-surface object
+    let boundary = Sphere::new(
+        Vec3A::new(360.0, 150.0, 145.0),
+        70.0,
+        &Arc::new(Material::Dielectric { refract_index: 1.5 }),
+    );
+
+    let wrapped_boundary: Arc<dyn Hittable> = boundary.wrap();
+
+    // sub-surface object interior
+    let subsurface_tex: Arc<dyn Texture> = Arc::new(SolidColor::new(Vec3A::new(0.2, 0.4, 0.9)));
+    all_objects.push(ConstantMedium::new(&wrapped_boundary, &subsurface_tex, 0.2).wrap());
+    all_objects.push(wrapped_boundary);
+
+    // boundary for world mist/fog
+    let mist_boundary: Arc<dyn Hittable> = Sphere::new(
+        Vec3A::ZERO,
+        5000.0,
+        &Arc::new(Material::Dielectric { refract_index: 1.5 }),
+    )
+    .wrap();
+
+    // mist
+    let mist_tex: Arc<dyn Texture> = Arc::new(SolidColor::new(Vec3A::ONE));
+    all_objects.push(ConstantMedium::new(&mist_boundary, &mist_tex, 0.00001).wrap());
+
+    // earth sphere
+    let earth_mat = Arc::new(Material::Lambertian {
+        albedo: Arc::new(ImageMap::new(PathBuf::from("resources/earthmap.jpg"))),
+    });
+
+    all_objects.push(Sphere::new(Vec3A::new(400.0, 200.0, 400.0), 100.0, &earth_mat).wrap());
+
+    // perlin noise sphere
+    let perlin_mat = Arc::new(Material::Lambertian {
+        albedo: Arc::new(NoiseTexture::new(::noise::Perlin::new(), 0.1)),
+    });
+
+    // group of white spheres
+    all_objects.push(Sphere::new(Vec3A::new(220.0, 280.0, 300.0), 90.0, &perlin_mat).wrap());
+
+    let whiteish_diffuse = Arc::new(Material::Lambertian {
+        albedo: Arc::new(SolidColor::new(Vec3A::splat(0.73))),
+    });
+    let rand_sphere_group: HittableList = (0..1000)
+        .map(|_| {
+            let hittable: Arc<dyn Hittable> = Sphere::new(
+                Vec3A::new(
+                    rng.gen_range(0.0..165.0),
+                    rng.gen_range(0.0..165.0),
+                    rng.gen_range(0.0..165.0),
+                ),
+                10.0,
+                &whiteish_diffuse,
+            )
+            .wrap();
+            hittable
+        })
+        .collect();
+
+    let wrapped_spheres: Arc<dyn Hittable> = BvhNode::new(rand_sphere_group, 0.0, 1.0, rng).wrap();
+    all_objects.push(
+        Transform::new(&wrapped_spheres)
+            .with_axis_angle(glam::Vec3::Y, 15.0)
+            .with_translation(glam::Vec3::new(-100.0, 270.0, 395.0))
+            .finalize()
+            .wrap(),
+    );
+
+    all_objects
 }

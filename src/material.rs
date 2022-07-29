@@ -32,6 +32,8 @@ pub enum Material {
         albedo: Arc<dyn Texture>,
         brightness: f32,
     },
+    /// A material whose properties are the same (uniform) no matter where or how its intersected
+    Isotropic { albedo: Arc<dyn Texture> },
 }
 
 impl Material {
@@ -50,6 +52,12 @@ impl Material {
         let normed_dir = ray.direction.normalize();
         let rand_unit_v = crate::utils::random::rand_vec3_in_unit_sphere(rng);
         match self {
+            Material::Isotropic { albedo } => {
+                // returns a random unit direction
+                let scattered = Ray::new(rec.point, rand_unit_v, ray.time);
+                let attenutation = albedo.color(rec.u, rec.v, rec.point).into();
+                Some((scattered, attenutation))
+            }
             Material::Lambertian { albedo } => {
                 let mut scatter_dir = rec.normal + rand_unit_v;
 

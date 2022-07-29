@@ -6,7 +6,7 @@ use rayon::prelude::*;
 
 use crate::{camera::Camera, color::Color, hittables::Hittable, utils::progress::get_progressbar};
 
-/// Image Renderer
+/// Image Renderer storing scene context values such as image dimensions and samples per pixel
 #[derive(Debug, Clone, Copy)]
 pub struct Renderer {
     image_width: u32,
@@ -31,6 +31,10 @@ impl Renderer {
         }
     }
 
+    /// Calculates the total color value of the pixel at image coordinates (`x`, `y`)
+    ///
+    /// Uses the provided [Camera] to translate the image coordinates
+    /// to world space coordinates, then computes the color value
     #[inline]
     fn compute_pixel_v(
         &self,

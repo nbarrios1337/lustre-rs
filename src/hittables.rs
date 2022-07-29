@@ -11,11 +11,15 @@ pub mod list;
 pub mod quad;
 pub mod quadbox;
 pub mod sphere;
+pub mod transform;
+pub mod volume;
 
 pub use list::*;
 pub use quad::*;
 pub use quadbox::*;
 pub use sphere::*;
+pub use transform::*;
+pub use volume::*;
 
 /// Defines a set of data returned upon a successful intersection
 #[derive(Debug)]

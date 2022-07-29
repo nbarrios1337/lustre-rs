@@ -28,6 +28,7 @@ pub struct Camera {
     /// Orthonormal base 2
     v: Vec3A,
     /// Orthonormal base 3, works like focal length
+    #[allow(dead_code/* , reason = "Surely there's gonna be a use for this right?" */)]
     w: Vec3A,
     /// Radius of the approximated camera lens
     lens_radius: f32,

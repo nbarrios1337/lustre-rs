@@ -11,10 +11,12 @@ use crate::color::Color;
 
 pub use self::image::*;
 pub use checkered::*;
+pub use self::noise::*;
 pub use perlin::*;
 
 pub mod checkered;
 pub mod image;
+pub mod noise;
 pub mod perlin;
 
 /// Behavior of a texture
