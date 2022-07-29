@@ -251,7 +251,7 @@ fn gen_two_spheres() -> HittableList {
 /// Returns a [HittableList] containing two Perlin noise spheres.
 fn gen_two_perlin_spheres() -> HittableList {
     let perlin_tex = Arc::new(Material::Lambertian {
-        albedo: Arc::new(PerlinNoise::new(4.0)),
+        albedo: Arc::new(NoiseTexture::new(::noise::Perlin::new(), 4.0)),
     });
 
     vec![
@@ -703,7 +703,7 @@ fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
 
     // perlin noise sphere
     let perlin_mat = Arc::new(Material::Lambertian {
-        albedo: Arc::new(PerlinNoise::new(0.1)),
+        albedo: Arc::new(NoiseTexture::new(::noise::Perlin::new(), 0.1)),
     });
 
     // group of white spheres
