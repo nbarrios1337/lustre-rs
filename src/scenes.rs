@@ -25,7 +25,7 @@ pub enum SceneType {
     Earth,
     /// [SceneType::TwoPerlinSpheres] with a rectangular diffuse light
     SimpleLight,
-    /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box),
+    /// The famous [Cornell Box scene](https://en.wikipedia.org/wiki/Cornell_box)
     CornellBox,
     /// Cornell Box scene from the [definitive Cornell Box data](https://www.graphics.cornell.edu/online/box/data.html)
     CornellBox2,
@@ -291,6 +291,7 @@ fn gen_simple_light() -> HittableList {
     world
 }
 
+/// The Cornell Box scene as defined by the Ray Tracing in One Weekend: The Next Week
 fn gen_cornell_box() -> HittableList {
     let red_diffuse = Arc::new(Material::Lambertian {
         albedo: Arc::new(SolidColor::new(Vec3A::new(0.65, 0.05, 0.05))),
@@ -354,7 +355,7 @@ fn gen_cornell_box() -> HittableList {
     ]
 }
 
-/// Returns the cornell box scene adapted from the original physical measurements
+/// The cornell box scene as defined from the original physical measurements
 fn gen_cornell_box2() -> HittableList {
     // materials
     let red_diffuse = Arc::new(Material::Lambertian {
@@ -598,6 +599,7 @@ fn gen_emissive_random(rng: &mut impl Rng) -> HittableList {
     world
 }
 
+/// The scene defined at the end of the second book for Ray Tracing in One Weekend
 fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
     let mut ground_boxes: HittableList = vec![];
     let ground_mat = Arc::new(Material::Lambertian {
