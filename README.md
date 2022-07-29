@@ -19,10 +19,10 @@ Learning Rust via [Peter Shirley's Ray Tracing in One Weekend](https://raytracin
     cargo build --release
     ```
 
-4. Run `lustre` by specifying an output image file:
+4. Run `lustre` by specifying a scene to render:
 
    ```shell
-   ./target/release/lustre -o image.png
+   ./target/release/lustre -s cover-photo
    ```
 
    See `lustre --help` for more options.
@@ -30,9 +30,9 @@ Learning Rust via [Peter Shirley's Ray Tracing in One Weekend](https://raytracin
 ## Progress
 
 - [x] Implementing Book 1: [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) - 100%
-- [x] Documenting Book 1 - 100%
-- [ ] Implementing Book 2: [Ray Tracing: The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html) - 12%
-- [ ] Documenting Book 2 implementation
+- [x] Documenting Book 1 implementation - 100%
+- [x] Implementing Book 2: [Ray Tracing: The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html) - 100%
+- [ ] Documenting Book 2 implementation - ongoing
 - [ ] Implementing Book 3: [Ray Tracing: The Rest of Your Life](https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html)
 - [ ] Documenting Book 3 implementation
 - [ ] Look into other ways to expand this renderer. Possibilties:
