@@ -12,12 +12,10 @@ use crate::color::Color;
 pub use self::image::*;
 pub use self::noise::*;
 pub use checkered::*;
-pub use perlin::*;
 
 pub mod checkered;
 pub mod image;
 pub mod noise;
-pub mod perlin;
 
 /// Behavior of a texture
 pub trait Texture: Send + Sync {
