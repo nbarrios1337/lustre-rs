@@ -142,13 +142,12 @@ where
         loop {
             let rand_num = rand::thread_rng().gen::<f32>();
             hit_dist += -1.0 * (1.0 - rand_num).log10();
-            let second_rand = rand::thread_rng().gen::<f32>();
             let t = min_rec.t + hit_dist / ray_dir_length;
             let point = ray.at(t);
             let noised = self
                 .density_fn
                 .get((self.scale * point).as_dvec3().to_array());
-            if noised as f32 > second_rand {
+            if noised as f32 / ray_dir_length > rand::thread_rng().gen::<f32>() {
                 break;
             }
         }
