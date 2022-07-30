@@ -13,7 +13,9 @@ use indicatif::{ProgressBar, ProgressStyle};
 /// See [ProgressStyle] for more information.
 pub fn get_progressbar(len: u64) -> ProgressBar {
     ProgressBar::new((len) as u64).with_style(
-        ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] {prefix} {wide_bar} {pos:>7}/{len:7} ({percent}%)"),
+        ProgressStyle::with_template(
+            "[{elapsed_precise}] {prefix} {spinner} {human_pos:>7}/{human_len:7} ({percent}%)",
+        )
+        .unwrap(),
     )
 }
