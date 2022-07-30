@@ -52,7 +52,7 @@ impl Hittable for ConstantMedium {
 
         let ray_dir_length = ray.direction.length();
         let dist_inside_boundary = (max_rec.t - min_rec.t) * ray_dir_length;
-        let hit_dist = neg_inv_d * rand::thread_rng().gen::<f32>().log10();
+        let hit_dist = neg_inv_d * (1.0 - rand::thread_rng().gen::<f32>()).log10();
         if hit_dist > dist_inside_boundary {
             return None;
         }
