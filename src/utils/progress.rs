@@ -2,7 +2,7 @@
 //!
 //! Relies on the [indicatif] crate
 
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressFinish, ProgressStyle};
 
 /// Returns a new [ProgressBar] with a custom template string
 ///
@@ -14,8 +14,8 @@ use indicatif::{ProgressBar, ProgressStyle};
 pub fn get_progressbar(len: u64) -> ProgressBar {
     ProgressBar::new((len) as u64).with_style(
         ProgressStyle::with_template(
-            "[{elapsed_precise}] {prefix} {spinner} {human_pos:>7}/{human_len:7} ({percent}%)",
+            "[{elapsed_precise}] {spinner} {prefix} {human_pos:>7}/{human_len:7} ({percent}%) {msg}",
         )
         .unwrap(),
-    )
+    ).with_finish(ProgressFinish::WithMessage(std::borrow::Cow::Owned("Done!".to_string())))
 }

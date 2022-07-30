@@ -51,7 +51,7 @@ fn main() {
 
     // write image to file
     match img_buf.save(output_file.clone()) {
-        Ok(()) => println!("Done! Image written to {:?}", output_file),
+        Ok(()) => println!("Image written to {:?}", output_file),
         Err(why) => {
             eprintln!("Failed to write: {}", why);
         }

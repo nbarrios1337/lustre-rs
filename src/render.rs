@@ -1,6 +1,7 @@
 //! Render an image given a [Camera] and a [Hittable].
 
 use glam::Vec3A;
+use indicatif::ParallelProgressIterator;
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use rayon::prelude::*;
 
@@ -77,6 +78,7 @@ impl Renderer {
         img_buf
             .enumerate_pixels_mut()
             .par_bridge()
+            .progress_with(progress_bar)
             .for_each(|indexed_pixel| {
                 // unpack the enumeration
                 let (x, y, pixel) = indexed_pixel;
@@ -100,13 +102,10 @@ impl Renderer {
 
                 // "gamma" correction
                 color_v = color_v.powf(0.5); // sqrt
-                progress_bar.inc(1);
 
                 // modify pixel with generated color value
                 *pixel = image::Rgb::<u8>::from(Color::new(color_v));
             });
-
-        progress_bar.finish_with_message("Done generating pixels");
 
         img_buf
     }
