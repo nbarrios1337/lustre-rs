@@ -606,16 +606,25 @@ fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
         albedo: Arc::new(SolidColor::new(Vec3A::new(0.48, 0.83, 0.53))),
     });
 
+    // step value
+    let w = 100.0;
+
+    // first y coord
+    let y0 = 0.0;
+
+    // 20 x 20 set of boxes
     let boxes_per_side = 20;
     for i in 0..boxes_per_side {
-        for j in 0..boxes_per_side {
-            let w = 100.0;
-            let x0 = -1000.0 + i as f32 * w;
-            let z0 = -1000.0 + j as f32 * w;
-            let y0 = 0.0;
+        // x coords
+        let x0 = -1000.0 + i as f32 * w;
+        let x1 = x0 + w;
 
-            let x1 = x0 + w;
+        for j in 0..boxes_per_side {
+            // 2nd y coord
             let y1 = rng.gen_range(1.0..101.0);
+
+            // z coords
+            let z0 = -1000.0 + j as f32 * w;
             let z1 = z0 + w;
 
             ground_boxes.push(
@@ -713,18 +722,8 @@ fn gen_book2_scene(rng: &mut impl Rng) -> HittableList {
         albedo: Arc::new(SolidColor::new(Vec3A::splat(0.73))),
     });
     let rand_sphere_group: HittableList = (0..1000)
-        .map(|_| {
-            let hittable: Arc<dyn Hittable> = Sphere::new(
-                Vec3A::new(
-                    rng.gen_range(0.0..165.0),
-                    rng.gen_range(0.0..165.0),
-                    rng.gen_range(0.0..165.0),
-                ),
-                10.0,
-                &whiteish_diffuse,
-            )
-            .wrap();
-            hittable
+        .map(|_| -> Arc<dyn Hittable> {
+            Sphere::new(rng.gen::<Vec3A>() * 165.0, 10.0, &whiteish_diffuse).wrap()
         })
         .collect();
 
